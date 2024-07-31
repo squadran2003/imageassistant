@@ -1,6 +1,14 @@
 version: '3.8'
 
 services:
+  redis-imageassistant:
+    image: redis:alpine
+    ports:
+      - 6379:6379
+    depends_on:
+      - django
+    networks:
+      - django-network
   django:
     restart: always
     build:
@@ -15,7 +23,9 @@ services:
     command: >
       sh -c "
              python manage.py migrate &&
-             python manage.py runserver 0.0.0.0:8084"
+             python manage.py runserver 0.0.0.0:8084 &&
+             celery -A nisomar_dashboard beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler &&
+             celery worker -A nisomar_dashboard --loglevel=INFO  --max-tasks-per-child=1 --concurrency=4"
     volumes:
       # change to your base directory
       - ./:/usr/src/imageassistant/
@@ -24,3 +34,9 @@ services:
     env_file:
       # put the env fie in the same directory as the manage.py file
       - ./imageassistant/.env
+    networks:
+      - django-network
+
+networks:
+  django-network:
+    driver: bridge
