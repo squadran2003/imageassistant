@@ -1,0 +1,24 @@
+{
+  "name": "imageassistant",
+  "version": "1.0.0",
+  "description": "django+htmlx app to edit and manipulate images",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/squadran2003/imageassistant.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/squadran2003/imageassistant/issues"
+  },
+  "homepage": "https://github.com/squadran2003/imageassistant#readme",
+  "dependencies": {
+    "materialize-css": "^1.0.0",
+    "sass": "^1.77.8"
+  }
+}

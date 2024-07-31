@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  django:
+    restart: always
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      
+    user: ${CURRENT_UID}
+    environment:
+      # - change this to your settings file
+      - DJANGO_SETTINGS_MODULE=config.settings
+
+    command: >
+      sh -c "
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8084"
+    volumes:
+      # change to your base directory
+      - ./:/usr/src/imageassistant/
+    ports:
+      - 8084:8084
+    env_file:
+      # put the env fie in the same directory as the manage.py file
+      - ./imageassistant/.env

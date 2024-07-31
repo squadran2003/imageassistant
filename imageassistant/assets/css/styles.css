@@ -1,0 +1,70 @@
+/* Default size - Mobile */
+.logo-img {
+    display: none;
+}
+.logo-text {
+    display: block;
+    margin-left: 5px;
+    width: 100%;
+    font-size: 0.5em;
+}
+
+/* Small tablets and large phones */
+@media (min-width: 600px) {
+    .logo-img {
+        max-width: 200px;
+        height: 64px;
+        display: block;
+    }
+    .logo-text {
+        display: none;
+    }
+}
+
+/* Tablets and small desktops */
+@media (min-width: 768px) {
+    .logo-img {
+        max-width: 220px;
+        height: 64px;
+        display: block;
+    }
+    .logo-text {
+        display: none;
+    }
+}
+
+/* Desktop size */
+@media (min-width: 992px) {
+    .logo-img {
+        max-width: 250px;
+        height: 64px;
+        display: block;
+    }
+    .logo-text {
+        display: none;
+    }
+}
+
+/* Large desktops and Surface Pro */
+@media (min-width: 1200px) {
+    .logo-img {
+        max-width: 300px;
+        height: 64px;
+        display: block;
+    }
+    .logo-text {
+        display: none;
+    }
+}
+
+/* Surface Pro 7 specific media query */
+@media (min-width: 1366px) and (max-width: 2736px) {
+    .logo-img {
+        max-width: 320px;
+        height: 64px;
+        display: block;
+    }
+    .logo-text {
+        display: none;
+    }
+}

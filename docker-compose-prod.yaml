@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  nginx:
+    build: ./nginx
+    ports:
+      - 443:443
+      - 80:80
+    depends_on:
+      - api
+    networks:
+      - botify
+    volumes:
+      # change to your static path
+      - static:/home/ubuntu/app/botify/botify/static/
+      - /etc/letsencrypt:/etc/letsencrypt
+  django:
+    restart: always
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    environment:
+      # set to your production settings file
+      - DJANGO_SETTINGS_MODULE=config.production_settings
+    command: >
+      sh -c "
+              python manage.py migrate && 
+              python manage.py collectstatic --noinput &&
+              gunicorn config.wsgi:application --bind 0.0.0.0:8000"
+    volumes:
+      - ./:/usr/src/config/
+      - static:/usr/src/config/config/static/
+    expose:
+      - 8000
+    networks:
+      - config
+
+networks:
+  config:
+    driver: bridge
+
+volumes:
+  static:
+
+
