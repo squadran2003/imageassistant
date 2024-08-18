@@ -5,8 +5,8 @@ services:
     image: redis:alpine
     ports:
       - 6379:6379
-    depends_on:
-      - django
+    volumes:
+      - redis-data:/data
     networks:
       - django-network
   django:
@@ -19,13 +19,6 @@ services:
     environment:
       # - change this to your settings file
       - DJANGO_SETTINGS_MODULE=config.settings
-
-    command: >
-      sh -c "
-             python manage.py migrate &&
-             python manage.py runserver 0.0.0.0:8084 &&
-             celery -A nisomar_dashboard beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler &&
-             celery worker -A nisomar_dashboard --loglevel=INFO  --max-tasks-per-child=1 --concurrency=4"
     volumes:
       # change to your base directory
       - ./:/usr/src/imageassistant/
@@ -36,7 +29,31 @@ services:
       - ./imageassistant/.env
     networks:
       - django-network
+    depends_on:
+      - redis-imageassistant
+      - celery-imageassistant
+    command: >
+      sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8084"
+  celery-imageassistant:
+    build:
+      context: .
+      dockerfile: ./celery/Dockerfile
+    volumes:
+      # change to your base directory
+      - ./:/usr/src/imageassistant/
+    command: >
+      sh -c "celery -A config worker --loglevel=info --max-tasks-per-child=1 --concurrency=4"
+    depends_on:
+      - redis-imageassistant
+    networks:
+      - django-network
+
+    
+
 
 networks:
   django-network:
     driver: bridge
+
+volumes:
+  redis-data:

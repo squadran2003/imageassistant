@@ -12,7 +12,7 @@ WORKDIR /usr/src/imageassistant/
 
 
 
-COPY pyproject.toml poetry.lock ./
+COPY ./pyproject.toml ./poetry.lock ./
 
 
 RUN pip install poetry
@@ -24,4 +24,3 @@ RUN poetry config virtualenvs.create false \
 
 # set the working directory to where the manage.py file is located
 WORKDIR /usr/src/imageassistant/imageassistant/
-

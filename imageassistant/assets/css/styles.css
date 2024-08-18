@@ -1,3 +1,6 @@
+.custom-container{
+    min-height: calc(100vh - 170px);
+}
 /* Default size - Mobile */
 .logo-img {
     display: none;
@@ -8,6 +11,64 @@
     width: 100%;
     font-size: 0.5em;
 }
+
+/* home page styles */
+.custom-margin-top {
+    margin-top: 5px;
+}
+.custom-img-transform-button {
+    background-color: #7156ff; /* Your custom color */
+    margin: 5px,0,0,5px;
+    
+}
+.custom-img-transform-button:hover {
+    background-color: #5c4ce3; /* Your custom color */
+}
+
+.carosel-custom-style {
+    background-color: #6f609b;
+}
+.card-horizontal-custom{
+    min-height: 500px;
+    text-align: center;
+}
+.card-services-custom{
+    background-color:#6f52a3;
+}
+
+.custom-footer{
+  height: 100px;
+}
+
+
+.file-path-validate-custom{
+    color:blue;
+}
+
+#indicator2 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px; /* Adjust height as needed */
+    width: 100%; /* Full width or adjust as needed */
+    position: relative; /* Ensure positioning context for centering */
+  }
+
+  .spinner-layer {
+    width: 100px; /* Size of the spinner */
+    height: 100px; /* Size of the spinner */
+  }
+.img-container{
+    position:relative;
+    display: inline-block;
+}
+
+.download-button {
+    position: absolute;
+    top: 10px; /* Adjust the spacing from the top edge */
+    right: 10px; /* Adjust the spacing from the right edge */
+}
+
 
 /* Small tablets and large phones */
 @media (min-width: 600px) {

@@ -43,7 +43,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_celery_beat',
+    'images',
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -131,6 +133,8 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "assets"),  # Add this if you have a custom static directory
 ]
 
+STATIC_ROOT = BASE_DIR / 'static'
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 # Default primary key field type
@@ -139,7 +143,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CELERY_BROKER_URL = "redis://redis-imageassistant:6379/0"
-CELERY_RESULT_BACKEND = "redis://"
+CELERY_RESULT_BACKEND = "redis://redis-imageassistant:6379/0"
 CELERY_IGNORE_RESULT = True
 CELERY_ACCEPT_CONTENT = ["application/json"]
 CELERY_RESULT_SERIALIZER = "json"

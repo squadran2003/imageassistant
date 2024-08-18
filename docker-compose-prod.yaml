@@ -9,11 +9,19 @@ services:
     depends_on:
       - api
     networks:
-      - botify
+      - imageassistant-network
     volumes:
       # change to your static path
-      - static:/home/ubuntu/app/botify/botify/static/
+      - static:/home/ubuntu/app/imageassistant/imageassistant/static/
       - /etc/letsencrypt:/etc/letsencrypt
+  redis-imageassistant:
+    image: redis:alpine
+    ports:
+      - 6379:6379
+    volumes:
+      - redis-data:/data
+    networks:
+      - imageassistant-network
   django:
     restart: always
     build:
@@ -31,15 +39,28 @@ services:
       - ./:/usr/src/config/
       - static:/usr/src/config/config/static/
     expose:
-      - 8000
+      - 8084
     networks:
-      - config
-
+      - imageassistant-network
+  celery-imageassistant:
+    build:
+      context: .
+      dockerfile: ./celery/Dockerfile
+    volumes:
+      # change to your base directory
+      - ./:/usr/src/imageassistant/
+    command: >
+      sh -c "celery -A config worker --loglevel=info --max-tasks-per-child=1 --concurrency=4"
+    depends_on:
+      - redis-imageassistant
+    networks:
+      - imageassistant-network
 networks:
-  config:
+  imageassistant-network:
     driver: bridge
 
 volumes:
   static:
+  redis-data:
 
 

@@ -1,0 +1,124 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image assistant</title>
+    <!-- Materialize CSS -->
+    <link href="{% static 'css/custom-materialize.css' %}" rel="stylesheet">
+    <link href="{% static 'css/styles.css' %}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+<nav>
+    <div class="nav-wrapper">
+        <a href="/" class="brand-logo">
+            <img class="logo-img" src="{% static 'img/logo.png' %}">
+            <span class="logo-text">Image Assistant</span>
+        </a>
+        <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+        <ul class="right hide-on-med-and-down">
+            <li><a href="{% url 'index' %}">Home</a></li>
+            <li><a href="#">Support</a></li>
+        </ul>
+    </div>
+</nav>
+<ul class="sidenav" id="mobile-demo">
+    <li><a href="#">Home</a></li>
+    <li><a href="#">Services</a></li>
+    <li><a href="#">Contact</a></li>
+</ul>
+<div class="container-fluid custom-container">
+    <div class="row">
+        <div class="col s12 m2 x12 custom-margin-top">
+            <!-- new row to show the services we provide -->
+            <div class="row hide-on-small-only">
+                <div class="col s12 m12 l12 xl12  custom-margin-top">
+                    <div class="card-panel card-services-custom">
+                        <span class="white-text">
+                            Image assistant is a simple tool to help you with your image processing needs.
+                            Every image you upload is processed on the server and the result is displayed on the right.
+                            You can convert an image to greyscale, remove the background and other tasks on an image.
+                            We do not store any images on our server for more than 24 hrs!!!.
+                        </span>
+                          <div class="row">
+                            <div class="col s12 m12 l12 xl12 custom-margin-top">
+                                <span class="material-icons" style="color:white;">image</span>
+                                <span class="material-icons" style="color:white;">image_search</span>
+                                <span class="material-icons" style="color:white;">cloud</span>
+                                <span class="material-icons" style="color:white;">speed</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div id="service-buttons">
+                    <div class="col s12 m12 l12 xl12  custom-margin-top">
+                        <a class="waves-effect waves-light btn custom-img-transform-button" ><span class="material-icons" style="color:white;">autorenew</span>Convert to Black&White</a>
+                    </div>
+                    <div class="col s12 m12 l12 xl12  custom-margin-top">
+                        <a class="waves-effect waves-light btn custom-img-transform-button" ><span class="material-icons" style="color:white;">remove</span>Remove background</a>
+                    </div>
+                    <div class="col s12 m12 l12 xl12  custom-margin-top">
+                        <a class="waves-effect waves-light btn custom-img-transform-button" ><span class="material-icons" style="color:white;">open_with</span>Resize</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col s12 m10 x12 custom-margin-top">
+            <!-- Right Column Content -->
+            <form id="upload-form" hx-post="{% url 'images:add' %}" hx-target="#img-container" hx-swap="innerHTML"  enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="file-field input-field">
+                    <div class="btn custom-img-transform-button pulse">
+                        <span>Upload a file</span>
+                        <input type="file" name="image" hx-indicator="#indicator" onchange="htmx.trigger('#upload-form', 'submit')">
+                    </div>
+                    <div class="file-path-wrapper">
+                        <input class="file-path validate file-path-validate-custom" type="text">
+                    </div>
+                    <div id="indicator" class="progress htmx-indicator">
+                        <div class="indeterminate file-path-validate-custom" style="width: 100%"></div>
+                    </div>
+                </div>
+            </form>
+            <div id="img-container" class="img-container">
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Materialize JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script src="{% static 'js/htmx.min.js' %}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var elems = document.querySelectorAll('.sidenav');
+        var instances = M.Sidenav.init(elems);
+    });
+    function initializeCarousels() {
+        let carousels = document.querySelectorAll('.carousel');
+        let options = {
+            fullWidth: true,
+            indicators: true
+        };
+        let carouselInstances = M.Carousel.init(carousels, options);
+        console.log("Carousel instances", carouselInstances);
+
+        // Optional: Automatically advance the carousel
+        for (let i = 0; i < carouselInstances.length; i++) {
+            carouselInstances[i].next();
+            carouselInstances[i].next(3); // Move next n times.
+        }
+    }
+    // Initialize carousels when the DOM content is fully loaded
+    document.addEventListener('DOMContentLoaded', initializeCarousels);
+
+    // Initialize carousels after HTMX swaps new content into the DOM
+    document.addEventListener('htmx:afterSwap', function() {
+        initializeCarousels();
+    });
+</script>
+</body>
+</html>
