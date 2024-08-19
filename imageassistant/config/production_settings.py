@@ -7,10 +7,11 @@ from botocore.exceptions import ClientError
 
 DEBUG = False
 
-ALLOWED_HOSTS = [".botifyapp.com"]
+ALLOWED_HOSTS = [".botifyapp.com", "ec2-100-26-170-136.compute-1.amazonaws.com"]
 
 CSRF_TRUSTED_ORIGINS = [
     'https://botifyapp.com',
+    'https://ec2-100-26-170-136.compute-1.amazonaws.com',
 ]
 
 
