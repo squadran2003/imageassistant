@@ -1,8 +1,10 @@
 from celery import shared_task
 from images.models import Image
 from PIL import Image as PILImage
+from urllib.request import urlopen
 from io import BytesIO
 from django.core.files.base import ContentFile
+from django.conf import settings
 
 
 
@@ -10,7 +12,10 @@ from django.core.files.base import ContentFile
 @shared_task
 def create_greyscale(image_id):
     file = Image.objects.get(pk=image_id)
-    img = PILImage.open(file.image.path)
+    if not settings.DEBUG:
+        img = PILImage.open(urlopen(file.image.url))
+    else:
+        img = PILImage.open(file.image.path)
     grayscale_img = img.convert("L")
     # Save the grayscale image to a BytesIO object
     img_io = BytesIO()
@@ -26,7 +31,10 @@ def create_greyscale(image_id):
 def remove_background(image_id):
     from rembg import remove
     file = Image.objects.get(pk=image_id)
-    img = PILImage.open(file.image.path)
+    if not settings.DEBUG:
+        img = PILImage.open(urlopen(file.image.url))
+    else:
+        img = PILImage.open(file.image.path)
     img_io = BytesIO()
     image_bg_removed = remove(img, alpha_matting=True)
     image_bg_removed.save(img_io, format='png')
