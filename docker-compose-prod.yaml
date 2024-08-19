@@ -38,7 +38,7 @@ services:
     volumes:
       - ./:/usr/src/imageassistant/
       - static:/usr/src/imageassistant/imageassistant/config/static/
-    expose:
+    ports:
       - 8084:8084
     networks:
       - imageassistant-network
