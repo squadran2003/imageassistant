@@ -1,0 +1,47 @@
+- name: My first play
+  hosts: webservers
+  tasks:
+   - name: Ping my hosts
+     ansible.builtin.ping:
+
+   - name: Check if the directory exists
+     ansible.builtin.stat:
+        path: /home/ubuntu/app/imageassistant
+     register: git_dir_stat
+
+   - name: Git pull if the repository exists
+     become: yes
+     become_user: root
+     ansible.builtin.git:
+       repo: https://github.com/squadran2003/imageassistant
+       version: main
+       dest: /home/ubuntu/app/imageassistant
+       update: yes
+     when: git_dir_stat.stat.exists
+
+   - name: Git clone if the repository does not exist
+     become: yes
+     become_user: root
+     ansible.builtin.git:
+       repo: https://github.com/squadran2003/imageassistant
+       dest: /home/ubuntu/app/imageassistant
+       version: main
+     when: not git_dir_stat.stat.exists
+   - name: Bring docker containers down
+     become: yes
+     become_user: root
+     ansible.builtin.shell: docker-compose down
+     args:
+      chdir: /home/ubuntu/app/imageassistant
+      -f: docker-compose-prod.yml
+   - name: Bring docker containers up
+     become: yes
+     become_user: root
+     ansible.builtin.shell: docker-compose up -d
+     args:
+      chdir: /home/ubuntu/app/imageassistant
+      -f: docker-compose-prod.yml
+
+   - name: Print message
+     ansible.builtin.debug:
+       msg: "Hello world"
