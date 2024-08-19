@@ -41,7 +41,7 @@
      become_user: root
      ansible.builtin.shell:
        chdir: /home/ubuntu/app/imageassistant
-       cmd: docker-compose -f docker-compose-prod.yaml up --build
+       cmd: docker-compose -f docker-compose-prod.yaml up --build -d
      register: command_result       
 
    - name: Display command output
