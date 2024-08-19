@@ -31,17 +31,19 @@
    - name: Bring docker containers down
      become: yes
      become_user: root     
-     ansible.builtin.shell:     
-       cmd: cd  /home/ubuntu/app/imageassistant docker-compose -f docker-compose-prod.yml down
-       chdir: /home/ubuntu/app/imageassistant       
+     ansible.builtin.shell:  
+       chdir: /home/ubuntu/app/imageassistant
+       cmd: docker-compose -f docker-compose-prod.yaml down
+     register: command_result      
 
    - name: Bring docker containers up
      become: yes
      become_user: root
-     ansible.builtin.shell:   
-       cmd: cd  /home/ubuntu/app/imageassistant docker-compose -f docker-compose-prod.yml up
-       chdir: /home/ubuntu/app/imageassistant       
+     ansible.builtin.shell:
+       chdir: /home/ubuntu/app/imageassistant
+       cmd: docker-compose -f docker-compose-prod.yaml up
+     register: command_result       
 
-   - name: Print message
+   - name: Display command output
      ansible.builtin.debug:
-       msg: "Hello world"
+       var: command_result.stdout
