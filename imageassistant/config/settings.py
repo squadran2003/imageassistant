@@ -133,7 +133,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "assets"),  # Add this if you have a custom static directory
 ]
 
-STATIC_ROOT = BASE_DIR / 'static'
+STATIC_ROOT = 'static/'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
