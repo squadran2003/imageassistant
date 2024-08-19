@@ -27,20 +27,20 @@
        dest: /home/ubuntu/app/imageassistant
        version: main
      when: not git_dir_stat.stat.exists
+
    - name: Bring docker containers down
      become: yes
-     become_user: root
-     ansible.builtin.shell: docker-compose down
-     args:
-      chdir: /home/ubuntu/app/imageassistant
-      -f: docker-compose-prod.yml
+     become_user: root     
+     ansible.builtin.shell:     
+       cmd: cd  /home/ubuntu/app/imageassistant docker-compose -f docker-compose-prod.yml down
+       chdir: /home/ubuntu/app/imageassistant       
+
    - name: Bring docker containers up
      become: yes
      become_user: root
-     ansible.builtin.shell: docker-compose up -d
-     args:
-      chdir: /home/ubuntu/app/imageassistant
-      -f: docker-compose-prod.yml
+     ansible.builtin.shell:   
+       cmd: cd  /home/ubuntu/app/imageassistant docker-compose -f docker-compose-prod.yml up
+       chdir: /home/ubuntu/app/imageassistant       
 
    - name: Print message
      ansible.builtin.debug:
