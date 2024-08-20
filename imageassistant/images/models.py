@@ -11,7 +11,7 @@ def delete_old_image(sender, instance, **kwargs):
     print('deleting old image')
     # to fix , images not getting deleted
     if not settings.DEBUG:
-        boto3.client('s3').delete_object(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key=instance.image.name)
+        boto3.client('s3').delete_object(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key="static/"+instance.image.name)
     else:
         if os.path.isfile(instance.image.path):
             os.remove(instance.image.path)
