@@ -1,8 +1,6 @@
 from .settings import *
 import boto3
 import json
-import os
-
 from botocore.exceptions import ClientError
 
 DEBUG = False
@@ -16,10 +14,10 @@ CSRF_TRUSTED_ORIGINS = [
 
 
 # Static files (CSS, JavaScript, etc.)
-STATICFILES_STORAGE = 'images.storage_backends.StaticStorage'
+STATICFILES_STORAGE = 'config.storage_backends.StaticStorage'
 
 # Media files (user uploads)
-DEFAULT_FILE_STORAGE = 'images.storage_backends.MediaStorage'
+DEFAULT_FILE_STORAGE = 'config.storage_backends.MediaStorage'
 
 
 
