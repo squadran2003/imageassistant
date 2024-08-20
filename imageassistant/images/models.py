@@ -3,6 +3,7 @@ from django.db.models.signals import post_delete
 from django.dispatch import receiver
 from django.conf import settings
 import os
+import boto3
 
 
 @receiver(post_delete, sender='images.Image')
@@ -11,8 +12,7 @@ def delete_old_image(sender, instance, **kwargs):
     print(instance.image.path)
     # to fix , images not getting deleted
     if not settings.DEBUG:
-        if os.path.isfile(instance.image.url):
-            os.remove(instance.image.url)
+        boto3.client('s3').delete_object(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key=instance.image.name)
     else:
         if os.path.isfile(instance.image.path):
             os.remove(instance.image.path)
