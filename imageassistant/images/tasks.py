@@ -26,15 +26,11 @@ def create_greyscale(image_id):
     img_content = ContentFile(img_io.getvalue())
     # dont want a new folder , just want to override the uploaded image
     if not settings.DEBUG:
-       try:
-            s3.put_object(
-                Bucket=settings.AWS_STORAGE_BUCKET_NAME,
-                Key=file.image.name,
-                Body=img_content
-            )
-            print("File uploaded successfully")
-        except Exception as e:
-            print(e)
+        s3.put_object(
+            Bucket=settings.AWS_STORAGE_BUCKET_NAME,
+            Key=file.image.name,
+            Body=img_content
+        )
     else:
         file.image.save(file.image.name, img_content)
     file.processed = True
