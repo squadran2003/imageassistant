@@ -8,8 +8,7 @@ import boto3
 
 @receiver(post_delete, sender='images.Image')
 def delete_old_image(sender, instance, **kwargs):
-    print('deleting old image')
-    print(instance.image.path)
+    print('deleting old image')h)
     # to fix , images not getting deleted
     if not settings.DEBUG:
         boto3.client('s3').delete_object(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key=instance.image.name)
