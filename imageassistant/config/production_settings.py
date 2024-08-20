@@ -69,5 +69,6 @@ AWS_S3_OBJECT_PARAMETERS = {
 }
 AWS_LOCATION = 'static'
 STATIC_URL = "https://{}/{}/".format(AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
-MEDIA_URL = "https://{}/{}/".format(AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
+MEDIA_URL = "https://{}/{}/".format(AWS_S3_CUSTOM_DOMAIN, 'media')
+MEDIA_ROOT = "https://{}/{}/".format(AWS_S3_CUSTOM_DOMAIN, 'media')
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
