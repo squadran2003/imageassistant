@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
+from django.conf import settings
 import os
 
 
@@ -9,8 +10,12 @@ def delete_old_image(sender, instance, **kwargs):
     print('deleting old image')
     print(instance.image.path)
     # to fix , images not getting deleted
-    if os.path.isfile(instance.image.path):
-        os.remove(instance.image.path)
+    if not settings.DEBUG:
+        if os.path.isfile(instance.image.url):
+            os.remove(instance.image.url)
+    else:
+        if os.path.isfile(instance.image.path):
+            os.remove(instance.image.path)
 
 
 class Image(models.Model):
