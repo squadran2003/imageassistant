@@ -5,6 +5,7 @@ from urllib.request import urlopen
 from io import BytesIO
 from django.core.files.base import ContentFile
 import boto3
+from botocore.exceptions import NoCredentialsError, ClientError
 from django.conf import settings
 
 
@@ -12,6 +13,7 @@ from django.conf import settings
 
 @shared_task
 def create_greyscale(image_id):
+    s3 = boto3.client('s3')
     file = Image.objects.get(pk=image_id)
     if not settings.DEBUG:
         img = PILImage.open(urlopen(file.image.url))
@@ -24,7 +26,15 @@ def create_greyscale(image_id):
     img_content = ContentFile(img_io.getvalue())
     # dont want a new folder , just want to override the uploaded image
     if not settings.DEBUG:
-        boto3.client('s3').put_object(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key="static/"+file.image.name, Body=img_content)
+       try:
+            s3.put_object(
+                Bucket=settings.AWS_STORAGE_BUCKET_NAME,
+                Key=file.image.name,
+                Body=img_content
+            )
+            print("File uploaded successfully")
+        except Exception as e:
+            print(e)
     else:
         file.image.save(file.image.name, img_content)
     file.processed = True
