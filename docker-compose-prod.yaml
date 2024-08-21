@@ -49,6 +49,9 @@ services:
     build:
       context: .
       dockerfile: ./celery/Dockerfile
+    environment:
+      # set to your production settings file
+      - DJANGO_SETTINGS_MODULE=config.production_settings
     volumes:
       # change to your base directory
       - ./:/usr/src/imageassistant/
