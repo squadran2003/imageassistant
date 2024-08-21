@@ -54,9 +54,6 @@ def get_service_buttons(request, image_id):
 
 
 def service(request, service_id, image_id):
-    image = Image.objects.get(pk=image_id)
-    image.processed = False
-    image.save()
     if service_id == 1:
         print("Creating greyscale image")
         create_greyscale.delay(image_id)

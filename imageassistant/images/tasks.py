@@ -28,7 +28,7 @@ def create_greyscale(image_id):
     if not settings.DEBUG:
         s3.put_object(
             Bucket=settings.AWS_STORAGE_BUCKET_NAME,
-            Key="media/"+file.image.name,
+            Key=f"media/{image_id}_{file.image.name}",
             Body=img_io.getvalue()
         )
     else:
