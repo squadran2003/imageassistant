@@ -25,6 +25,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', index, name='index'),
     path('images/', include(('images.urls', 'images'), namespace='images')),
+    path('api/v1/', include(('api.urls', 'api'), namespace='api')),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
