@@ -17,7 +17,7 @@ class ImageListUpdate(APIView):
                 {'new_url': 'This field is required.'},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        image.image = new_url
+        image.image.url = new_url
         image.processed = True
         image.save()
         serializer = ImageSerializer(image)
