@@ -80,5 +80,5 @@ def processed_service(request, image_id):
         return HttpResponse(
             f'''
                 <img src="{file.image.url}" alt="Processed Image" class="responsive-img">
-                <a href="{file.image.url}" download="{file.image.url}" class="waves-effect waves-light btn btn-small custom-img-transform-button download-button"><span class="material-icons" style="color:white;margin-top:5px;">download</span>Download</a>
+                <a href="{file.image.url}" download="{file.image.url}" class="waves-effect waves-light btn btn-small custom-img-upload-button download-button"><span class="material-icons" style="color:white;margin-top:5px;">download</span>Download</a>
             ''', content_type='text/html', status=286)

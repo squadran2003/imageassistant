@@ -41,16 +41,16 @@ def create_greyscale(image_id):
 
 @shared_task
 def remove_background(image_id):
-    from rembg import remove
+    # from rembg import remove
     file = Image.objects.get(pk=image_id)
-    if not settings.DEBUG:
-        img = PILImage.open(urlopen(file.image.url))
-    else:
-        img = PILImage.open(file.image.path)
-    img_io = BytesIO()
-    image_bg_removed = remove(img, alpha_matting=True)
-    image_bg_removed.save(img_io, format='png')
-    img_content = ContentFile(img_io.getvalue())
-    file.image.save(file.image.name, img_content)
+    # if not settings.DEBUG:
+    #     img = PILImage.open(urlopen(file.image.url))
+    # else:
+    #     img = PILImage.open(file.image.path)
+    # img_io = BytesIO()
+    # image_bg_removed = remove(img, alpha_matting=True)
+    # image_bg_removed.save(img_io, format='png')
+    # img_content = ContentFile(img_io.getvalue())
+    # file.image.save(file.image.name, img_content)
     file.processed = True
     file.save()
