@@ -11,13 +11,13 @@ class ImageListUpdate(APIView):
 
     def put(self, request, image_id):
         image = self.queryset.get(pk=image_id)
-        new_url = request.data.get('new_url', None)
-        if new_url is None:
+        name = request.data.get('name', None)
+        if name is None:
             return Response(
-                {'new_url': 'This field is required.'},
+                {'name': 'This field is required.'},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        image.image.url = new_url
+        image.image.name = name
         image.processed = True
         image.save()
         serializer = ImageSerializer(image)

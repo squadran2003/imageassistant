@@ -26,15 +26,17 @@ def create_greyscale(image_id):
     img_content = ContentFile(img_io.getvalue())
     # dont want a new folder , just want to override the uploaded image
     if not settings.DEBUG:
+        # in prod saving the image to s3 and later updating the image field via lambda
         s3.put_object(
             Bucket=settings.AWS_STORAGE_BUCKET_NAME,
-            Key=f"media/{settings.IMAGE_PROCESSED_FOLDER_NAME}/{image_id}_{file.image.name}",
+            Key=f"media/{image_id}_{file.image.name}",
             Body=img_io.getvalue()
         )
     else:
+        # in dev using celery to process the image
         file.image.save(file.image.name, img_content)
-    file.processed = True
-    file.save()
+        file.processed = True
+        file.save()
 
 
 @shared_task
