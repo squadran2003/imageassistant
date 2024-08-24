@@ -17,19 +17,19 @@
     margin-top: 5px;
 }
 .custom-img-upload-button, .custom-img-transform-button{
-    background-color: #1849d5; /* Your custom color */
+    background-color: #612785; /* Your custom color */
     margin: 5px,0,0,5px;
     
 }
 .custom-img-upload-button:hover, .custom-img-transform-button:hover {
-    background-color: #5b7cdb; /* Your custom color */
+    background-color: #8a6db3; /* Your custom color */
 }
 .custom-img-transform-button {
-    min-width: 100%;.custom-img-upload-button
+    min-width: 100%;
     
 }
 .custom-img-transform-button:hover {
-    background-color: #5c4ce3; /* Your custom color */
+    background-color: #8a6db3; /* Your custom color */
 }
 
 .carosel-custom-style {

@@ -2,14 +2,14 @@
 @import 'node_modules/materialize-css/sass/components/_color-variables.scss';
 
 // Define your custom colors
-$primary-color: #8250dd !default; // Navy Blue
+$primary-color: #284db7 !default; // Navy Blue
 $primary-color-light: lighten($primary-color, 15%) !default;
 $primary-color-dark: darken($primary-color, 15%) !default;
 
 
 
 // Change secondary color
-$secondary-color: #1849d5;
+$secondary-color: #612785;
 $secondary-color: lighten($secondary-color, 15%) !default;
 $secondary-color: darken($secondary-color, 15%) !default;
 
