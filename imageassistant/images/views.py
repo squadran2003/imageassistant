@@ -47,7 +47,7 @@ def get_service_buttons(request, image_id):
             <a hx-get="/images/service/2/{image_id}"   hx-indicator="#indicator" hx-target="#img-container"  hx-swap="innerHTML" class="waves-effect waves-light btn custom-img-transform-button" ><span class="material-icons" style="color:white;">remove</span>Remove background</a>
         </div>
         <div class="col s12 m12 l12 xl12  custom-margin-top">
-            <a hx-get="/images/service/3/{image_id}"   hx-indicator="#indicator" hx-target="#img-container"  hx-swap="innerHTML" class="waves-effect waves-light btn custom-img-transform-button" ><span class="material-icons" style="color:white;">open_with</span>Resize</a>
+            <a hx-get="/images/service/3/{image_id}"   data-target="resize-modal" hx-indicator="#indicator" hx-target="#img-container"  hx-swap="innerHTML" class="waves-effect waves-light btn custom-img-transform-button" ><span class="material-icons" style="color:white;">open_with</span>Resize</a>
         </div>
     '''
     return HttpResponse(html_content, content_type='text/html')
