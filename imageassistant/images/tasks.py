@@ -1,6 +1,7 @@
 from celery import shared_task
 from images.models import Image
 from PIL import Image as PILImage
+from PIL import ImageOps
 from urllib.request import urlopen
 from io import BytesIO
 from django.core.files.base import ContentFile
@@ -54,3 +55,31 @@ def remove_background(image_id):
     # file.image.save(file.image.name, img_content)
     file.processed = True
     file.save()
+
+
+@shared_task
+def resize_image(image_id, width, height):
+    s3 = boto3.client('s3')
+    # from rembg import remove
+    size = (width, height)
+    file = Image.objects.get(pk=image_id)
+    if not settings.DEBUG:
+        img = PILImage.open(urlopen(file.image.url))
+    else:
+        img = PILImage.open(file.image.path)
+    img_io = BytesIO()
+    img_resized = img.resize(size)
+    img_resized.save(img_io, format='png', quality=100)
+    img_content = ContentFile(img_io.getvalue())
+    if not settings.DEBUG:
+        # in prod saving the image to s3 and later updating the image field via lambda
+        s3.put_object(
+            Bucket=settings.AWS_STORAGE_BUCKET_NAME,
+            Key=f"media/{image_id}_{file.image.name}",
+            Body=img_io.getvalue()
+        )
+    else:
+        # in dev using celery to process the image
+        file.image.save(file.image.name, img_content)
+        file.processed = True
+        file.save()
