@@ -21,7 +21,7 @@ def delete_old_image(sender, instance, **kwargs):
 
 
 class Image(models.Model):
-    image = models.ImageField()
+    image = models.ImageField(max_length=500)
     processed = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
 

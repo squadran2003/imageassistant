@@ -9,6 +9,7 @@ from .tasks import (
     resize_image
 )
 import time
+import uuid
 
 
 # maps to celery task functions
@@ -48,7 +49,7 @@ def get_service_buttons(request, image_id):
             <a hx-get="/images/service/1/{image_id}/" hx-indicator="#indicator" hx-target="#img-container"   hx-swap="innerHTML" class="waves-effect waves-light btn custom-img-transform-button" ><span class="material-icons" style="color:white;">autorenew</span>Convert to Black&White</a>
         </div>
         <div class="col s12 m12 l12 xl12  custom-margin-top">
-            <a hx-get="/images/service/2/{image_id}/"   hx-indicator="#indicator" hx-target="#img-container"  hx-swap="innerHTML" class="waves-effect waves-light btn custom-img-transform-button" ><span class="material-icons" style="color:white;">remove</span>Remove background</a>
+            <a hx-get="/images/service/2/{image_id}/"   hx-indicator="#indicator" hx-target="#img-container"  hx-swap="innerHTML" class="waves-effect waves-light btn custom-img-transform-button" ><span class="material-icons" style="color:white;">lock</span>Remove background</a>
         </div>
         <div class="col s12 m12 l12 xl12  custom-margin-top">
             <a hx-get="/images/modal/resize/3/{image_id}/" hx-swap="innerHTML"    hx-target="#dynamic-modal-content" class="waves-effect waves-light btn custom-img-transform-button" ><span class="material-icons" style="color:white;">open_with</span>Resize</a>
@@ -68,13 +69,24 @@ def service(request, service_id, image_id):
         if request.POST:
             form = ImageResizeForm(request.POST)
             if form.is_valid():
-                print(form.cleaned_data)
                 resize_image.delay(
-                    image_id, form.cleaned_data['width'], 
+                    image_id, form.cleaned_data['width'],
                     form.cleaned_data['height']
                 )
             else:
-                print(form.errors)
+                img = Image.objects.get(pk=image_id)
+                img.processed = True
+                img.save()
+                errors = "<ul style=min-width:'100%'>"
+                for k, v in form.errors.items():
+                    errors += f"<li style='color:red'>{k}: {v}</li>"
+                errors += "</ul>"
+                html_content = f'''
+                        <div class="col s12 m12 lg12">
+                            {errors}
+                        </div>
+                '''
+                return HttpResponse(html_content, content_type='text/html')
     html_content = f'''
             <div class="col s12 m12 center-align">
                 <img class="responsive-img" hx-get="/images/processed/service/{image_id}/" hx-indicator="#indicator" hx-trigger="load delay:1s"  hx-target="#img-container" hx-swap="innerHTML">

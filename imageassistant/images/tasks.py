@@ -35,6 +35,7 @@ def create_greyscale(image_id):
         )
     else:
         # in dev using celery to process the image
+        # overwrite the image with the grayscale image
         file.image.save(file.image.name, img_content)
         file.processed = True
         file.save()

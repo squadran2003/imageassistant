@@ -15,6 +15,8 @@ class ImageForm(forms.ModelForm):
         endwith = image.name.split('.')[-1]
         if endwith not in ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG']:
             raise forms.ValidationError('Image file type is not supported')
+        if len(image.name) > 450:
+            raise forms.ValidationError("Image file name too long")
         return image
 
 
@@ -25,13 +27,15 @@ class ImageResizeForm(forms.Form):
     def clean_width(self):
         width = self.cleaned_data.get('width')
         width = int(width)
-        if width < 0:
+        print(width)
+        if width <= 0:
             raise forms.ValidationError('Width must be greater than 0')
         return width
 
     def clean_height(self):
         height = self.cleaned_data.get('height')
         height = int(height)
-        if height < 0:
+        print(height)
+        if height <= 0:
             raise forms.ValidationError('Height must be greater than 0')
         return height
