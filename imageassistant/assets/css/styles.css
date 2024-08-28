@@ -67,7 +67,7 @@
     height: 100px; /* Size of the spinner */
   }
 .img-container{
-    position:relative;
+    min-width: 100%;
     display: inline-block;
 }
 
@@ -77,6 +77,9 @@
     right: 10px; /* Adjust the spacing from the right edge */
 }
 
+.image-resize-form{
+    min-width: 100%;
+}
 
 /* Small tablets and large phones */
 @media (min-width: 600px) {

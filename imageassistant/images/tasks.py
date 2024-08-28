@@ -8,6 +8,7 @@ from django.core.files.base import ContentFile
 import boto3
 from botocore.exceptions import NoCredentialsError, ClientError
 from django.conf import settings
+import os
 
 
 
@@ -34,8 +35,6 @@ def create_greyscale(image_id):
             Body=img_io.getvalue()
         )
     else:
-        # in dev using celery to process the image
-        # overwrite the image with the grayscale image
         file.image.save(file.image.name, img_content)
         file.processed = True
         file.save()
@@ -60,6 +59,8 @@ def remove_background(image_id):
 
 @shared_task
 def resize_image(image_id, width, height):
+    print("resizing")
+    print(image_id, width, height)
     s3 = boto3.client('s3')
     # from rembg import remove
     size = (width, height)
@@ -68,6 +69,7 @@ def resize_image(image_id, width, height):
         img = PILImage.open(urlopen(file.image.url))
     else:
         img = PILImage.open(file.image.path)
+    print(file.image.name)
     img_io = BytesIO()
     img_resized = img.resize(size)
     img_resized.save(img_io, format='png', quality=100)
@@ -80,7 +82,6 @@ def resize_image(image_id, width, height):
             Body=img_io.getvalue()
         )
     else:
-        # in dev using celery to process the image
         file.image.save(file.image.name, img_content)
         file.processed = True
         file.save()

@@ -63,6 +63,8 @@ def get_service_buttons(request, image_id):
 
 
 def service(request, service_id, image_id):
+    img = Image.objects.get(pk=image_id)
+    img.processed = False
     if service_id == 1:
         print("Creating greyscale image")
         create_greyscale.delay(image_id)
@@ -100,8 +102,16 @@ def processed_service(request, image_id):
     else:
         return HttpResponse(
             f'''
-                <img src="{file.image.url}" alt="Processed Image" class="responsive-img">
-                <a href="{file.image.url}" download="{file.image.url}" class="waves-effect waves-light btn btn-small custom-img-upload-button download-button"><span class="material-icons" style="color:black;margin-top:5px;">download</span>Download</a>
+                <div class="row">
+                    <div class="col s12 m12 l12 xl12">
+                        <a href="{file.image.url}" download="{file.image.url}" class="waves-effect waves-light btn btn-small custom-img-upload-button"><span class="material-icons" style="color:black;margin-top:5px;">download</span>Download</a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s12 m12 l12 xl12">
+                        <img src="{file.image.url}" alt="Processed Image" class="responsive-img">
+                    </div>
+                </div>
             ''', content_type='text/html', status=286)
 
 
@@ -111,16 +121,19 @@ def resize_form_html(request, image_id):
     html_content = f'''
             <form id="image-resize-form" hx-post="/images/validate/resize/form/{image_id}/" hx-target="#img-container"  hx-swap="innerHTML">
                 <input type="hidden" name="csrfmiddlewaretoken" value={token}>
-                <div class="col s12 m12 lg=12">
+                <div class="col s12 m12 lg12">
                     <input id="width" name="width" type="number" class="validate">
-                    <label for="width">Width</label>
+                    <label for="width">Width in pixels</label>
                 </div>
-                <div class="col s12 m12 lg=12">
+                <div class="col s12 m12 lg12">
                     <input id="height" name="height" type="number" class="validate">
-                    <label for="height">Height</label>
+                    <label for="height">Height in pixels</label>
+                </div>
+                 <div class="col s12 m12 lg12" style="margin-top:5px;">
+                    <a  onclick="htmx.trigger('#image-resize-form', 'submit')" class="waves-effect waves-light btn custom-img-transform-button"><span class="material-icons" style="color:white;"></span>Submit</a>
                 </div>
             </form>
-             <a  onclick="htmx.trigger('#image-resize-form', 'submit')" class="waves-effect waves-light btn custom-img-transform-button"><span class="material-icons" style="color:white;"></span>Submit</a>
+             
     '''
     return HttpResponse(html_content, content_type='text/html')
 
@@ -133,11 +146,11 @@ def validate_resize_form(request, image_id):
         html_content = f'''
             <form id="image-resize-form" hx-post="/images/service/3/{image_id}/" hx-indicator="#indicator" hx-trigger="load"  hx-target="#img-container"  hx-swap="innerHTML">
                 <input type="hidden" name="csrfmiddlewaretoken" value={token}>
-                <div class="col s12 m12 lg=12">
+                <div class="col s12 m12 lg12">
                     <input id="width" name="width" type="number" value={form.cleaned_data['width']}>
                     <label for="width">Width</label>
                 </div>
-                <div class="col s12 m12 lg=12">
+                <div class="col s12 m12 lg12">
                     <input id="height" name="height" type="number" value={form.cleaned_data['height']}>
                     <label for="height">Height</label>
                 </div>
@@ -160,8 +173,10 @@ def validate_resize_form(request, image_id):
                     <input id="height" name="height" type="number" class="validate" value={request.POST["height"]}>
                     <label for="height">Height</label>
                 </div>
-            </form>
-             <a  onclick="htmx.trigger('#image-resize-form', 'submit')" class="waves-effect waves-light btn custom-img-transform-button"><span class="material-icons" style="color:white;"></span>Submit</a>
-            {errors}
+                 <div class="col s12 m12 lg12" style="margin-top:5px;">
+                    <a  onclick="htmx.trigger('#image-resize-form', 'submit')" class="waves-effect waves-light btn custom-img-transform-button"><span class="material-icons" style="color:white;"></span>Submit</a>
+                </div>
+                {errors}
+            </form> 
         '''
         return HttpResponse(html_content, content_type='text/html')
