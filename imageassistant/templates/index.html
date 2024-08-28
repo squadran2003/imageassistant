@@ -68,46 +68,10 @@
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col s12 m12 x12 custom-margin-top">
-            <div id="dynamic-modal-content">
-                <div class="modal" id="resize-modal">
-                    <div class="modal-content">
-                        <div class="row">
-                            <div class="col s12 m12 lg=6"></div>
-                            <div class="col s12 m12 lg=6">
-                                <h6>Enter image dimentions below</h6>
-                                <div class="row">
-                                    <div class="col s12 m12 lg=6">
-                                        <input id="width" type="number" class="validate">
-                                        <label for="width">Width</label>
-                                    </div>
-                                    <div class="col s12 m12 lg=6">
-                                        <input id="height" type="number" class="validate">
-                                        <label for="height">Height</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col s12 m12 lg=6"></div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                      <a href="#!" class="modal-close waves-effect waves-light btn custom-img-transform-button">Agree</a>
-                    </div>
-                </div>
-            </div>
-           
-        </div>
 </div>
 <!-- Materialize JavaScript -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 <script src="{% static 'js/htmx.min.js' %}"></script>
-<script>
-    function openModal() {
-        const elem = document.getElementById('resize-modal');
-        const instance = M.Modal.init(elem);
-        instance.open();
-    }
-</script>
+
 </body>
 </html>

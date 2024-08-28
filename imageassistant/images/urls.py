@@ -7,8 +7,9 @@ from images import views
 
 urlpatterns = [
     path('add', views.add_image, name='add'),
+    path('validate/resize/form/<int:image_id>/', views.validate_resize_form, name='validate_resize_form'),
     path('get/<int:image_id>/', views.get_image, name='get_image'),
-    path('modal/resize/<int:service_id>/<int:image_id>/', views.modal_resize_html, name='resize-mondal-html'),
+    path('resize/form/<int:image_id>/', views.resize_form_html, name='resize-form-html'),
     path('processed/service/<int:image_id>/', views.processed_service, name='process_image'),
     path('services/buttons/<int:image_id>/', views.get_service_buttons, name='get_service_buttons'),
     path('service/<int:service_id>/<int:image_id>/', views.service, name='service'),
