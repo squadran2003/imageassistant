@@ -17,19 +17,20 @@
     margin-top: 5px;
 }
 .custom-img-upload-button, .custom-img-transform-button{
-    background-color: #284db7; /* Your custom color */
+    background-color: #ffffff; /* Your custom color */
     margin: 5px,0,0,5px;
+    color:black
     
 }
 .custom-img-upload-button:hover, .custom-img-transform-button:hover {
-    background-color: #3c649f; /* Your custom color */
+    background-color: lightgray; /* Your custom color */
 }
 .custom-img-transform-button {
     min-width: 100%;
     
 }
 .custom-img-transform-button:hover {
-    background-color: 	#3c649f; /* Your custom color */
+    background-color: 	lightgray; /* Your custom color */
 }
 
 .carosel-custom-style {

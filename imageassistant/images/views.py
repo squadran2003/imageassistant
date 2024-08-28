@@ -7,7 +7,7 @@ from images.forms   import ImageForm, ImageResizeForm
 from PIL import Image as PILImage
 from .tasks import (
     create_greyscale, remove_background,
-    resize_image
+    resize_image, create_thumbnail
 )
 import time
 import uuid
@@ -47,13 +47,16 @@ def get_service_buttons(request, image_id):
     """when the image load I need to set the buttons with the correct service and image id so the backend knows what image its processing"""
     html_content = f'''
         <div class="col s12 m12 l12 xl12  custom-margin-top">
-            <a hx-get="/images/service/1/{image_id}/" hx-indicator="#indicator" hx-target="#img-container"   hx-swap="innerHTML" class="waves-effect waves-light btn custom-img-transform-button" ><span class="material-icons" style="color:white;">autorenew</span>Convert to Black&White</a>
+            <a hx-get="/images/service/1/{image_id}/" hx-indicator="#indicator" hx-target="#img-container"   hx-swap="innerHTML" class="waves-effect waves-light btn custom-img-transform-button" ><span class="material-icons" style="color:black;">autorenew</span>Convert to Black&White</a>
         </div>
         <div class="col s12 m12 l12 xl12  custom-margin-top">
-            <a hx-get="/images/service/2/{image_id}/"   hx-indicator="#indicator" hx-target="#img-container"  hx-swap="innerHTML" class="waves-effect waves-light btn custom-img-transform-button" ><span class="material-icons" style="color:white;">lock</span>Remove background</a>
+            <a hx-get="/images/service/2/{image_id}/"   hx-indicator="#indicator" hx-target="#img-container"  hx-swap="innerHTML" class="waves-effect waves-light btn custom-img-transform-button" ><span class="material-icons" style="color:black;">lock</span>Remove background</a>
         </div>
         <div class="col s12 m12 l12 xl12  custom-margin-top">
-            <a hx-get="/images/resize/form/{image_id}/" hx-swap="innerHTML"    hx-target="#img-container"  class="waves-effect waves-light btn custom-img-transform-button" ><span class="material-icons" style="color:white;">open_with</span>Resize</a>
+            <a hx-get="/images/resize/form/{image_id}/" hx-swap="innerHTML"    hx-target="#img-container"  class="waves-effect waves-light btn custom-img-transform-button" ><span class="material-icons" style="color:black;">open_with</span>Resize</a>
+        </div>
+         <div class="col s12 m12 l12 xl12  custom-margin-top">
+            <a  hx-get="/images/service/4/{image_id}/" hx-indicator="#indicator" hx-target="#img-container"  hx-swap="innerHTML" class="waves-effect waves-light btn custom-img-transform-button"><span class="material-icons" style="color:black;">image</span>Create Thumbnail</a>
         </div>
     '''
     return HttpResponse(html_content, content_type='text/html')
@@ -75,6 +78,9 @@ def service(request, service_id, image_id):
                     image_id, form.cleaned_data['width'],
                     form.cleaned_data['height']
                 )
+    elif service_id == 4:
+        print("Creating thumbnail")
+        create_thumbnail.delay(image_id)
     html_content = f'''
             <div class="col s12 m12 center-align">
                 <img class="responsive-img" hx-get="/images/processed/service/{image_id}/" hx-indicator="#indicator" hx-trigger="load delay:1s"  hx-target="#img-container" hx-swap="innerHTML">
@@ -95,7 +101,7 @@ def processed_service(request, image_id):
         return HttpResponse(
             f'''
                 <img src="{file.image.url}" alt="Processed Image" class="responsive-img">
-                <a href="{file.image.url}" download="{file.image.url}" class="waves-effect waves-light btn btn-small custom-img-upload-button download-button"><span class="material-icons" style="color:white;margin-top:5px;">download</span>Download</a>
+                <a href="{file.image.url}" download="{file.image.url}" class="waves-effect waves-light btn btn-small custom-img-upload-button download-button"><span class="material-icons" style="color:black;margin-top:5px;">download</span>Download</a>
             ''', content_type='text/html', status=286)
 
 
