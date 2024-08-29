@@ -96,7 +96,7 @@ def processed_service(request, image_id):
     file = Image.objects.get(pk=image_id)
     if not file.processed:
         html_content = f'''
-            <img class="responsive-img" hx-get="/images/processed/service/{image_id}/" hx-indicator="#indicator2" hx-trigger="load delay:2s"  hx-target="#main-content" hx-swap="innerHTML">
+            <img class="responsive-img" hx-get="/images/processed/service/{image_id}/" hx-indicator="#indicator" hx-trigger="load delay:2s"  hx-target="#main-content" hx-swap="innerHTML">
         '''
         return HttpResponse(html_content, content_type='text/html')
     else:
