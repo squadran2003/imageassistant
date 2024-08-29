@@ -61,13 +61,16 @@
                             <div class="file-field input-field">
                                 <div class="btn custom-img-upload-button pulse">
                                     <span>Upload a file</span>
-                                    <input type="file" name="image" hx-indicator="#indicator" onchange="htmx.trigger('#upload-form', 'submit')">
+                                    <input type="file" name="image" hx-indicator="#indicator-two" onchange="htmx.trigger('#upload-form', 'submit')">
                                 </div>
                                 <div class="file-path-wrapper">
                                     <input class="file-path validate file-path-validate-custom" type="text">
                                 </div>
                             </div>
                         </form>
+                        <div id="indicator-two" class="progress htmx-indicator">
+                            <div class="indeterminate file-path-validate-custom" style="width: 100%"></div>
+                        </div>
                         <div id="img-container" class="img-container">
                         </div>
                     </div>
