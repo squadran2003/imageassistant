@@ -109,7 +109,7 @@ def processed_service(request, image_id):
                 </div>
                 <div class="row">
                     <div class="col s12 m12 l12 xl12">
-                        <img src="{file.image.url}" alt="Processed Image" class="responsive-img" style="width: 100%">
+                        <img src="{file.image.url}" alt="Processed Image" class="responsive-img">
                     </div>
                 </div>
             ''', content_type='text/html', status=286)
