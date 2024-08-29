@@ -85,7 +85,7 @@ def service(request, service_id, image_id):
         create_thumbnail.delay(image_id)
     html_content = f'''
             <div class="col s12 m12 center-align">
-                <img class="responsive-img" hx-get="/images/processed/service/{image_id}/" hx-indicator="#indicator" hx-trigger="load delay:1s"  hx-target="#img-container" hx-swap="innerHTML">
+                <img class="responsive-img" hx-get="/images/processed/service/{image_id}/" hx-indicator="#indicator" hx-trigger="load delay:1s"  hx-target="#main-content" hx-swap="innerHTML">
             </div>
     '''
         # need to return html so the image container can poll for a processed image
@@ -96,7 +96,7 @@ def processed_service(request, image_id):
     file = Image.objects.get(pk=image_id)
     if not file.processed:
         html_content = f'''
-            <img class="responsive-img" hx-get="/images/processed/service/{image_id}/" hx-indicator="#indicator" hx-trigger="load delay:1s"  hx-target="#img-container" hx-swap="innerHTML">
+            <img class="responsive-img" hx-get="/images/processed/service/{image_id}/" hx-indicator="#indicator" hx-trigger="load delay:2s"  hx-target="#main-content" hx-swap="innerHTML">
         '''
         return HttpResponse(html_content, content_type='text/html')
     else:
@@ -109,7 +109,7 @@ def processed_service(request, image_id):
                 </div>
                 <div class="row">
                     <div class="col s12 m12 l12 xl12">
-                        <img src="{file.image.url}" alt="Processed Image" class="responsive-img">
+                        <img src="{file.image.url}" alt="Processed Image" class="responsive-img" style="width: 100%">
                     </div>
                 </div>
             ''', content_type='text/html', status=286)
