@@ -95,24 +95,15 @@ def service(request, service_id, image_id):
 def processed_service(request, image_id):
     file = Image.objects.get(pk=image_id)
     if not file.processed:
-        html_content = f'''
-            <img class="responsive-img" hx-get="/images/processed/service/{image_id}/" hx-indicator="#indicator" hx-trigger="load delay:2s"  hx-target="#main-content" hx-swap="innerHTML">
-        '''
-        return HttpResponse(html_content, content_type='text/html')
+        return render(
+            request, 'images/unprocessed_image.html',
+            {'image_id': image_id}
+        )
     else:
-        return HttpResponse(
-            f'''
-                <div class="row">
-                    <div class="col s12 m12 l12 xl12">
-                        <a href="{file.image.url}" download="{file.image.url}" class="waves-effect waves-light btn btn-small custom-img-upload-button"><span class="material-icons" style="color:black;margin-top:5px;">download</span>Download</a>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col s12 m12 l12 xl12">
-                        <img src="{file.image.url}" alt="Processed Image" class="responsive-img">
-                    </div>
-                </div>
-            ''', content_type='text/html', status=286)
+        return render(
+            request, 'images/processed_image.html',
+            {'file': file}, status=286
+        )
 
 
 def resize_form_html(request, image_id):
