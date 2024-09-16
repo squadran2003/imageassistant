@@ -37,29 +37,16 @@ def add_image(request):
 
 def get_image(request, image_id):
     image = Image.objects.get(pk=image_id)
-    html_content = f'''
-        <img src="{image.image.url}" alt="Processed Image" class="responsive-img" hx-target="#service-buttons" hx-trigger="load" hx-get="/images/services/buttons/{image_id}" hx-swap="innerHTML">
-    '''
-    return HttpResponse(html_content, content_type='text/html')
+    return render(
+        request, 'images/initial_image.html', {'image': image}
+    )
 
 
 def get_service_buttons(request, image_id):
-    """when the image load I need to set the buttons with the correct service and image id so the backend knows what image its processing"""
-    html_content = f'''
-        <div class="col s12 m12 l12 xl12  custom-margin-top">
-            <a hx-get="/images/service/1/{image_id}/" hx-indicator="#indicator" hx-target="#img-container"   hx-swap="innerHTML" class="waves-effect waves-light btn custom-img-transform-button" ><span class="material-icons" style="color:black;">autorenew</span>Convert to Black&White</a>
-        </div>
-        <div class="col s12 m12 l12 xl12  custom-margin-top">
-            <a hx-get="/images/service/2/{image_id}/"   hx-indicator="#indicator" hx-target="#img-container"  hx-swap="innerHTML" class="waves-effect waves-light btn custom-img-transform-button" ><span class="material-icons" style="color:black;">lock</span>Remove background</a>
-        </div>
-        <div class="col s12 m12 l12 xl12  custom-margin-top">
-            <a hx-get="/images/resize/form/{image_id}/" hx-swap="innerHTML"    hx-target="#img-container"  class="waves-effect waves-light btn custom-img-transform-button" ><span class="material-icons" style="color:black;">open_with</span>Resize</a>
-        </div>
-         <div class="col s12 m12 l12 xl12  custom-margin-top">
-            <a  hx-get="/images/service/4/{image_id}/" hx-indicator="#indicator" hx-target="#img-container"  hx-swap="innerHTML" class="waves-effect waves-light btn custom-img-transform-button"><span class="material-icons" style="color:black;">image</span>Create Thumbnail</a>
-        </div>
-    '''
-    return HttpResponse(html_content, content_type='text/html')
+    return render(
+        request, 'images/service_buttons.html',
+        {'image_id': image_id}
+    )
 
 
 def service(request, service_id, image_id):
