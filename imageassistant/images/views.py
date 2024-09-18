@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.middleware import csrf
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
@@ -43,9 +44,33 @@ def get_image(request, image_id):
 
 
 def get_service_buttons(request, image_id):
+    url_context = [
+        {
+            'url': reverse('images:service', args=[1, image_id]),
+            'label': 'Convert to black and white',
+            'icon': 'colorize'
+        },
+        {
+            'url': reverse('images:service', args=[2, image_id]),
+            'label': 'Remove background',
+            'icon': 'lock'
+        },
+        {
+            'url': reverse('images:service', args=[3, image_id]),
+            'label': 'Resize',
+            'icon': 'transform'
+        },
+        {
+            'url': reverse('images:service', args=[4, image_id]),
+            'label': 'Create thumbnail',
+            'icon': 'image'
+        },
+    ]
     return render(
         request, 'images/service_buttons.html',
-        {'image_id': image_id}
+        {
+            'url_context': url_context
+        }
     )
 
 
@@ -72,7 +97,7 @@ def service(request, service_id, image_id):
         create_thumbnail.delay(image_id)
     html_content = f'''
             <div class="col s12 m12 center-align">
-                <img class="responsive-img" hx-get="/images/processed/service/{image_id}/" hx-indicator="#indicator" hx-trigger="load delay:1s"  hx-target="#main-content" hx-swap="innerHTML">
+                <img class="responsive-img" hx-get="/images/processed/service/{image_id}/" hx-indicator="#indicator" hx-trigger="load delay:1s"  hx-target="#img-container" hx-swap="innerHTML">
             </div>
     '''
         # need to return html so the image container can poll for a processed image

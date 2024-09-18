@@ -1,10 +1,14 @@
-from django.shortcuts import render
+from django.shortcuts import render, reverse
 from django.http import HttpResponse  # Import HttpResponse class
 import os
 
 
 def index(request):
-    return render(request, 'index.html')
+    links = [
+        {"url": reverse('index'), "label": "Home"},
+        {"url": "#", "label": "Support"},
+    ]
+    return render(request, 'index.html', {"links": links})
 
 
 def about(request):

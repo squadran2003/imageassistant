@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_components',
     'rest_framework',
     'storages',
     'django_celery_beat',
@@ -62,11 +63,17 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'config.urls'
 
+COMPONENTS = {
+    "dirs": [
+         os.path.join(BASE_DIR, "components"),
+     ],
+}
+
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': ["templates"],
-        'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -74,6 +81,19 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'builtins': [
+                'django_components.templatetags.component_tags',
+            ],
+            'loaders': [(
+               'django.template.loaders.cached.Loader', [
+                  # Default Django loader
+                  'django.template.loaders.filesystem.Loader',
+                  # Inluding this is the same as APP_DIRS=True
+                  'django.template.loaders.app_directories.Loader',
+                  # Components loader
+                  'django_components.template_loader.Loader',
+               ]
+            )],
         },
     },
 ]
@@ -133,7 +153,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "assets"),  # Add this if you have a custom static directory
+    os.path.join(BASE_DIR, "assets"),
 ]
 
 STATIC_ROOT = 'static/'
@@ -173,3 +193,11 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     ]
 }
+
+STATICFILES_FINDERS = [
+    # Default finders
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+    # Django components
+    "django_components.finders.ComponentsFileSystemFinder",
+]

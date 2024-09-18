@@ -14,24 +14,9 @@
 
 /* home page styles */
 .custom-margin-top {
-    margin-top: 5px;
+    margin-top: 10px;
 }
-.custom-img-upload-button, .custom-img-transform-button{
-    background-color: #ffffff; /* Your custom color */
-    margin: 5px,0,0,5px;
-    color:black
-    
-}
-.custom-img-upload-button:hover, .custom-img-transform-button:hover {
-    background-color: lightgray; /* Your custom color */
-}
-.custom-img-transform-button {
-    min-width: 100%;
-    
-}
-.custom-img-transform-button:hover {
-    background-color: 	lightgray; /* Your custom color */
-}
+
 
 .carosel-custom-style {
     background-color: 	#3c649f;
@@ -68,7 +53,9 @@
   }
 .img-container{
     min-width: 100%;
+    min-height: 80vh;
     display: inline-block;
+    background-color: #424549;
 }
 
 .download-button {
@@ -79,6 +66,20 @@
 
 .image-resize-form{
     min-width: 100%;
+}
+
+.custom-img-upload-button, .custom-img-transform-button{
+    background-color: #ffffff; /* Your custom color */
+    margin: 5px,0,0,5px;
+    color:black
+    
+}
+.custom-img-upload-button:hover, .custom-img-transform-button:hover {
+    background-color: lightgray; /* Your custom color */
+}
+
+.custom-img-transform-button:hover {
+    background-color: 	lightgray; /* Your custom color */
 }
 
 /* Small tablets and large phones */
