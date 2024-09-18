@@ -53,9 +53,10 @@
   }
 .img-container{
     min-width: 100%;
-    min-height: 80vh;
+    min-height: 70vh;
     display: inline-block;
-    background-color: #424549;
+    background-color: #efecec;
+    overflow-y: auto;
 }
 
 .download-button {
@@ -68,19 +69,9 @@
     min-width: 100%;
 }
 
-.custom-img-upload-button, .custom-img-transform-button{
-    background-color: #ffffff; /* Your custom color */
-    margin: 5px,0,0,5px;
-    color:black
-    
-}
-.custom-img-upload-button:hover, .custom-img-transform-button:hover {
-    background-color: lightgray; /* Your custom color */
-}
 
-.custom-img-transform-button:hover {
-    background-color: 	lightgray; /* Your custom color */
-}
+
+
 
 /* Small tablets and large phones */
 @media (min-width: 600px) {

@@ -22,14 +22,14 @@
         <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
         <ul class="right hide-on-med-and-down">
             {% for link in links %}
-                {% component "Link" url=link.url label=link.label  %} {% endcomponent %}
+                {% component "link" url=link.url label=link.label  %} {% endcomponent %}
             {% endfor %}
         </ul>
     </div>
 </nav>
 <ul class="sidenav" id="mobile-demo">
     {% for link in links %}
-        {% component "Link" url=link.url label=link.label  %} {% endcomponent %}
+        {% component "link" url=link.url label=link.label  %} {% endcomponent %}
     {% endfor %}
 </ul>
 <div class="container-fluid custom-container">
@@ -45,7 +45,8 @@
                 <form id="upload-form" hx-post="{% url 'images:add' %}" hx-target="#img-container" hx-swap="innerHTML"  enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="file-field input-field">
-                        {% component "UploadButton" label="Upload image" form_target='#upload-form'  %} {% endcomponent %}
+                        {% component_css_dependencies %}
+                        {% component "upload_button" label="Upload image" form_target='#upload-form'  %} {% endcomponent %}
                         <div class="file-path-wrapper">
                             <input class="file-path validate file-path-validate-custom" type="text">
                         </div>

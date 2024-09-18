@@ -1,6 +1,6 @@
 from django_components import Component, register, types
 
-@register("Link")
+@register("link")
 class Link(Component):
 
     template: types.django_html = """

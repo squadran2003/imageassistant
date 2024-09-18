@@ -5,6 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from images.models import Image
 from images.forms   import ImageForm, ImageResizeForm
+from components.buttons.get_button import GetButton
 from PIL import Image as PILImage
 from .tasks import (
     create_greyscale, remove_background,
@@ -66,12 +67,13 @@ def get_service_buttons(request, image_id):
             'icon': 'image'
         },
     ]
-    return render(
-        request, 'images/service_buttons.html',
-        {
-            'url_context': url_context
-        }
-    )
+    html_content = ''
+    for context in url_context:
+        button = GetButton()
+        html_content += button.render(
+            args=[context['url'], context['label'], context['icon']]
+        )
+    return HttpResponse(html_content, content_type='text/html')
 
 
 def service(request, service_id, image_id):
