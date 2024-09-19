@@ -55,8 +55,7 @@
     min-width: 100%;
     min-height: 70vh;
     display: inline-block;
-    background-color: #efecec;
-    overflow-y: auto;
+    overflow-x: auto;
 }
 
 .download-button {

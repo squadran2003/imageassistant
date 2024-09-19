@@ -6,6 +6,7 @@ from django.http import HttpResponse
 from images.models import Image
 from images.forms   import ImageForm, ImageResizeForm
 from components.buttons.get_button import GetButton
+from components.forms.resize_form import ResizeForm
 from PIL import Image as PILImage
 from .tasks import (
     create_greyscale, remove_background,
@@ -57,7 +58,7 @@ def get_service_buttons(request, image_id):
             'icon': 'lock'
         },
         {
-            'url': reverse('images:service', args=[3, image_id]),
+            'url': reverse('images:resize-form-html', args=[image_id]),
             'label': 'Resize',
             'icon': 'transform'
         },
@@ -87,13 +88,22 @@ def service(request, service_id, image_id):
         remove_background.delay(image_id)
     elif service_id == 3:
         if request.POST:
-            print(request.POST)
+            token = csrf.get_token(request)
             form = ImageResizeForm(request.POST)
+            # this is the component that will be rendered
+            resize_form = ResizeForm()
             if form.is_valid():
                 resize_image.delay(
                     image_id, form.cleaned_data['width'],
                     form.cleaned_data['height']
                 )
+            else:
+                errors = form.errors.items()
+                post_url = reverse('images:service', args=[3, image_id])
+                html_content = resize_form.render(
+                    args=[post_url, token, request.POST["width"], request.POST["height"], errors]
+                )
+                return HttpResponse(html_content, content_type='text/html')
     elif service_id == 4:
         print("Creating thumbnail")
         create_thumbnail.delay(image_id)
@@ -123,65 +133,8 @@ def processed_service(request, image_id):
 def resize_form_html(request, image_id):
     """send a form to the client to get the width and height of the image"""
     token = csrf.get_token(request)
-    html_content = f'''
-            <form id="image-resize-form" hx-post="/images/validate/resize/form/{image_id}/" hx-target="#img-container"  hx-swap="innerHTML">
-                <input type="hidden" name="csrfmiddlewaretoken" value={token}>
-                <div class="col s12 m12 lg12">
-                    <input id="width" name="width" type="number" class="validate">
-                    <label for="width">Width in pixels</label>
-                </div>
-                <div class="col s12 m12 lg12">
-                    <input id="height" name="height" type="number" class="validate">
-                    <label for="height">Height in pixels</label>
-                </div>
-                 <div class="col s12 m12 lg12" style="margin-top:5px;">
-                    <a  onclick="htmx.trigger('#image-resize-form', 'submit')" class="waves-effect waves-light btn custom-img-transform-button"><span class="material-icons" style="color:white;"></span>Submit</a>
-                </div>
-            </form>
-             
-    '''
+    post_url = reverse('images:service', args=[3, image_id])
+    resize_form = ResizeForm()
+    html_content = resize_form.render(args=[post_url, token])
     return HttpResponse(html_content, content_type='text/html')
 
-
-def validate_resize_form(request, image_id):
-    """ validate the form and return the form with errors or the form with the values"""
-    token = csrf.get_token(request)
-    form = ImageResizeForm(request.POST)
-    if form.is_valid():
-        html_content = f'''
-            <form id="image-resize-form" hx-post="/images/service/3/{image_id}/" hx-indicator="#indicator" hx-trigger="load"  hx-target="#img-container"  hx-swap="innerHTML">
-                <input type="hidden" name="csrfmiddlewaretoken" value={token}>
-                <div class="col s12 m12 lg12">
-                    <input id="width" name="width" type="number" value={form.cleaned_data['width']}>
-                    <label for="width">Width</label>
-                </div>
-                <div class="col s12 m12 lg12">
-                    <input id="height" name="height" type="number" value={form.cleaned_data['height']}>
-                    <label for="height">Height</label>
-                </div>
-            </form>
-        '''
-        return HttpResponse(html_content, content_type='text/html')
-    else:
-        errors = "<ul>"
-        for k, v in form.errors.items():
-            errors += f"<li style='color:red'>{k}: {v}</li>"
-        errors += "</ul>"
-        html_content = f'''
-            <form id="image-resize-form" hx-post="/images/validate/resize/form/{image_id}/" hx-target="#img-container"  hx-swap="innerHTML">
-                <input type="hidden" name="csrfmiddlewaretoken" value={token}>
-                <div class="col s12 m12 lg=12">
-                    <input id="width" name="width" type="number" class="validate" value={request.POST["width"]}>
-                    <label for="width">Width</label>
-                </div>
-                <div class="col s12 m12 lg=12">
-                    <input id="height" name="height" type="number" class="validate" value={request.POST["height"]}>
-                    <label for="height">Height</label>
-                </div>
-                 <div class="col s12 m12 lg12" style="margin-top:5px;">
-                    <a  onclick="htmx.trigger('#image-resize-form', 'submit')" class="waves-effect waves-light btn custom-img-transform-button"><span class="material-icons" style="color:white;"></span>Submit</a>
-                </div>
-                {errors}
-            </form> 
-        '''
-        return HttpResponse(html_content, content_type='text/html')
