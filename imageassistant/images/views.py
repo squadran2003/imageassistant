@@ -98,10 +98,23 @@ def service(request, service_id, image_id):
                     form.cleaned_data['height']
                 )
             else:
-                errors = form.errors.items()
+
                 post_url = reverse('images:service', args=[3, image_id])
+                data = {
+                        'id': 'image-resize-form',
+                        'hx-post': post_url,
+                        'hx-target': "#img-container",
+                        'hx-swap': "innerHTML",
+                }
                 html_content = resize_form.render(
-                    args=[post_url, token, request.POST["width"], request.POST["height"], errors]
+                    kwargs={
+                        "width": request.POST['width'],
+                        "height": request.POST['height'],
+                        "token": token,
+                        "attrs": data,
+                        "errors": form.errors
+                    }
+
                 )
                 return HttpResponse(html_content, content_type='text/html')
     elif service_id == 4:
@@ -135,6 +148,20 @@ def resize_form_html(request, image_id):
     token = csrf.get_token(request)
     post_url = reverse('images:service', args=[3, image_id])
     resize_form = ResizeForm()
-    html_content = resize_form.render(args=[post_url, token])
+    data = {
+            'id': 'image-resize-form',
+            'hx-post': post_url,
+            'hx-target': "#img-container",
+            'hx-swap': "innerHTML",
+            "token": token
+    }
+    html_content = resize_form.render(
+        kwargs={
+            "width": 0,
+            "height": 0,
+            "token": token,
+            "attrs": data,
+            "errors": []
+        }
+    )
     return HttpResponse(html_content, content_type='text/html')
-
