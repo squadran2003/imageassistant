@@ -7,6 +7,7 @@ from images.models import Image
 from images.forms   import ImageForm, ImageResizeForm
 from components.buttons.get_button import GetButton
 from components.forms.resize_form import ResizeForm
+from components.forms.upload_form import UploadForm
 from PIL import Image as PILImage
 from .tasks import (
     create_greyscale, remove_background,
@@ -32,8 +33,22 @@ def add_image(request):
             img.save()
             return redirect("images:get_image", image_id=img.id)
         else:
-            print(form.errors)
-            return HttpResponse("", content_type='text/html')
+            button = UploadForm()
+            post_url = reverse('images:add_image')
+            attrs = {
+                'id': 'upload-form',
+                'hx-post': post_url,
+                'hx-target': "#img-container",
+                "hx-swap": "innerHTML",
+                "enctype": "multipart/form-data"
+            }
+            html_content = button.render(
+                kwargs={
+                     "attrs": attrs,
+                     "errors": form.errors
+                }
+            )
+            return HttpResponse(html_content, content_type='text/html')
     else:
         return HttpResponse("", content_type='text/html')
 
@@ -153,12 +168,11 @@ def resize_form_html(request, image_id):
             'hx-post': post_url,
             'hx-target': "#img-container",
             'hx-swap': "innerHTML",
-            "token": token
     }
     html_content = resize_form.render(
         kwargs={
-            "width": 0,
-            "height": 0,
+            "width": '',
+            "height": '',
             "token": token,
             "attrs": data,
             "errors": []

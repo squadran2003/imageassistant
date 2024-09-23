@@ -41,17 +41,7 @@
         </div>
         <div class="row">
             <div class="col s12 custom-margin-top">
-                <!-- Right Column Content -->
-                <form id="upload-form" hx-post="{% url 'images:add' %}" hx-target="#img-container" hx-swap="innerHTML"  enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <div class="file-field input-field">
-                        {% component_css_dependencies %}
-                        {% component "upload_button" label="Upload image" form_target='#upload-form'  %} {% endcomponent %}
-                        <div class="file-path-wrapper">
-                            <input class="file-path validate file-path-validate-custom" type="text">
-                        </div>
-                    </div>
-                </form>
+                {% component "upload_form"  attrs:id="upload-form" attrs:hx-post="{% url 'images:add' %}" attrs:hx-target="#img-container" attrs:hx-swap="innerHTML"  attrs:enctype="multipart/form-data" %} {% endcomponent %}
                 <div id="indicator-two" class="progress htmx-indicator">
                     <div class="indeterminate file-path-validate-custom" style="width: 100%"></div>
                 </div>
