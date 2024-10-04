@@ -51,7 +51,6 @@ def remove_background(image_id):
     if not settings.DEBUG:
         img = PILImage.open(urlopen(file.image.url))
         img.save(img_io, format='png')
-        img_content = ContentFile(img_io.getvalue())
     else:
         from rembg import remove, new_session
         s3 = boto3.client('s3')
@@ -70,8 +69,8 @@ def remove_background(image_id):
         )
     else:
         file.image.save(file.image.name, img_content)
-    file.processed = True
-    file.save()
+        file.processed = True
+        file.save()
 
 
 @shared_task
