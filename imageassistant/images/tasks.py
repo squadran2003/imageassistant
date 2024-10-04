@@ -44,31 +44,32 @@ def create_greyscale(image_id):
 
 @shared_task
 def remove_background(image_id):
-    # from rembg import remove, new_session
-    # s3 = boto3.client('s3')
     file = Image.objects.get(pk=image_id)
+    img_io = BytesIO()
+    file_name_for_s3 = f"3*{image_id}_{file.image.name}"
     # filename should be service_id*image_id
-    # if not settings.DEBUG:
-    #     img = PILImage.open(urlopen(file.image.url))
-    # else:
-    #     img = PILImage.open(file.image.path)
-    # img_io = BytesIO()
-    # session = new_session("u2net_human_seg")
-    # image_bg_removed = remove(
-    #     img, session=session, alpha_matting=True, 
-    #     alpha_matting_foreground_threshold=240
-    # )
-    # image_bg_removed.save(img_io, format='png')
-    # img_content = ContentFile(img_io.getvalue())
-    # if not settings.DEBUG:
-    #     # in prod saving the image to s3 and later updating the image field via lambda
-    #     s3.put_object(
-    #         Bucket=settings.AWS_STORAGE_BUCKET_NAME,
-    #         Key=f"media/{image_id}_{file.image.name}",
-    #         Body=img_io.getvalue()
-    #     )
-    # else:
-    #     file.image.save(file.image.name, img_content)
+    if not settings.DEBUG:
+        img = PILImage.open(urlopen(file.image.url))
+        img.save(img_io, format='png')
+        img_content = ContentFile(img_io.getvalue())
+    else:
+        from rembg import remove, new_session
+        s3 = boto3.client('s3')
+        img = PILImage.open(file.image.path)
+        image_bg_removed = remove(
+            img
+        )
+        image_bg_removed.save(img_io, format='png')
+        img_content = ContentFile(img_io.getvalue())
+    if not settings.DEBUG:
+        # in prod saving the image to s3 and later updating the image field via lambda
+        s3.put_object(
+            Bucket=settings.AWS_STORAGE_BUCKET_NAME,
+            Key=f"media/{file_name_for_s3}",
+            Body=img_io.getvalue()
+        )
+    else:
+        file.image.save(file.image.name, img_content)
     file.processed = True
     file.save()
 

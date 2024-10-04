@@ -12,11 +12,14 @@ class ImageListUpdate(APIView):
     def put(self, request, image_id):
         image = self.queryset.get(pk=image_id)
         name = request.data.get('name', None)
+        url = request.data.get('url', None)
         if name is None:
             return Response(
                 {'name': 'This field is required.'},
                 status=status.HTTP_400_BAD_REQUEST
             )
+        if url:
+            image.image.url = url
         image.image.name = name
         image.processed = True
         image.save()
