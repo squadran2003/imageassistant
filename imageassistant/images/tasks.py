@@ -51,6 +51,7 @@ def remove_background(image_id):
     if not settings.DEBUG:
         img = PILImage.open(urlopen(file.image.url))
         img.save(img_io, format='png')
+        img_io.seek(0)  # Important!
     else:
         from rembg import remove, new_session
         img = PILImage.open(file.image.path)
@@ -65,7 +66,8 @@ def remove_background(image_id):
         s3.put_object(
             Bucket=settings.AWS_STORAGE_BUCKET_NAME,
             Key=f"media/{file_name_for_s3}",
-            body=img_io.getvalue()
+            Body=img_io.getvalue(),  # Uploading the image bytes
+            ContentType='image/png'  # Set content type
         )
     else:
         file.image.save(file_name_for_s3, img_content)
