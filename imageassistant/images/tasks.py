@@ -53,7 +53,6 @@ def remove_background(image_id):
         img.save(img_io, format='png')
     else:
         from rembg import remove, new_session
-        s3 = boto3.client('s3')
         img = PILImage.open(file.image.path)
         image_bg_removed = remove(
             img
@@ -61,14 +60,15 @@ def remove_background(image_id):
         image_bg_removed.save(img_io, format='png')
         img_content = ContentFile(img_io.getvalue())
     if not settings.DEBUG:
+        s3 = boto3.client('s3')
         # in prod saving the image to s3 and later updating the image field via lambda
         s3.put_object(
             Bucket=settings.AWS_STORAGE_BUCKET_NAME,
             Key=f"media/{file_name_for_s3}",
-            Body=img_io.getvalue()
+            body=img_io.getvalue()
         )
     else:
-        file.image.save(file.image.name, img_content)
+        file.image.save(file_name_for_s3, img_content)
         file.processed = True
         file.save()
 
