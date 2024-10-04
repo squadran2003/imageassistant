@@ -46,7 +46,7 @@ def create_greyscale(image_id):
 def remove_background(image_id):
     file = Image.objects.get(pk=image_id)
     img_io = BytesIO()
-    file_name_for_s3 = f"3*{image_id}_{file.image.name}"
+    file_name_for_s3 = f"2*{image_id}_{file.image.name}"
     # filename should be service_id*image_id
     if not settings.DEBUG:
         img = PILImage.open(urlopen(file.image.url))
