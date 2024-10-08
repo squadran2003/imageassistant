@@ -38,7 +38,7 @@ def create_greyscale(image_id):
         )
     else:
         file.image.save(file.image.name, img_content)
-        # file.processed = True
+        file.processed = True
         file.save()
 
 
