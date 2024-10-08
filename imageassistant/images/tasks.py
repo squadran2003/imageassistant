@@ -38,7 +38,7 @@ def create_greyscale(image_id):
         )
     else:
         file.image.save(file.image.name, img_content)
-        file.processed = True
+        # file.processed = True
         file.save()
 
 
@@ -59,7 +59,7 @@ def remove_background(image_id):
             img
         )
         image_bg_removed.save(img_io, format='png')
-        img_content = ContentFile(img_io.getvalue())
+    img_content = ContentFile(img_io.getvalue())
     if not settings.DEBUG:
         s3 = boto3.client('s3')
         # in prod saving the image to s3 and later updating the image field via lambda
@@ -69,10 +69,9 @@ def remove_background(image_id):
             Body=img_io.getvalue(),  # Uploading the image bytes
             ContentType='image/png'  # Set content type
         )
-    else:
-        file.image.save(file_name_for_s3, img_content)
-        file.processed = True
-        file.save()
+    file.image.save(file_name_for_s3, img_content)
+    file.processed = True
+    file.save()
 
 
 @shared_task

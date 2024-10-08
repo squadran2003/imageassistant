@@ -18,9 +18,10 @@ class ImageListUpdate(APIView):
                 {'name': 'This field is required.'},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        if url:
-            image.image.url = url
         image.image.name = name
+        # since background removal process writes to another bucket, we need to update the alternate_url
+        if url is not None:
+            image.alternate_url = url
         image.processed = True
         image.save()
         serializer = ImageSerializer(image)

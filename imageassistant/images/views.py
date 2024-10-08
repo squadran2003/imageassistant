@@ -140,7 +140,6 @@ def service(request, service_id, image_id):
                 <img class="responsive-img" hx-get="/images/processed/service/{image_id}/" hx-indicator="#indicator" hx-trigger="load delay:1s"  hx-target="#img-container" hx-swap="innerHTML">
             </div>
     '''
-        # need to return html so the image container can poll for a processed image
     return HttpResponse(html_content, content_type='text/html')
 
 

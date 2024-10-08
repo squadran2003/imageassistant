@@ -1,11 +1,20 @@
 <div class="row">
     <div class="col s12 m12 l12 xl12">
-        <a href="{{ file.image.url }}" download="{{ file.image.url }}" class="waves-effect waves-light btn btn-small custom-img-upload-button"><span class="material-icons" style="color:white;margin-top:5px;">download</span>Download</a>
+        {% if file.alternate_url %}
+            <a href="{{ file.alternate_url }}" download="{{ file.alternate_url }}" class="waves-effect waves-light btn btn-small custom-img-upload-button"><span class="material-icons" style="color:white;margin-top:5px;">download</span>Download</a>
+        {% else %}
+            <a href="{{ file.image.url }}" download="{{ file.image.url }}" class="waves-effect waves-light btn btn-small custom-img-upload-button"><span class="material-icons" style="color:white;margin-top:5px;">download</span>Download</a>
+        {% endif %}
+        
     </div>
 </div>
 <div class="row">
     <div class="col s12 m12 l12 xl12">
-        <img src="{{ file.image.url }}" alt="Processed Image" class="responsive-img">
+        {% if file.alternate_url %}
+            <img src="{{ file.alternate_url }}" alt="Processed Image" class="responsive-img">
+        {% else %}
+            <img src="{{ file.image.url }}" alt="Processed Image" class="responsive">
+        {% endif %}
     </div>
 </div>
 
