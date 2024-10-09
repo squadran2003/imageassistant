@@ -33,7 +33,7 @@ def create_greyscale(image_id):
         # in prod saving the image to s3 and later updating the image field via lambda
         s3.put_object(
             Bucket=settings.AWS_STORAGE_BUCKET_NAME,
-            Key=f"media/{image_id}_{file.image.name}",
+            Key=f"media/celery/{image_id}_{file.image.name}",
             Body=img_io.getvalue()
         )
     else:
@@ -65,7 +65,7 @@ def remove_background(image_id):
         # in prod saving the image to s3 and later updating the image field via lambda
         s3.put_object(
             Bucket=settings.AWS_STORAGE_BUCKET_NAME,
-            Key=f"media/{file_name_for_s3}",
+            Key=f"media/celery/{file_name_for_s3}",
             Body=img_io.getvalue(),  # Uploading the image bytes
             ContentType='image/png'  # Set content type
         )
@@ -96,7 +96,7 @@ def resize_image(image_id, width, height):
         # in prod saving the image to s3 and later updating the image field via lambda
         s3.put_object(
             Bucket=settings.AWS_STORAGE_BUCKET_NAME,
-            Key=f"media/{image_id}_{file.image.name}",
+            Key=f"media/celery/{image_id}_{file.image.name}",
             Body=img_io.getvalue()
         )
     else:
@@ -121,7 +121,7 @@ def create_thumbnail(image_id):
         # in prod saving the image to s3 and later updating the image field via lambda
         s3.put_object(
             Bucket=settings.AWS_STORAGE_BUCKET_NAME,
-            Key=f"media/{image_id}_{file.image.name}",
+            Key=f"media/celery/{image_id}_{file.image.name}",
             Body=img_io.getvalue()
         )
     else:
