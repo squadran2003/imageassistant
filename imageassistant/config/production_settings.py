@@ -5,11 +5,10 @@ from botocore.exceptions import ClientError
 
 DEBUG = False
 
-ALLOWED_HOSTS = ["ec2-35-170-186-217.compute-1.amazonaws.com"]
+ALLOWED_HOSTS = ["imageassistant.io"]
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://botifyapp.com',
-    'https://ec2-100-26-170-136.compute-1.amazonaws.com',
+    'https://imageassistant.io',
 ]
 
 
