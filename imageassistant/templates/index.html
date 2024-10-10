@@ -41,9 +41,11 @@
         </div>
         <div class="row">
             <div class="col s12 custom-margin-top">
-                {% component "upload_form"  attrs:id="upload-form" attrs:hx-post="{% url 'images:add' %}" attrs:hx-target="#img-container" attrs:hx-swap="innerHTML"  attrs:enctype="multipart/form-data" %} {% endcomponent %}
+                <div id="upload-form-container">
+                    {% component "upload_form"  attrs:id="upload-form" attrs:hx-post="{% url 'images:add' %}" attrs:hx-target="#img-container" attrs:hx-swap="innerHTML"  attrs:enctype="multipart/form-data" %} {% endcomponent %}
+                </div>
                 <div id="indicator-two" class="progress htmx-indicator">
-                    <div class="indeterminate file-path-validate-custom" style="width: 100%"></div>
+                <div class="indeterminate file-path-validate-custom" style="width: 100%"></div>
                 </div>
                 <div class="progress htmx-indicator" id="indicator">
                     <div class="indeterminate"></div>

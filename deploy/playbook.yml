@@ -6,7 +6,7 @@
 
    - name: Check if the directory exists
      ansible.builtin.stat:
-        path: /home/ubuntu/app/imageassistant
+        path: /home/ubuntu/imageassistant
      register: git_dir_stat
 
    - name: Git pull if the repository exists
@@ -15,7 +15,7 @@
      ansible.builtin.git:
        repo: https://github.com/squadran2003/imageassistant
        version: main
-       dest: /home/ubuntu/app/imageassistant
+       dest: /home/ubuntu/imageassistant
        update: yes
      when: git_dir_stat.stat.exists
 
@@ -24,7 +24,7 @@
      become_user: root
      ansible.builtin.git:
        repo: https://github.com/squadran2003/imageassistant
-       dest: /home/ubuntu/app/imageassistant
+       dest: /home/ubuntu/imageassistant
        version: main
      when: not git_dir_stat.stat.exists
 
@@ -32,7 +32,7 @@
      become: yes
      become_user: root     
      ansible.builtin.shell:  
-       chdir: /home/ubuntu/app/imageassistant
+       chdir: /home/ubuntu/imageassistant
        cmd: docker-compose -f docker-compose-prod.yaml down
      register: command_result      
 
@@ -40,7 +40,7 @@
      become: yes
      become_user: root
      ansible.builtin.shell:
-       chdir: /home/ubuntu/app/imageassistant
+       chdir: /home/ubuntu/imageassistant
        cmd: docker-compose -f docker-compose-prod.yaml up --build -d
      register: command_result       
 

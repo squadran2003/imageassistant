@@ -178,3 +178,22 @@ def resize_form_html(request, image_id):
         }
     )
     return HttpResponse(html_content, content_type='text/html')
+
+
+def get_upload_form(request):
+    button = UploadForm()
+    post_url = reverse('images:add')
+    attrs = {
+        'id': 'upload-form',
+        'hx-post': post_url,
+        'hx-target': "#img-container",
+        "hx-swap": "innerHTML",
+        "enctype": "multipart/form-data"
+    }
+    html_content = button.render(
+        kwargs={
+             "attrs": attrs,
+             "errors": []
+        }
+    )
+    return HttpResponse(html_content, content_type='text/html')
