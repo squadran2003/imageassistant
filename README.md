@@ -74,7 +74,7 @@ To run this application, you only need to have **Docker** and **Docker Compose**
 
 ## Usage
 
-1. Navigate to `http://localhost:8000` in your web browser.
+1. Navigate to `http://localhost:8084` in your web browser.
 2. On the homepage, you'll find an **Upload Image** button.
 3. Upload an image and select from the available processing options like:
    - **Remove Background**: Triggers the background removal function.
