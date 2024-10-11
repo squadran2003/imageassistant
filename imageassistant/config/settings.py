@@ -201,3 +201,4 @@ STATICFILES_FINDERS = [
     # Django components
     "django_components.finders.ComponentsFileSystemFinder",
 ]
+STATICFILES_STORAGE = "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"
