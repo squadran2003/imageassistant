@@ -53,11 +53,13 @@
   }
 .img-container{
     min-width: 100%;
-    min-height: 70vh;
+    min-height: calc(100vh - 308px);
     display: inline-block;
     background-image: url('../img/moroccan-flower.png');
     background-size: cover;
     background-repeat: no-repeat;
+    overflow-y: auto;
+    overflow-x: auto;
 }
 
 .download-button {
