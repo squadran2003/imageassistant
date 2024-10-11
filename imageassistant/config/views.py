@@ -6,7 +6,7 @@ import os
 def index(request):
     links = [
         {"url": reverse('index'), "label": "Home"},
-        {"url": "#", "label": "Support"},
+        {"url": "#", "label": "Pricing"},
     ]
     return render(request, 'index.html', {"links": links})
 
