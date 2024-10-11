@@ -130,3 +130,7 @@ def create_thumbnail(image_id):
         file.processed = True
         file.save()
 
+
+
+
+

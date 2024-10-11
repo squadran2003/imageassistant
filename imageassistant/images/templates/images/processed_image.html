@@ -11,9 +11,9 @@
 <div class="row">
     <div class="col s12 m12 l12 xl12">
         {% if file.alternate_url %}
-            <img src="{{ file.alternate_url }}" alt="Processed Image" class="responsive-img" hx-get="{% url 'images:get_upload_form' %}" hx-trigger="load"  hx-target="#upload-form-container" hx-swap="innerHTML">
+            <img src="{{ file.alternate_url }}" alt="Processed Image" class="responsive-img" >
         {% else %}
-            <img src="{{ file.image.url }}" alt="Processed Image" class="responsive" hx-get="{% url 'images:get_upload_form' %}" hx-trigger="load"  hx-target="#upload-form-container" hx-swap="innerHTML">
+            <img src="{{ file.image.url }}" alt="Processed Image" class="responsive" >
         {% endif %}
     </div>
 </div>

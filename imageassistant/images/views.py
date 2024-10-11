@@ -11,7 +11,7 @@ from components.forms.upload_form import UploadForm
 from PIL import Image as PILImage
 from .tasks import (
     create_greyscale, remove_background,
-    resize_image, create_thumbnail
+    resize_image, 
 )
 import time
 import uuid
@@ -61,6 +61,9 @@ def get_image(request, image_id):
 
 
 def get_service_buttons(request, image_id):
+    # for a removebackground service. If logged in then function as normal
+    # else present with a stripe form
+    # when stripe says payemnt is successful, then process background removal
     url_context = [
         {
             'url': reverse('images:service', args=[1, image_id]),
@@ -81,7 +84,7 @@ def get_service_buttons(request, image_id):
             'url': reverse('images:service', args=[4, image_id]),
             'label': 'Create thumbnail',
             'icon': 'image'
-        },
+        }
     ]
     html_content = ''
     for context in url_context:
@@ -95,6 +98,7 @@ def get_service_buttons(request, image_id):
 def service(request, service_id, image_id):
     img = Image.objects.get(pk=image_id)
     img.processed = False
+    img.save()
     if service_id == 1:
         print("Creating greyscale image")
         create_greyscale.delay(image_id)
@@ -181,8 +185,9 @@ def resize_form_html(request, image_id):
 
 
 def get_upload_form(request):
-    button = UploadForm()
+    form = UploadForm()
     post_url = reverse('images:add')
+    token = csrf.get_token(request)
     attrs = {
         'id': 'upload-form',
         'hx-post': post_url,
@@ -190,10 +195,11 @@ def get_upload_form(request):
         "hx-swap": "innerHTML",
         "enctype": "multipart/form-data"
     }
-    html_content = button.render(
+    html_content = form.render(
+        args=[token],
         kwargs={
-             "attrs": attrs,
-             "errors": []
+            "attrs": attrs,
+            "errors": []
         }
     )
     return HttpResponse(html_content, content_type='text/html')
