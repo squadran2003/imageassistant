@@ -14,7 +14,7 @@ class CheckoutContent(Component):
                         <p>Quantity: 1<br>
                             Cost: $1.00</p>
                         </p>
-                         <form action="/create-checkout-session" method="POST">
+                         <form action="{{ check_out_url }}" method="POST">
                             <input type="hidden" name="csrfmiddlewaretoken" value="{{token}}">
                             <input type="hidden" name="service_id" value="{{service_id}}">
                             <input type="hidden" name="image_id" value="{{image_id}}">
@@ -28,9 +28,10 @@ class CheckoutContent(Component):
     """
 
 
-    def get_context_data(self, service_id, image_id, token, **kwargs):
+    def get_context_data(self, service_id, image_id, token, check_out_url, **kwargs):
         return {
             "service_id": service_id,
             "image_id": image_id,
             "token": token,
+            "check_out_url": check_out_url
         }

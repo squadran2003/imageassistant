@@ -202,3 +202,5 @@ STATICFILES_FINDERS = [
     "django_components.finders.ComponentsFileSystemFinder",
 ]
 STATICFILES_STORAGE = "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"
+
+STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY', os.environ.get('STRIPE_SECRET_KEY'))

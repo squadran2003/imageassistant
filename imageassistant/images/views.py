@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.middleware import csrf
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
+from django.conf import settings
 from images.models import Image
 from images.forms   import ImageForm, ImageResizeForm
 from components.buttons.get_button import GetButton
@@ -14,6 +15,7 @@ from .tasks import (
     create_greyscale, remove_background,
     resize_image, create_thumbnail
 )
+import stripe
 import time
 import uuid
 
@@ -213,15 +215,17 @@ def get_upload_form(request):
 def get_checkout_content(request, service_id, image_id):
     token = csrf.get_token(request)
     checkout_content = CheckoutContent()
+    check_out_url = reverse('images:create_checkout_session', args=[service_id, image_id])
     html_content = checkout_content.render(
-        args=[service_id, image_id, token]
+        args=[service_id, image_id, token, check_out_url]
     )
     return HttpResponse(html_content, content_type='text/html')
 
 
-
-
-
+def create_checkout_session(request, service_id, image_id):
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+    print("Creating checkout session")
+    print(settings.STRIPE_SECRET_KEY)
 # #! /usr/bin/env python3.6
 
 # """
