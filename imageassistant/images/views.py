@@ -8,10 +8,11 @@ from images.forms   import ImageForm, ImageResizeForm
 from components.buttons.get_button import GetButton
 from components.forms.resize_form import ResizeForm
 from components.forms.upload_form import UploadForm
+from components.stripe.checkout import CheckoutContent
 from PIL import Image as PILImage
 from .tasks import (
     create_greyscale, remove_background,
-    resize_image, 
+    resize_image, create_thumbnail
 )
 import time
 import uuid
@@ -68,29 +69,33 @@ def get_service_buttons(request, image_id):
         {
             'url': reverse('images:service', args=[1, image_id]),
             'label': 'Convert to black and white',
-            'icon': 'colorize'
+            'icon': 'colorize',
+            'target': '#img-container'
         },
         {
-            'url': reverse('images:service', args=[2, image_id]),
+            'url': reverse('images:checkout', args=[2, image_id]),
             'label': 'Remove background',
-            'icon': 'lock'
+            'icon': 'lock',
+            'target': '#img-container'
         },
         {
             'url': reverse('images:resize-form-html', args=[image_id]),
             'label': 'Resize',
-            'icon': 'transform'
+            'icon': 'transform',
+            'target': '#img-container'
         },
         {
             'url': reverse('images:service', args=[4, image_id]),
             'label': 'Create thumbnail',
-            'icon': 'image'
+            'icon': 'image',
+            'target': '#img-container'
         }
     ]
     html_content = ''
     for context in url_context:
         button = GetButton()
         html_content += button.render(
-            args=[context['url'], context['label'], context['icon']]
+            args=[context['url'], context['label'], context['icon'], context['target']]
         )
     return HttpResponse(html_content, content_type='text/html')
 
@@ -203,3 +208,60 @@ def get_upload_form(request):
         }
     )
     return HttpResponse(html_content, content_type='text/html')
+
+
+def get_checkout_content(request, service_id, image_id):
+    token = csrf.get_token(request)
+    checkout_content = CheckoutContent()
+    html_content = checkout_content.render(
+        args=[service_id, image_id, token]
+    )
+    return HttpResponse(html_content, content_type='text/html')
+
+
+
+
+
+# #! /usr/bin/env python3.6
+
+# """
+# server.py
+# Stripe Sample.
+# Python 3.6 or newer required.
+# """
+# import os
+# from flask import Flask, redirect, request
+
+# import stripe
+# # This is your test secret API key.
+# stripe.api_key = 'sk_test_51L59InJOjahOu8sg2jbWt9s9MXiY0a9hXP0RZiFuSMSX44dvMBoO3kFWk4YgMsNoSeplRXjjGQpJpruBT6wgwMQw0081Xk6Pcc'
+
+# app = Flask(__name__,
+#             static_url_path='',
+#             static_folder='public')
+
+# YOUR_DOMAIN = 'http://localhost:4242'
+
+# @app.route('/create-checkout-session', methods=['POST'])
+# def create_checkout_session():
+#     try:
+#         checkout_session = stripe.checkout.Session.create(
+#             line_items=[
+#                 {
+#                     # Provide the exact Price ID (for example, pr_1234) of the product you want to sell
+#                     'price': '{{PRICE_ID}}',
+#                     'quantity': 1,
+#                 },
+#             ],
+#             mode='payment',
+#             success_url=YOUR_DOMAIN + '/success.html',
+#             cancel_url=YOUR_DOMAIN + '/cancel.html',
+#             automatic_tax={'enabled': True},
+#         )
+#     except Exception as e:
+#         return str(e)
+
+#     return redirect(checkout_session.url, code=303)
+
+# if __name__ == '__main__':
+#     app.run(port=4242)
