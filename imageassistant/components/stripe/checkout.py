@@ -19,7 +19,7 @@ class CheckoutContent(Component):
         """
     js: types.js = """
         (function(){
-                const stripe = Stripe("pk_test_51Q99SfJfXU0eN0TRNZrQeZvpOACUdVjGR7RaMISSaML0I1cHhrTKEX1eTl1B47xPnlFS23fLsXCpBCzWdozwKmMv00pkyGng9A");
+                const stripe = Stripe("pk_live_51Q99SfJfXU0eN0TRclOfyyEQcv1oQQW6GsvIcUFPPte5MXmONJmke9yruSszrtDkUhnmZ3fv6llqY2TBX08Q5DQf00atEnBI6p");
                 const token = document.querySelector("#csrfmiddlewaretoken").value;
                 const service_id = document.querySelector("#service_id").value;
                 const image_id = document.querySelector("#image_id").value;
