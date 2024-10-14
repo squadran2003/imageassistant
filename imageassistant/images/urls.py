@@ -15,4 +15,5 @@ urlpatterns = [
     path('service/<int:service_id>/<int:image_id>/', views.service, name='service'),
     path('checkout/<int:service_id>/<int:image_id>/', views.get_checkout_content, name='checkout'),
     path('create/checkout/session/<int:service_id>/<int:image_id>/', views.create_checkout_session, name='create_checkout_session'),
+    path('check/checkout/status/', views.session_status, name='stripe_session_status'),
 ]

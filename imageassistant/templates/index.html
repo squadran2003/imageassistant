@@ -1,90 +1,23 @@
-{% load static %}
-{% load component_tags %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image assistant</title>
-    <!-- Materialize CSS -->
-    <link href="{% static 'css/custom-materialize.css' %}" rel="stylesheet">
-    <link href="{% static 'css/styles.css' %}" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-</head>
-<body>
-
-<nav>
-    <div class="nav-wrapper">
-        <a href="/" class="brand-logo center">
-            <img class="logo-img" src="{% static 'img/logo.png' %}">
-            <span class="logo-text">Image Assistant</span>
-        </a>
-        <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
-        <ul class="left hide-on-med-and-down">
-            {% for link in links %}
-                {% component "link" url=link.url label=link.label  %} {% endcomponent %}
-            {% endfor %}
-        </ul>
-        <form class="hide-on-med-and-down">
-            <div class="input-field right">
-              <input id="search" type="search" required placeholder="search for services">
-              <label class="label-icon" for="search"><i class="material-icons">search</i></label>
-              <i class="material-icons">close</i>
-            </div>
-        </form>
+{% extends 'base.html' %}
+{% block content %}
+<div class="row">
+    <div class="col s12 m12 lg12 x12 custom-margin-top">
+        <div id="service-buttons">
+        </div>
     </div>
-</nav>
-<div class="sidenav" id="mobile-demo">
-    <ul>
-        {% for link in links %}
-            {% component "link" url=link.url label=link.label  %} {% endcomponent %}
-        {% endfor %}
-    </ul>
-    <form>
-        <div class="input-field left">
-            <input id="search" type="search" required placeholder="search for services">
-            <label class="left label-icon" for="search"><i class="material-icons">search</i></label>
-            <i class="left material-icons">close</i>
-        </div>
-    </form>
 </div>
-<div class="container-fluid custom-container">
-        <div class="row">
-            <div class="col s12 m12 lg12 x12 custom-margin-top">
-                <div id="service-buttons">
-                </div>
-            </div>
+<div class="row">
+    <div class="col s12 custom-margin-top">
+        <div id="upload-form-container">
+            {% component "upload_form"  token="{{ csrf_token }}" attrs:id="upload-form" attrs:hx-post="{% url 'images:add' %}" attrs:hx-target="#img-container" attrs:hx-swap="innerHTML"  attrs:enctype="multipart/form-data" %} {% endcomponent %}
         </div>
-        <div class="row">
-            <div class="col s12 custom-margin-top">
-                <div id="upload-form-container">
-                    {% component "upload_form"  token="{{ csrf_token }}" attrs:id="upload-form" attrs:hx-post="{% url 'images:add' %}" attrs:hx-target="#img-container" attrs:hx-swap="innerHTML"  attrs:enctype="multipart/form-data" %} {% endcomponent %}
-                </div>
-                <div class="indeterminate file-path-validate-custom" style="width: 100%"></div>
-                </div>
-                <div class="progress htmx-indicator" id="indicator">
-                    <div class="indeterminate"></div>
-                </div>
-                <div id="img-container" class="img-container">
-                </div>
-            </div>
+        <div class="indeterminate file-path-validate-custom" style="width: 100%"></div>
         </div>
-</div>
-<footer class="page-footer">
-    <div class="footer-copyright center">
-      <div class="container">
-      © 2014 imageassistant
-      </div>
+        <div class="progress htmx-indicator" id="indicator">
+            <div class="indeterminate"></div>
+        </div>
+        <div id="img-container" class="img-container">
+        </div>
     </div>
-</footer>
-<!-- Materialize JavaScript -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-<script src="{% static 'js/htmx.min.js' %}"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-    var elems = document.querySelectorAll('.sidenav');
-    var instances = M.Sidenav.init(elems);
-  });
-</script>
-</body>
-</html>
+</div>
+{% endblock %}

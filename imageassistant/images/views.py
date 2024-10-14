@@ -4,6 +4,7 @@ from django.middleware import csrf
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from django.conf import settings
+from django.http import JsonResponse
 from images.models import Image
 from images.forms   import ImageForm, ImageResizeForm
 from components.buttons.get_button import GetButton
@@ -16,8 +17,8 @@ from .tasks import (
     resize_image, create_thumbnail
 )
 import stripe
-import time
-import uuid
+stripe.api_key = settings.STRIPE_SECRET_KEY
+
 
 
 # maps to celery task functions
@@ -67,6 +68,9 @@ def get_service_buttons(request, image_id):
     # for a removebackground service. If logged in then function as normal
     # else present with a stripe form
     # when stripe says payemnt is successful, then process background removal
+    background_remnoval_service_url = reverse('images:service', args=[2, image_id])
+    if not request.user.is_authenticated:
+        background_remnoval_service_url = reverse('images:checkout', args=[2, image_id])
     url_context = [
         {
             'url': reverse('images:service', args=[1, image_id]),
@@ -75,7 +79,7 @@ def get_service_buttons(request, image_id):
             'target': '#img-container'
         },
         {
-            'url': reverse('images:checkout', args=[2, image_id]),
+            'url': background_remnoval_service_url,
             'label': 'Remove background',
             'icon': 'lock',
             'target': '#img-container'
@@ -216,16 +220,42 @@ def get_checkout_content(request, service_id, image_id):
     token = csrf.get_token(request)
     checkout_content = CheckoutContent()
     check_out_url = reverse('images:create_checkout_session', args=[service_id, image_id])
+
     html_content = checkout_content.render(
-        args=[service_id, image_id, token, check_out_url]
+        args=[service_id, image_id, token],
+        kwargs={
+            "check_out_url": check_out_url,
+        }
     )
     return HttpResponse(html_content, content_type='text/html')
 
 
 def create_checkout_session(request, service_id, image_id):
-    stripe.api_key = settings.STRIPE_SECRET_KEY
-    print("Creating checkout session")
-    print(settings.STRIPE_SECRET_KEY)
+    if request.method != 'POST':
+        return HttpResponse("Method not allowed", status=405)
+    try:
+        session = stripe.checkout.Session.create(
+            ui_mode='embedded',
+            line_items=[
+                {
+                    # Provide the exact Price ID (for example, pr_1234) of the product you want to sell
+                    'price': settings.STRIPE_PRICE_ID,
+                    'quantity': 1,
+                },
+            ],
+            mode='payment',
+            return_url=f"{settings.DOMAIN}/stripe/return/?session_id={{CHECKOUT_SESSION_ID}}&service_id={service_id}&image_id={image_id}",
+            automatic_tax={'enabled': True},
+        )
+    except Exception as e:
+        return HttpResponse(str(e), status=500)
+    return JsonResponse(data={'clientSecret':session.client_secret}, safe=False)
+
+
+def session_status(request):
+    session_id = request.GET.get('session_id')
+    session = stripe.checkout.Session.retrieve(session_id)
+    return JsonResponse(data={'status': session.status, 'customer_email': session.customer_details.email}, safe=False)
 # #! /usr/bin/env python3.6
 
 # """

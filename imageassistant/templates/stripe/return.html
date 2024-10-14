@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block content %}
+<input type="hidden" id="domain" value="{{ domain }}">
+<div class="row">
+    <div class="col s12 m12 lg12 x12 custom-margin-top">
+        <p class="hidden" id="success">
+            We appreciate your business! A confirmation email will be sent to <span id="customer-email"></span>.
+      
+            If you have any questions, please email <a href="mailto:cormackandy@hotmail.com"> quoting the service number</a>.
+            We are processing the image hold tight...
+        </p>
+        <div class="progress htmx-indicator" id="indicator">
+            <div class="indeterminate"></div>
+        </div>
+        <div id="img-container" class="img-container">
+        </div>
+    </div>
+</div>
+<script>
+        initialize();
+
+        async function initialize() {
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const sessionId = urlParams.get('session_id');
+        const service_id = urlParams.get('service_id');
+        const image_id = urlParams.get('image_id');
+        const response = await fetch(`/images/check/checkout/status/?session_id=${sessionId}`);
+        const session = await response.json();
+        const domain = document.getElementById('domain').value;
+
+        if (session.status == 'open') {
+            window.location.replace(`${domain}/stripe/checkout/?service_id=${service_id}&image_id=${image_id}`);
+        } else if (session.status == 'complete') {
+                const successPara = document.getElementById('success');
+                successPara.classList.remove('hidden');
+                document.getElementById('customer-email').textContent = session.customer_email
+                htmx.ajax('GET', `${domain}/images/service/${service_id}/${image_id}/`, {
+                    target: '#img-container',
+                    indicator: '#indicator'
+                });
+                
+                return;
+        }else{
+            return;
+        }
+    }
+
+</script>
+{% endblock %}

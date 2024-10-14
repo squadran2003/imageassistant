@@ -74,7 +74,10 @@
     min-width: 100%;
 }
 
-
+/* styles for the stripe return form */
+.hidden{
+    display: none;
+}
 
 
 

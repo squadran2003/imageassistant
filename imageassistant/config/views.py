@@ -1,5 +1,6 @@
 from django.shortcuts import render, reverse
-from django.http import HttpResponse  # Import HttpResponse class
+from django.http import HttpResponse
+from django.conf import settings
 import os
 
 
@@ -33,3 +34,11 @@ def contact(request):
         </div>
     """
     return HttpResponse(html_content, content_type='text/html')
+
+
+def stripe_success_return(request):
+    return render(request, 'stripe/return.html', {'domain': settings.DOMAIN})
+
+
+def stripe_checkout(request):
+    return render(request, 'stripe/checkout.html')

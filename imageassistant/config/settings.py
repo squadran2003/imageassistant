@@ -204,3 +204,5 @@ STATICFILES_FINDERS = [
 STATICFILES_STORAGE = "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"
 
 STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY', os.environ.get('STRIPE_SECRET_KEY'))
+DOMAIN = "http://localhost:8084"
+STRIPE_PRICE_ID = config('STRIPE_PRICE_ID', os.environ.get('STRIPE_PRICE_ID'))
