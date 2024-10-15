@@ -11,6 +11,7 @@ from components.buttons.get_button import GetButton
 from components.forms.resize_form import ResizeForm
 from components.forms.upload_form import UploadForm
 from components.stripe.checkout import CheckoutContent
+from components.stripe.checkout_test import CheckoutContentTest
 from PIL import Image as PILImage
 from .tasks import (
     create_greyscale, remove_background,
@@ -218,7 +219,10 @@ def get_upload_form(request):
 
 def get_checkout_content(request, service_id, image_id):
     token = csrf.get_token(request)
-    checkout_content = CheckoutContent()
+    if settings.DEBUG:
+        checkout_content = CheckoutContentTest()
+    else:
+        checkout_content = CheckoutContent()
     check_out_url = reverse('images:create_checkout_session', args=[service_id, image_id])
 
     html_content = checkout_content.render(
@@ -256,46 +260,4 @@ def session_status(request):
     session_id = request.GET.get('session_id')
     session = stripe.checkout.Session.retrieve(session_id)
     return JsonResponse(data={'status': session.status, 'customer_email': session.customer_details.email}, safe=False)
-# #! /usr/bin/env python3.6
 
-# """
-# server.py
-# Stripe Sample.
-# Python 3.6 or newer required.
-# """
-# import os
-# from flask import Flask, redirect, request
-
-# import stripe
-# # This is your test secret API key.
-# stripe.api_key = 'sk_test_51L59InJOjahOu8sg2jbWt9s9MXiY0a9hXP0RZiFuSMSX44dvMBoO3kFWk4YgMsNoSeplRXjjGQpJpruBT6wgwMQw0081Xk6Pcc'
-
-# app = Flask(__name__,
-#             static_url_path='',
-#             static_folder='public')
-
-# YOUR_DOMAIN = 'http://localhost:4242'
-
-# @app.route('/create-checkout-session', methods=['POST'])
-# def create_checkout_session():
-#     try:
-#         checkout_session = stripe.checkout.Session.create(
-#             line_items=[
-#                 {
-#                     # Provide the exact Price ID (for example, pr_1234) of the product you want to sell
-#                     'price': '{{PRICE_ID}}',
-#                     'quantity': 1,
-#                 },
-#             ],
-#             mode='payment',
-#             success_url=YOUR_DOMAIN + '/success.html',
-#             cancel_url=YOUR_DOMAIN + '/cancel.html',
-#             automatic_tax={'enabled': True},
-#         )
-#     except Exception as e:
-#         return str(e)
-
-#     return redirect(checkout_session.url, code=303)
-
-# if __name__ == '__main__':
-#     app.run(port=4242)

@@ -41,4 +41,6 @@ def stripe_success_return(request):
 
 
 def stripe_checkout(request):
+    if settings.DEBUG:
+        return render(request, 'stripe/checkout_test.html')
     return render(request, 'stripe/checkout.html')
