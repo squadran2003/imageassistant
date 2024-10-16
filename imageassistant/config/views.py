@@ -1,15 +1,21 @@
 from django.shortcuts import render, reverse
 from django.http import HttpResponse
 from django.conf import settings
+from django.middleware import csrf
+from components.pages.upload import UploadContent
 import os
 
 
-def index(request):
-    links = [
-        {"url": reverse('index'), "label": "Home"},
-        {"url": "#", "label": "Pricing"},
-    ]
-    return render(request, 'index.html', {"links": links})
+def base(request):
+    return render(request, 'base.html')
+
+
+def upload_content(request):
+    token = csrf.get_token(request)
+    html_content = UploadContent().render(
+        args=[token],
+    )
+    return HttpResponse(html_content, content_type='text/html')
 
 
 def about(request):

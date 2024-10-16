@@ -18,12 +18,13 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
-from config.views import index, stripe_success_return
+from config.views import base, stripe_success_return, upload_content
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', index, name='index'),
+    path('', base, name='base'),
+    path('upload/content/', upload_content, name='upload_content'),
     path('images/', include(('images.urls', 'images'), namespace='images')),
     path('stripe/return/', stripe_success_return, name='stripe_success_return'),
     path('stripe/checkout/', stripe_success_return, name='stripe_checkout'),
