@@ -1,5 +1,6 @@
 {% load static %}
 {% load component_tags %}
+{% component_css_dependencies %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -49,8 +50,10 @@
         </div>
     </form>
 </div>
-<div class="container-fluid custom-container">
-       <div id="content"></div>
+<div class="container-fluid">
+       <div id="content">
+        {% component "banner" %} {% endcomponent %}
+       </div>
 </div>
 <footer class="page-footer">
     <div class="footer-copyright center">
