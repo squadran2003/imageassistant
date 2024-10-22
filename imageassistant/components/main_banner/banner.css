@@ -1,6 +1,13 @@
 #main-banner {
     margin-top: 20px;
-    background-color: #325787; /* Your custom color */
-    height: 500px;
-    color:white
+    background-color: #efefef; /* Your custom color */
+    height: 610px;
+    color:black;
+    margin-bottom: 20px;
+}
+.banner{
+    font-size: 5rem;
+}
+.banner-subheading{
+    font-size: 2rem;
 }
