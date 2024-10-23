@@ -3,11 +3,69 @@
     background-color: #efefef; /* Your custom color */
     height: 610px;
     color:black;
-    margin-bottom: 20px;
+    margin-bottom: 20%;
+    position: relative;
+}
+#banner-text{
+    position: absolute;
+    top: 20%;
+    left: 10%;
+    color: white;
+    width: 40%;
+}
+#banner-img{
+    height: 700px;
+    width: 100%;
+    object-fit: cover;
 }
 .banner{
     font-size: 5rem;
 }
 .banner-subheading{
     font-size: 2rem;
+}
+
+@media screen and (max-width: 768px) {
+    #main-banner {
+        height: 400px;
+    }
+    #banner-text{
+        top: 10%;
+        left: 5%;
+        width: 90%;
+        color: black;
+    }
+    .banner{
+        font-size: 3rem;
+    }
+    .banner-subheading{
+        font-size: 1.5rem;
+    }
+    #banner-img{
+        display: none;
+    }
+
+   
+    
+}
+
+@media screen and (max-width: 1024px) {
+    #main-banner {
+        height: 500px;
+    }
+    #banner-text{
+        top: 15%;
+        left: 5%;
+        width: 90%;
+        color: black;
+    }
+    .banner{
+        font-size: 4rem;
+    }
+    .banner-subheading{
+        font-size: 2rem;
+    }
+    #banner-img{
+        display: none;
+    }
 }
