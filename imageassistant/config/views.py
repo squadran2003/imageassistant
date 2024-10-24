@@ -7,7 +7,7 @@ import os
 
 
 def base(request):
-    return render(request, 'base.html')
+    return render(request, 'index.html')
 
 
 def upload_content(request):

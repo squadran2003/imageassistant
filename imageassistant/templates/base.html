@@ -52,16 +52,12 @@
 </div>
 <div class="container-fluid">
        <div id="content">
-        {% component "banner" %} {% endcomponent %}
+        {% block content %}
+        {% endblock %}
        </div>
 </div>
-<footer class="page-footer">
-    <div class="footer-copyright center">
-      <div class="container">
-      © 2014 imageassistant
-      </div>
-    </div>
-</footer>
+{% block footer %}
+{% endblock %}
 <!-- Materialize JavaScript -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 <script src="{% static 'js/htmx.min.js' %}"></script>

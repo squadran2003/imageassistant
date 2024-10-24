@@ -53,10 +53,8 @@
   }
 .img-container{
     min-width: 100%;
-    min-height: 80vh;
+    height:90vh;
     display: inline-block;
-    overflow-y: auto;
-    overflow-x: auto;
 }
 #processed-img{
     background-image: url('../img/moroccan-flower.png');
@@ -79,7 +77,11 @@
     display: none;
 }
 
-
+/* stripe retun page styles */
+#success{
+    font-size: 1.3rem;
+    width:50%;
+}
 
 /* Small tablets and large phones */
 @media (min-width: 600px) {
