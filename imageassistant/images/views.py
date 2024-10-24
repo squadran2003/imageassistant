@@ -220,26 +220,18 @@ def get_upload_form(request):
 def get_checkout_content(request, service_id, image_id):
     token = csrf.get_token(request)
     check_out_url = reverse('images:create_checkout_session', args=[service_id, image_id])
+    html_content = ''
     if settings.DEBUG:
-        html_content = ''
-        checkout_content_test = CheckoutContentTest()
-        html_content = checkout_content_test.render(
-            args=[service_id, image_id, token],
-            kwargs={
-                "check_out_url": check_out_url,
-            }
-        )
-        return HttpResponse(html_content, content_type='text/html')
+        checkout_content = CheckoutContentTest()
     else:
-        html_content = ''
         checkout_content = CheckoutContent()
-        html_content = checkout_content.render(
-            args=[service_id, image_id, token],
-            kwargs={
-                "check_out_url": check_out_url,
-            }
-        )
-        return HttpResponse(html_content, content_type='text/html')
+    html_content = checkout_content.render(
+        args=[service_id, image_id, token],
+        kwargs={
+            "check_out_url": check_out_url,
+        }
+    )
+    return HttpResponse(html_content, content_type='text/html')
 
 
 def create_checkout_session(request, service_id, image_id):
