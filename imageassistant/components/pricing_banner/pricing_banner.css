@@ -1,0 +1,17 @@
+#pricing-banner{
+    background-color: #fff;
+    text-align: center;
+    height:60%;
+    color:black;
+    width:100%;
+}
+#pricing-banner h1{
+    font-size: 5rem;
+    text-align: center;
+    text-decoration: underline;
+}
+#custom-chip{
+    background-color: #284db7;
+    color: white;
+   
+}

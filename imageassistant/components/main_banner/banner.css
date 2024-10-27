@@ -1,9 +1,8 @@
 #main-banner {
     margin-top: 20px;
-    background-color: #efefef; /* Your custom color */
-    height: 610px;
+    height: 700px;
     color:black;
-    margin-bottom: 20%;
+    margin-bottom: 2%;
     position: relative;
 }
 #banner-text{
