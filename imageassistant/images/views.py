@@ -70,7 +70,7 @@ def get_service_buttons(request, image_id):
     # else present with a stripe form
     # when stripe says payemnt is successful, then process background removal
     background_remnoval_service_url = reverse('images:service', args=[2, image_id])
-    if not request.user.is_authenticated:
+    if not settings.DEBUG:
         background_remnoval_service_url = reverse('images:checkout', args=[2, image_id])
     url_context = [
         {
@@ -221,10 +221,7 @@ def get_checkout_content(request, service_id, image_id):
     token = csrf.get_token(request)
     check_out_url = reverse('images:create_checkout_session', args=[service_id, image_id])
     html_content = ''
-    if settings.DEBUG:
-        checkout_content = CheckoutContentTest()
-    else:
-        checkout_content = CheckoutContent()
+    checkout_content = CheckoutContent()
     html_content = checkout_content.render(
         args=[service_id, image_id, token],
         kwargs={
