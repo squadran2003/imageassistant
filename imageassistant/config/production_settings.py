@@ -43,9 +43,6 @@ STORAGES = {
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
-    "mediafiles": {
-        "BACKEND": "config.storage_backends.MediaStorage",
-    },
 }
 
 
