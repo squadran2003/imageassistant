@@ -38,9 +38,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-DEFAULT_STATIC_STORAGE = 'config.storage_backends.StaticStorage'
-# Media files (user uploads)
-DEFAULT_FILE_STORAGE = 'config.storage_backends.MediaStorage'
+
+STATIC_FILES_STORAGE = 'config.storage_backends.StaticStorage'
+MEDIA_FILES_STORAGE = 'config.storage_backends.MediaStorage'
 
 
 def get_secret():
