@@ -1,5 +1,11 @@
 # myapp/storage_backends.py
 from storages.backends.s3boto3 import S3Boto3Storage
+from whitenoise.storage import CompressedManifestStaticFilesStorage
+
+
+class StaticStorage(CompressedManifestStaticFilesStorage):
+    location = 'static'
+    file_overwrite = True
 
 
 class MediaStorage(S3Boto3Storage):
