@@ -28,3 +28,20 @@ class Image(models.Model):
 
     def __str__(self):
         return self.image.name
+
+
+services = (
+    ('Greyscale', 1),
+    ('Remove Background', 2),
+    ('Resize', 3),
+    ('Thumbnail', 4)
+)
+
+
+class Service(models.Model):
+    name = models.CharField(max_length=255, choices=services)
+    stripe_price_id = models.CharField(max_length=255, blank=True, null=True)
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
