@@ -22,6 +22,7 @@ django-storages = "^1.14.2"
 django-rest-framework = "^0.1.0"
 django-components = "0.100"
 stripe = "^2.60.0"
+whitenoise = "^5.3.0"
 
 
 

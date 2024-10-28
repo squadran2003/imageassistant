@@ -11,13 +11,44 @@ CSRF_TRUSTED_ORIGINS = [
     'https://imageassistant.io',
 ]
 
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    "whitenoise.runserver_nostatic",
+    'django.contrib.staticfiles',
+    'django_components',
+    'rest_framework',
+    'storages',
+    'django_celery_beat',
+    'images',
+    'api',
+]
 
-# Static files (CSS, JavaScript, etc.)
-STATICFILES_STORAGE = 'config.storage_backends.StaticStorage'
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+STORAGES = {
+    # ...
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+
+
 
 # Media files (user uploads)
 DEFAULT_FILE_STORAGE = 'config.storage_backends.MediaStorage'
-
 
 
 def get_secret():
