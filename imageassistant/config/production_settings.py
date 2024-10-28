@@ -40,7 +40,7 @@ MIDDLEWARE = [
 
 
 STATIC_FILES_STORAGE = 'config.storage_backends.StaticStorage'
-MEDIA_FILES_STORAGE = 'config.storage_backends.MediaStorage'
+DEFAULT_FILES_STORAGE = 'config.storage_backends.MediaStorage'
 
 
 def get_secret():
