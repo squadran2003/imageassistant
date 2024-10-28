@@ -43,12 +43,10 @@ STORAGES = {
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
+    "mediafiles": {
+        "BACKEND": "config.storage_backends.MediaStorage",
+    },
 }
-
-
-
-# Media files (user uploads)
-DEFAULT_FILE_STORAGE = 'config.storage_backends.MediaStorage'
 
 
 def get_secret():
