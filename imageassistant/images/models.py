@@ -31,14 +31,15 @@ class Image(models.Model):
 
 
 services = (
-    ('Greyscale', 1),
-    ('Remove Background', 2),
-    ('Resize', 3),
-    ('Thumbnail', 4)
+    ('Greyscale', 'Greyscale'),
+    ('Remove Background', 'Remove Background'),
+    ('Resize', 'Resize'),
+    ('Thumbnail', 'Thumbnail'),
 )
 
 
 class Service(models.Model):
+    code = models.IntegerField()
     name = models.CharField(max_length=255, choices=services)
     stripe_price_id = models.CharField(max_length=255, blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)

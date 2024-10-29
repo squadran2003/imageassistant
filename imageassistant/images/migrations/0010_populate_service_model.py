@@ -6,10 +6,10 @@ from django.db import migrations
 def populate_services(apps, schema_editor):
     Service = apps.get_model('images', 'Service')
     Service.objects.bulk_create([
-        Service(name='Greyscale'),
-        Service(name='Remove Background'),
-        Service(name='Resize'),
-        Service(name='Thumbnail')
+        Service(code=1, name='Greyscale'),
+        Service(code=2, name='Remove Background'),
+        Service(code=3, name='Resize'),
+        Service(code=4, name='Thumbnail')
     ])
 
 
@@ -21,7 +21,7 @@ def reverse_services(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('images', '0009_service'),
+        ('images', '0009_create_service_model'),
     ]
 
     operations = [

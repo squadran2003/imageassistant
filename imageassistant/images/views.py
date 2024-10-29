@@ -5,12 +5,13 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from django.conf import settings
 from django.http import JsonResponse
-from images.models import Image
+from images.models import Image, Service
 from images.forms   import ImageForm, ImageResizeForm
 from components.buttons.get_button import GetButton
 from components.forms.resize_form import ResizeForm
 from components.forms.upload_form import UploadForm
 from components.stripe.checkout import CheckoutContent
+from components.stripe.test_checkout.checkout import CheckoutTestContent
 from PIL import Image as PILImage
 from .tasks import (
     create_greyscale, remove_background,
@@ -69,7 +70,7 @@ def get_service_buttons(request, image_id):
     # else present with a stripe form
     # when stripe says payemnt is successful, then process background removal
     background_remnoval_service_url = reverse('images:service', args=[2, image_id])
-    if not settings.DEBUG:
+    if not request.user.is_authenticated:
         background_remnoval_service_url = reverse('images:checkout', args=[2, image_id])
     url_context = [
         {
@@ -220,7 +221,10 @@ def get_checkout_content(request, service_id, image_id):
     token = csrf.get_token(request)
     check_out_url = reverse('images:create_checkout_session', args=[service_id, image_id])
     html_content = ''
-    checkout_content = CheckoutContent()
+    if settings.DEBUG:
+        checkout_content = CheckoutTestContent()
+    else:
+        checkout_content = CheckoutContent()
     html_content = checkout_content.render(
         args=[service_id, image_id, token],
         kwargs={
@@ -231,16 +235,20 @@ def get_checkout_content(request, service_id, image_id):
 
 
 def create_checkout_session(request, service_id, image_id):
+    service = Service.objects.get(code=service_id)
     client_secret = ''
     if request.method != 'POST':
         return HttpResponse("Method not allowed", status=405)
+    # if no price id is set, then redirect to the service page as the service doesnt require payment
+    if not service.stripe_price_id:
+        return redirect('images:service', service_id, image_id)
     try:
         session = stripe.checkout.Session.create(
             ui_mode='embedded',
             line_items=[
                 {
                     # Provide the exact Price ID (for example, pr_1234) of the product you want to sell
-                    'price': settings.STRIPE_PRICE_ID,
+                    'price': service.stripe_price_id,
                     'quantity': 1,
                 },
             ],
