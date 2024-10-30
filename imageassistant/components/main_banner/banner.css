@@ -1,19 +1,19 @@
 #main-banner {
-    margin-top: 20px;
-    height: 700px;
+    margin-top: 10px;
+    height: 500px;
     color:black;
-    margin-bottom: 2%;
+    margin-bottom: 1%;
     position: relative;
 }
 #banner-text{
     position: absolute;
-    top: 20%;
+    top: 5%;
     left: 10%;
     color: white;
     width: 40%;
 }
 #banner-img{
-    height: 700px;
+    height: 500px;
     width: 100%;
     object-fit: cover;
 }
@@ -27,6 +27,7 @@
 @media screen and (max-width: 768px) {
     #main-banner {
         height: 400px;
+        position: static;
     }
     #banner-text{
         top: 10%;
@@ -50,11 +51,10 @@
 
 @media screen and (max-width: 1024px) {
     #main-banner {
-        height: 500px;
+        height: 400px;
+        position:static;
     }
     #banner-text{
-        top: 15%;
-        left: 5%;
         width: 90%;
         color: black;
     }
