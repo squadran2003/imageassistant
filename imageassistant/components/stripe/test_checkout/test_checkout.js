@@ -1,5 +1,6 @@
 (function(){
-    const stripe = Stripe("pk_test_51Q99SfJfXU0eN0TRNZrQeZvpOACUdVjGR7RaMISSaML0I1cHhrTKEX1eTl1B47xPnlFS23fLsXCpBCzWdozwKmMv00pkyGng9A");
+    const stripePublicKey = document.querySelector("#stripe_public_key").value;
+    const stripe = Stripe(stripePublicKey);
     const token = document.querySelector("#csrfmiddlewaretoken").value;
     const service_id = document.querySelector("#service_id").value;
     const image_id = document.querySelector("#image_id").value;

@@ -226,7 +226,7 @@ def get_checkout_content(request, service_id, image_id):
     else:
         checkout_content = CheckoutContent()
     html_content = checkout_content.render(
-        args=[service_id, image_id, token],
+        args=[service_id, image_id, token, settings.STRIPE_PUBLIC_KEY],
         kwargs={
             "check_out_url": check_out_url,
         }

@@ -206,3 +206,4 @@ STATICFILES_STORAGE = "django.contrib.staticfiles.storage.ManifestStaticFilesSto
 STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY', os.environ.get('STRIPE_SECRET_KEY'))
 DOMAIN = "http://localhost:8084"
 STRIPE_PRICE_ID = config('STRIPE_PRICE_ID', os.environ.get('STRIPE_PRICE_ID'))
+STRIPE_PUBLIC_KEY = config('STRIPE_PUBLISHED_KEY', os.environ.get('STRIPE_PUBLISHED_KEY'))
