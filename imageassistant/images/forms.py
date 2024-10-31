@@ -21,21 +21,23 @@ class ImageForm(forms.ModelForm):
 
 
 class ImageResizeForm(forms.Form):
-    width = forms.IntegerField()
-    height = forms.IntegerField()
+    width = forms.IntegerField(required=False)
+    height = forms.IntegerField(required=False)
 
     def clean_width(self):
         width = self.cleaned_data.get('width')
+        if width is None or width == '':
+            raise forms.ValidationError('Width is required')
         width = int(width)
-        print(width)
-        if width <= 0:
-            raise forms.ValidationError('Width must be greater than 0')
+        if width <= 0 or width > 1000:
+            raise forms.ValidationError('Width must be greater than 0 and less than 1000')
         return width
 
     def clean_height(self):
         height = self.cleaned_data.get('height')
+        if height is None or height == '':
+            raise forms.ValidationError('Height is required')
         height = int(height)
-        print(height)
-        if height <= 0:
-            raise forms.ValidationError('Height must be greater than 0')
+        if height <= 0 or height > 800:
+            raise forms.ValidationError('Height must be greater than 0 and less than 800')
         return height

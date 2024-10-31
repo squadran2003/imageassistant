@@ -39,15 +39,18 @@ def add_image(request):
             return redirect("images:get_image", image_id=img.id)
         else:
             button = UploadForm()
-            post_url = reverse('images:add_image')
+            token = csrf.get_token(request)
+            post_url = reverse('images:add')
             attrs = {
                 'id': 'upload-form',
                 'hx-post': post_url,
                 'hx-target': "#img-container",
                 "hx-swap": "innerHTML",
-                "enctype": "multipart/form-data"
+                "enctype": "multipart/form-data",
+
             }
             html_content = button.render(
+                args=[token],
                 kwargs={
                      "attrs": attrs,
                      "errors": form.errors
@@ -86,7 +89,7 @@ def get_service_buttons(request, image_id):
             'target': '#img-container'
         },
         {
-            'url': reverse('images:resize-form-html', args=[image_id]),
+            'url': reverse('images:resize-form', args=[image_id]),
             'label': 'Resize',
             'icon': 'transform',
             'target': '#img-container'
@@ -117,37 +120,6 @@ def service(request, service_id, image_id):
     elif service_id == 2:
         print("Removing background")
         remove_background.delay(image_id)
-    elif service_id == 3:
-        if request.POST:
-            token = csrf.get_token(request)
-            form = ImageResizeForm(request.POST)
-            # this is the component that will be rendered
-            resize_form = ResizeForm()
-            if form.is_valid():
-                resize_image.delay(
-                    image_id, form.cleaned_data['width'],
-                    form.cleaned_data['height']
-                )
-            else:
-
-                post_url = reverse('images:service', args=[3, image_id])
-                data = {
-                        'id': 'image-resize-form',
-                        'hx-post': post_url,
-                        'hx-target': "#img-container",
-                        'hx-swap': "innerHTML",
-                }
-                html_content = resize_form.render(
-                    kwargs={
-                        "width": request.POST['width'],
-                        "height": request.POST['height'],
-                        "token": token,
-                        "attrs": data,
-                        "errors": form.errors
-                    }
-
-                )
-                return HttpResponse(html_content, content_type='text/html')
     elif service_id == 4:
         print("Creating thumbnail")
         create_thumbnail.delay(image_id)
@@ -175,8 +147,11 @@ def processed_service(request, image_id):
 
 def resize_form_html(request, image_id):
     """send a form to the client to get the width and height of the image"""
+    form = ImageResizeForm()
     token = csrf.get_token(request)
-    post_url = reverse('images:service', args=[3, image_id])
+    # this is the url that the form will post to
+    post_url = reverse('images:resize-form', args=[image_id])
+    # this is the component that will be rendered
     resize_form = ResizeForm()
     data = {
             'id': 'image-resize-form',
@@ -184,14 +159,28 @@ def resize_form_html(request, image_id):
             'hx-target': "#img-container",
             'hx-swap': "innerHTML",
     }
+    if request.method == 'POST':
+        form = ImageResizeForm(request.POST)
+        if form.is_valid():
+            width = int(request.POST['width'])
+            height = int(request.POST['height'])
+            resize_image.delay(
+                image_id, width, height
+            )
+
+            html_content = f'''
+            <div class="col s12 m12 center-align">
+                <img class="responsive-img" hx-get="/images/processed/service/{image_id}/" hx-indicator="#indicator" hx-trigger="load delay:1s"  hx-target="#img-container" hx-swap="innerHTML">
+            </div>
+            '''
+            return HttpResponse(html_content, content_type='text/html')
     html_content = resize_form.render(
         kwargs={
-            "width": '',
-            "height": '',
             "token": token,
             "attrs": data,
-            "errors": []
+            "form": form
         }
+
     )
     return HttpResponse(html_content, content_type='text/html')
 
