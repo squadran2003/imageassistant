@@ -210,10 +210,10 @@ def get_checkout_content(request, service_id, image_id):
     token = csrf.get_token(request)
     check_out_url = reverse('images:create_checkout_session', args=[service_id, image_id])
     html_content = ''
-    if settings.DEBUG:
-        checkout_content = CheckoutTestContent()
-    else:
-        checkout_content = CheckoutContent()
+    # if settings.DEBUG:
+    #     checkout_content = CheckoutTestContent()
+    # else:
+    checkout_content = CheckoutContent()
     html_content = checkout_content.render(
         args=[service_id, image_id, token, settings.STRIPE_PUBLIC_KEY],
         kwargs={
