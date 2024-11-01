@@ -101,5 +101,5 @@ DOMAIN = "https://imageassistant.io"
 STRIPE_PRICE_ID = SECRETS['STRIPE_PRICE_ID']
 STRIPE_PUBLIC_KEY = SECRETS['STRIPE_PUBLISHED_KEY']
 
-STATIC_HOST = "https://dfddcrp7uujvj.cloudfront.net"
+STATIC_HOST = "https://d203745bu6qd7u.cloudfront.net"
 STATIC_URL = STATIC_HOST + "/static/"
