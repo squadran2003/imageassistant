@@ -5,7 +5,7 @@ from django.conf import settings
 
 class StaticStorage(S3Boto3Storage):
     location = 'static'
-    custom_domain = settings.CLOUDFRONT_DOMAIN
+    custom_domain = "https://d203745bu6qd7u.cloudfront.net/static/"
 
 
 class MediaStorage(S3Boto3Storage):
