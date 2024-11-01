@@ -11,7 +11,6 @@ from components.buttons.get_button import GetButton
 from components.forms.resize_form import ResizeForm
 from components.forms.upload_form import UploadForm
 from components.stripe.live_checkout.checkout import CheckoutContent
-from components.stripe.test_checkout.checkout_test import CheckoutTestContent
 from PIL import Image as PILImage
 from .tasks import (
     create_greyscale, remove_background,
