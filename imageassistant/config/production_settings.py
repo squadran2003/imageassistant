@@ -38,7 +38,7 @@ INSTALLED_APPS = [
 #     'django.contrib.messages.middleware.MessageMiddleware',
 #     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 # ]
-STATIC_FILES_STORAGE = 'config.storage_backends.StaticStorage'
+DEFAULT_FILES_STORAGE = 'config.storage_backends.StaticStorage'
 
 DEFAULT_FILE_STORAGE = 'config.storage_backends.MediaStorage'
 
@@ -99,6 +99,5 @@ STRIPE_SECRET_KEY = SECRETS['STRIPE_SECRET_KEY']
 DOMAIN = "https://imageassistant.io"
 STRIPE_PRICE_ID = SECRETS['STRIPE_PRICE_ID']
 STRIPE_PUBLIC_KEY = SECRETS['STRIPE_PUBLISHED_KEY']
-STATIC_LOCATION = "static"
 STATIC_HOST = SECRETS['CLOUDFRONT_DOMAIN']
 STATIC_URL = STATIC_HOST + "/static/"
