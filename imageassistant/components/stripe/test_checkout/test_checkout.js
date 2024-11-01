@@ -1,5 +1,5 @@
 (function(){
-    const stripePublicKey = document.querySelector("#stripe_public_key").value;
+    const stripePublicKey = document.querySelector("#stripe_public_key_test").value;
     const stripe = Stripe(stripePublicKey);
     const token = document.querySelector("#csrfmiddlewaretoken").value;
     const service_id = document.querySelector("#service_id").value;
