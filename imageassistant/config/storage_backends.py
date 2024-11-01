@@ -1,11 +1,11 @@
 # myapp/storage_backends.py
 from storages.backends.s3boto3 import S3Boto3Storage
-from whitenoise.storage import CompressedManifestStaticFilesStorage
+from django.conf import settings
 
-
-class StaticStorage(CompressedManifestStaticFilesStorage):
+class StaticStorage(S3Boto3Storage):
     location = 'static'
     file_overwrite = True
+    custom_domain = settings.CLOUDFRONT_DOMAIN
 
 
 class MediaStorage(S3Boto3Storage):
