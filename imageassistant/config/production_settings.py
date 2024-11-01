@@ -38,9 +38,7 @@ INSTALLED_APPS = [
 #     'django.contrib.messages.middleware.MessageMiddleware',
 #     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 # ]
-DEFAULT_FILES_STORAGE = 'config.storage_backends.StaticStorage'
 
-DEFAULT_FILE_STORAGE = 'config.storage_backends.MediaStorage'
 
 
 def get_secret():
@@ -93,7 +91,10 @@ AWS_S3_OBJECT_PARAMETERS = {
 
 }
 AWS_LOCATION = 'static'
+STATIC_URL = "https://{}/{}/".format(AWS_S3_CUSTOM_DOMAIN, 'static')
 MEDIA_URL = "https://{}/{}/".format(AWS_S3_CUSTOM_DOMAIN, 'media')
+STATIC_FILES_STORAGE = 'config.storage_backends.StaticStorage'
+DEFAULT_FILE_STORAGE = 'config.storage_backends.MediaStorage'
 IMAGE_PROCESSED_FOLDER_NAME = SECRETS['IMAGE_PROCESSED_FOLDER_NAME']
 STRIPE_SECRET_KEY = SECRETS['STRIPE_SECRET_KEY']
 DOMAIN = "https://imageassistant.io"
