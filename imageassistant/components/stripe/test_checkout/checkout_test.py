@@ -1,6 +1,6 @@
 from django_components import Component, register
 
-@register("checkout_test")
+
 class CheckoutTestContent(Component):
 
     template_name = "test_checkout_template.html"
