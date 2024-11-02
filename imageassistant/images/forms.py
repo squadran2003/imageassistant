@@ -21,8 +21,16 @@ class ImageForm(forms.ModelForm):
 
 
 class ImageResizeForm(forms.Form):
-    width = forms.IntegerField(required=False)
-    height = forms.IntegerField(required=False)
+    width = forms.IntegerField(
+        required=False, widget=forms.TextInput(
+            attrs={'class': "validate"}
+        )
+    )
+    height = forms.IntegerField(
+        required=False, 
+        widget=forms.TextInput(attrs={'class': "validate"}
+        )
+    )
 
     def clean_width(self):
         width = self.cleaned_data.get('width')

@@ -19,7 +19,17 @@ class ResizeForm(Component):
             <div class="col s12 m12 lg12">
                 <form {% html_attrs attrs %}>
                     <input type="hidden" name="csrfmiddlewaretoken" value="{{ token }}">
-                    {{ form }}
+                    {% for field in form %}
+                        <div class="input-field col s12 m12 lg12">
+                            {% if not field.errors %}
+                                {{ field.label_tag }}
+                            {% endif %}
+                            {{ field }}
+                            {% for error in field.errors %}
+                                <span class="helper-text" id="error">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
                     <a  onclick="htmx.trigger('#image-resize-form', 'submit')" class="waves-effect waves-light btn custom-img-transform-button"><span class="material-icons" style="color:white;"></span>Submit</a>
                 </form>
             </div>
@@ -30,7 +40,7 @@ class ResizeForm(Component):
         .image-resize-form{
             min-width: 100%;
         }
-        .errorlist{
+        #error{
             color: red;
         }
     """
