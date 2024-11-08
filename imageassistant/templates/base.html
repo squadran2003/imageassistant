@@ -11,6 +11,7 @@
     <link href="{% static 'css/custom-materialize.css' %}" rel="stylesheet">
     <link href="{% static 'css/styles.css' %}" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link  href="{% static  'css/dist/cropper.css' %}" rel="stylesheet">
     <script src="https://js.stripe.com/v3/"></script>
 </head>
 <body>
@@ -60,6 +61,7 @@
 {% endblock %}
 <!-- Materialize JavaScript -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script src="{% static 'js/dist/cropper.js' %}"></script>
 <script src="{% static 'js/htmx.min.js' %}"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {

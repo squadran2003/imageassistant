@@ -6,15 +6,16 @@ from django.http import HttpResponse
 from django.conf import settings
 from django.http import JsonResponse
 from images.models import Image, Service
-from images.forms   import ImageForm, ImageResizeForm
+from images.forms   import ImageForm, ImageResizeForm, CroppingForm
 from components.buttons.get_button import GetButton
 from components.forms.resize_form import ResizeForm
 from components.forms.upload_form import UploadForm
 from components.stripe.live_checkout.checkout import CheckoutContent
+from components.tools.crop_tool import CropTool
 from PIL import Image as PILImage
 from .tasks import (
     create_greyscale, remove_background,
-    resize_image, create_thumbnail
+    resize_image, create_thumbnail, crop_image
 )
 import stripe
 stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -98,6 +99,12 @@ def get_service_buttons(request, image_id):
             'label': 'Create thumbnail',
             'icon': 'image',
             'target': '#img-container'
+        },
+        {
+            'url': reverse('images:crop-tool', args=[5, image_id]),
+            'label': 'Crop Image',
+            'icon': 'crop',
+            'target': '#img-container'
         }
     ]
     html_content = ''
@@ -122,9 +129,27 @@ def service(request, service_id, image_id):
     elif service_id == 4:
         print("Creating thumbnail")
         create_thumbnail.delay(image_id)
+    elif service_id == 5:
+        print("Cropping image")
+        if request.method == 'POST':
+            token = csrf.get_token(request)
+            form = CroppingForm(request.POST)
+            if form.is_valid():
+                crop_image.delay(
+                    image_id, form.cleaned_data['x'], form.cleaned_data['y'],
+                    form.cleaned_data['width'], form.cleaned_data['height']
+                )
+            else:
+                crop_tool = CropTool()
+                html_content = crop_tool.render(
+                    args=[img.image.url, form, service_id, image_id, token]
+                )
+                return HttpResponse(html_content, content_type='text/html')
+        # crop_image.delay(image_id, x , y, width, height)
     html_content = f'''
             <div class="col s12 m12 center-align">
-                <img class="responsive-img" hx-get="/images/processed/service/{image_id}/" hx-indicator="#indicator" hx-trigger="load delay:1s"  hx-target="#img-container" hx-swap="innerHTML">
+                 <span hx-indicator="#indicator"></span>
+                <img class="responsive-img" hx-get="/images/processed/service/{image_id}/"  hx-trigger="load delay:1s"  hx-target="#img-container" hx-swap="innerHTML">
             </div>
     '''
     return HttpResponse(html_content, content_type='text/html')
@@ -180,6 +205,20 @@ def resize_form_html(request, image_id):
             "form": form
         }
 
+    )
+    return HttpResponse(html_content, content_type='text/html')
+
+
+def crop_tool_content(request, service_id, image_id):
+    image = Image.objects.get(pk=image_id)
+    token = csrf.get_token(request)
+    form = CroppingForm()
+    form.service_id = service_id
+    form.image_id = image_id
+    crop_tool = CropTool()
+    print(image.image.url)
+    html_content = crop_tool.render(
+        args=[image.image.url, form, service_id, image_id, token]
     )
     return HttpResponse(html_content, content_type='text/html')
 

@@ -1,15 +1,17 @@
 from celery import shared_task
 from images.models import Image
 from PIL import Image as PILImage
-from PIL import ImageOps
 from urllib.request import urlopen
 from io import BytesIO
 from django.core.files.base import ContentFile
 import boto3
-from botocore.exceptions import NoCredentialsError, ClientError
 from django.conf import settings
 import os
-
+from urllib.request import urlopen
+import cv2
+import numpy as np
+import urllib
+import requests
 
 
 
@@ -129,6 +131,49 @@ def create_thumbnail(image_id):
         file.image.save(file.image.name, img_content)
         file.processed = True
         file.save()
+
+
+@shared_task
+def crop_image(image_id, x, y, width, height):
+    s3 = boto3.client('s3')
+    file = Image.objects.get(pk=image_id)
+    if not settings.DEBUG:
+        img = PILImage.open(urlopen(file.image.url))
+    else:
+        img = PILImage.open(file.image.path)
+    img_io = BytesIO()
+    if settings.DEBUG:
+        img = cv2.imread(file.image.path)
+    else:
+
+        url_response = urllib.request.urlopen(file.image.url)
+        img_array = np.array(bytearray(url_response.read()), dtype=np.uint8)
+        img = cv2.imdecode(img_array, -1)
+    scale_factor_x = file.image.width / width
+    scale_factor_y = file.image.height / height
+    x = x * scale_factor_x
+    y = y * scale_factor_y
+    width = width * scale_factor_x
+    height = height * scale_factor_y
+    crop_img = img[int(y):int(min(y + height, file.image.height)), int(x):int(min(x + width, file.image.width))]
+    crop_img_rgb = cv2.cvtColor(crop_img, cv2.COLOR_BGR2RGB)
+    img2 = PILImage.fromarray(crop_img_rgb)
+    img2.save(img_io, format='png', quality=100)
+    img_content = ContentFile(img_io.getvalue())
+    if not settings.DEBUG:
+        # in prod saving the image to s3 and later updating the image field via lambda
+        s3.put_object(
+            Bucket=settings.AWS_STORAGE_BUCKET_NAME,
+            Key=f"media/celery/{image_id}_{file.image.name}",
+            Body=img_io.getvalue()
+        )
+    else:
+        # in dev using celery to process the image
+        file.image.save(file.image.name, img_content)
+        file.processed = True
+        file.save()
+
+
 
 
 
