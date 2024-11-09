@@ -1,5 +1,5 @@
 {% load static %}
-<link  href="{% static  'css/dist/cropper.css' %}" rel="stylesheet">
+<link  href="{% static  'css/dist_cropper/cropper.css' %}" rel="stylesheet">
 <div class="row">
     <div class="col s12 m12 l12 x12">
         <form id="crop-form" hx-post="{% url 'images:service' service_id=service_id image_id=image_id %}"  hx-target="#img-container" hx-swap="innerHTML" hx-trigger="submit">
@@ -14,7 +14,7 @@
                     </ul>
                 {% endif %}
             {% endfor %}
-            <button id="apply" class="waves-effect waves-light btn" type="submit" name="action">Apply
+            <button id="apply" class="waves-effect waves-light btn custom-img-transform-button" type="submit" name="action">Apply
                 <i class="material-icons right">send</i>
             </button>
         </form>
@@ -37,10 +37,6 @@
         const cropper = new Cropper(image, {
             aspectRatio: 16 / 9,
             crop: function (event) {
-                console.log(event.detail.x);
-                console.log(event.detail.y);
-                console.log(event.detail.width);
-                console.log(event.detail.height);
                 x.value = event.detail.x;
                 y.value = event.detail.y;
                 width.value = event.detail.width;
