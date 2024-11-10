@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django_components',
     'rest_framework',
     'storages',
+    'corsheaders',
     'django_celery_beat',
     'images',
     'api',
