@@ -22,28 +22,6 @@
     <div class="col s12 m12 l12 x12 mt5">
         <img src="{{img_url}}" id="cropping-image" class="responsive-img">
     </div>
+    {% component_js_dependencies %}
 </div>
-<script>
-    // check when document in locaded in js, not jquery
-    function load(){
-        console.log("loading");
-        const image = document.getElementById('cropping-image');
-        const cropForm = document.getElementById('crop-form');
-        const x = document.getElementById('id_x');
-        const y = document.getElementById('id_y');
-        const width = document.getElementById('id_width');
-        const height = document.getElementById('id_height');
-        image.style.display = 'block';
-        const cropper = new Cropper(image, {
-            aspectRatio: 16 / 9,
-            crop: function (event) {
-                x.value = event.detail.x;
-                y.value = event.detail.y;
-                width.value = event.detail.width;
-                height.value = event.detail.height;
-            }
-        });
-    }
-    load();
 
-</script>
