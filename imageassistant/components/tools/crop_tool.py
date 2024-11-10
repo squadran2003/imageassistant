@@ -26,6 +26,7 @@ class CropTool(Component):
             const height = document.getElementById('id_height');
             image.style.display = 'block';
             const cropper = new Cropper(image, {
+                checkCrossOrigin: false,
                 aspectRatio: 16 / 9,
                 crop: function (event) {
                     x.value = event.detail.x;
