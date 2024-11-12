@@ -13,12 +13,20 @@
 #content::-webkit-scrollbar-track {
     background: #f1f1f1;
 }
+#main-banner {
+    height: 500px;
+    color:black;
+    margin-bottom: 1%;
+    background-color: white;
+    margin-top: 10px;
+}
 
 .banner-text{
     font-size: 1.5em;
     font-weight: bold;;
-    text-align: center;
+    text-align: left;
     margin:0;
+    padding:5px;
 }
 
 
@@ -103,9 +111,6 @@ height: 100px; /* Size of the spinner */
 
 /* Small tablets and large phones */
 @media (min-width: 600px) {
-    .banner-text{
-        text-align: left;
-    }
     .logo-img {
         max-width: 200px;
         height: 64px;
@@ -118,9 +123,6 @@ height: 100px; /* Size of the spinner */
 
 /* Tablets and small desktops */
 @media (min-width: 768px) {
-    .banner-text{
-        text-align: left;
-    }
     .logo-img {
         max-width: 220px;
         height: 64px;
@@ -133,8 +135,11 @@ height: 100px; /* Size of the spinner */
 
 /* Desktop size */
 @media (min-width: 992px) {
+    #main-banner {
+        background-color: #f9f9f9;
+    }
     .banner-text{
-        text-align: left;
+        text-align: center;
     }
     .logo-img {
         max-width: 250px;
@@ -149,7 +154,7 @@ height: 100px; /* Size of the spinner */
 /* Large desktops and Surface Pro */
 @media (min-width: 1200px) {
     .banner-text{
-        text-align: left;
+        text-align: center;
     }
     .logo-img {
         max-width: 300px;

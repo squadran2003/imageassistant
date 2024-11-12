@@ -2,7 +2,6 @@ from django.shortcuts import render, reverse
 from django.http import HttpResponse
 from django.conf import settings
 from django.middleware import csrf
-from components.pages.upload import UploadContent
 import os
 
 
