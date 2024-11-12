@@ -12,7 +12,8 @@ class UploadForm(Component):
                 "hx-swap": kwargs.get("swap", ""),
                 "hx-post": reverse(kwargs.get("url", "")),
                 "method": "post",
-                "enctype": "multipart/form-data"
+                "enctype": "multipart/form-data",
+                "hx-indicator": "#indicator"
             }
         }
 
