@@ -29,7 +29,9 @@
     padding:5px;
 }
 
-
+.custom-card-height{
+    min-height: 258px;
+}
 /* Default size - Mobile */
 .logo-img {
     display: none;
