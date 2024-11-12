@@ -3,16 +3,19 @@
 <input type="hidden" id="domain" value="{{ domain }}">
 <div class="row">
     <div class="col s12 m12 lg12 x12 custom-margin-top">
-        <p class="hidden" id="success">
-            We appreciate your business! A confirmation email will be sent to <span id="customer-email"></span>.
+        <div class="card">
+            <div class="card-content hidden" id="success">
+                <span class="card-title">Removing background</span>
+                We appreciate your business! A confirmation email will be sent to <span id="customer-email"></span>.
       
-            If you have any questions, please email <a href="mailto:cormackandy@hotmail.com"> quoting the service number</a><span id="service_id_display"></span>.
-            We are processing the image hold tight...
-        </p>
+                If you have any questions, please email <a href="mailto:cormackandy@hotmail.com"> quoting the service number </a><span id="service_id_display"></span>.
+                We are processing the image hold tight...
+            </div>
+        </div>
         <div class="progress htmx-indicator" id="indicator">
             <div class="indeterminate"></div>
         </div>
-        <div id="img-container" class="img-container">
+        <div id="content" class="img-container">
         </div>
     </div>
 </div>
@@ -37,7 +40,7 @@
                 successPara.classList.remove('hidden');
                 document.getElementById('customer-email').textContent = session.customer_email
                 htmx.ajax('GET', `${domain}/images/service/${service_id}/${image_id}/`, {
-                    target: '#img-container',
+                    target: '#content',
                     indicator: '#indicator'
                 });
                 service_id_display.textContent = service_id;

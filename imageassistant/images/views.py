@@ -151,17 +151,17 @@ def processed_service(request, image_id):
                 "hx_get_url": reverse('images:process_image', args=[image_id]),
                 "hx_target": "#content",
                 "hx_swap": "innerHTML",
-                "hx_trigger": "load",
+                "hx_trigger": "load delay:3s",
                 "image_url": file.image.url
             }
         )
-        return HttpResponse(html_content, content_type='text/html')
+        return HttpResponse(html_content, content_type='text/html', status=200)
     else:
         processed_image_page = ProcessedImagePage()
         html_content = processed_image_page.render(
             args=[file]
         )
-        return HttpResponse(html_content, content_type='text/html')
+        return HttpResponse(html_content, content_type='text/html', status=286)
 
 
 def resize_form_html(request, image_id):
