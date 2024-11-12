@@ -1,0 +1,10 @@
+{% component_css_dependencies %}
+<form {% html_attrs attrs default="" %} >
+    {% csrf_token %}
+    <div class="file-field input-field">
+        {% component "upload_button" label="Upload image" form_target='#upload-form'  %} {% endcomponent %}
+        <div class="file-path-wrapper">
+            <input class="file-path validate file-path-validate-custom" type="text">
+        </div>
+    </div>
+</form>

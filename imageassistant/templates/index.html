@@ -1,9 +1,69 @@
-{% extends 'base.html' %}
-{% block content %}
-{% component "banner" %} {% endcomponent %}
-{% component "pricing_banner" %} {% endcomponent %}
-{% endblock %}
-{% block footer %}
+{% load static %}
+{% load component_tags %}
+{% component_css_dependencies %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image assistant</title>
+    <!-- Materialize CSS -->
+    <link href="{% static 'css/custom-materialize.css' %}" rel="stylesheet">
+    <link href="{% static 'css/styles.css' %}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link  href="{% static  'css/dist_cropper/cropper.css' %}" rel="stylesheet">
+    <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+
+<nav>
+    <div class="nav-wrapper">
+        <a href="/" class="brand-logo center">
+            <img class="logo-img" src="{% static 'img/logo.png' %}">
+            <span class="logo-text">Image Assistant</span>
+        </a>
+        <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+        <ul class="center hide-on-med-and-down">
+            <li><a href="{% url 'base' %}">Home</a></li>
+        </ul>
+        <form class="hide-on-med-and-down">
+            <div class="input-field right">
+              <input id="search" type="search" required placeholder="search for services">
+              <label class="label-icon" for="search"><i class="material-icons">search</i></label>
+              <i class="material-icons">close</i>
+            </div>
+        </form>
+    </div>
+</nav>
+<div class="sidenav" id="mobile-demo">
+    <ul>
+        <li><a href="{% url 'base' %}">Home</a></li>
+    </ul>
+    <form>
+        <div class="input-field left">
+            <input id="search" type="search" required placeholder="search for services">
+            <label class="left label-icon" for="search"><i class="material-icons">search</i></label>
+            <i class="left material-icons">close</i>
+        </div>
+    </form>
+</div>
+<div class="container-fluid custom-container">
+       <div id="content">
+            <div id="main-banner">
+                <div class="row">
+                    <div class="col s12 m12 l12 x12">
+                        <div class="banner-text">
+                            <h1 class="banner">Unlock Your Image's Full Potential</h1>
+                            <h5>Transform, Enhance, and Personalize your images with ImageAssistant's powerful tools.
+                                Start creating stunning visuals in just a few clicks!
+                            </h5>
+                        </div>
+                        {% component "upload_form" id="upload-form" target="#content" swap="innerHTML"  url="images:add" %}{% endcomponent %}
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
 <footer class="page-footer">
     <div class="footer-copyright center">
       <div class="container">
@@ -11,4 +71,15 @@
       </div>
     </div>
 </footer>
-{% endblock %}
+<!-- Materialize JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script src="{% static 'js/dist_cropper/cropper.js' %}"></script>
+<script src="{% static 'js/htmx.min.js' %}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('.sidenav');
+    var instances = M.Sidenav.init(elems);
+  });
+</script>
+</body>
+</html>

@@ -2,7 +2,7 @@
 <link  href="{% static  'css/dist_cropper/cropper.css' %}" rel="stylesheet">
 <div class="row">
     <div class="col s12 m12 l12 x12">
-        <form id="crop-form" hx-post="{% url 'images:service' service_id=service_id image_id=image_id %}"  hx-target="#img-container" hx-swap="innerHTML">
+        <form id="crop-form" hx-post="{% url 'images:service' service_id=service_id image_id=image_id %}"  hx-target="#content" hx-swap="innerHTML">
             <input type="hidden" name="csrfmiddlewaretoken" value="{{ token }}">
             {% for field in form %}
                 {{ field }}

@@ -9,9 +9,12 @@ from images.models import Image, Service
 from images.forms   import ImageForm, ImageResizeForm, CroppingForm
 from components.buttons.get_button import GetButton
 from components.forms.resize_form import ResizeForm
-from components.forms.upload_form import UploadForm
+from components.forms.upload_form.upload_form import UploadForm
 from components.stripe.live_checkout.checkout import CheckoutContent
 from components.tools.crop_tool import CropTool
+from components.pages.initial_image_page import InitialImagePage
+from components.pages.unprocessed_image_page import UnprocessedImagePage
+from components.pages.processed_image_page import ProcessedImagePage
 from PIL import Image as PILImage
 from .tasks import (
     create_greyscale, remove_background,
@@ -21,15 +24,6 @@ import stripe
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
-
-# maps to celery task functions
-# service_choices = [
-#     (1, 'convert to greyscale'),
-#     (2, 'Remove background'),
-#     (3, 'Resize'),
-# ]
-
-
 def add_image(request):
     if request.method == 'POST':
         form = ImageForm(request.POST, request.FILES)
@@ -37,74 +31,63 @@ def add_image(request):
             img = form.save(commit=False)
             img.save()
             return redirect("images:get_image", image_id=img.id)
-        else:
-            button = UploadForm()
-            token = csrf.get_token(request)
-            post_url = reverse('images:add')
-            attrs = {
-                'id': 'upload-form',
-                'hx-post': post_url,
-                'hx-target': "#img-container",
-                "hx-swap": "innerHTML",
-                "enctype": "multipart/form-data",
-
-            }
-            html_content = button.render(
-                args=[token],
-                kwargs={
-                     "attrs": attrs,
-                     "errors": form.errors
-                }
-            )
-            return HttpResponse(html_content, content_type='text/html')
     else:
         return HttpResponse("", content_type='text/html')
 
 
 def get_image(request, image_id):
     image = Image.objects.get(pk=image_id)
-    return render(
-        request, 'images/initial_image.html', {'image': image}
+    page = InitialImagePage()
+    html_content = page.render(
+        kwargs={
+            # url to get the service buttons
+            "hx_get_url": reverse('images:get_service_buttons', args=[image_id]),
+            "hx_target": "#service-buttons",
+            "hx_swap": "innerHTML",
+            "hx_trigger": "load",
+            "image_url": image.image.url
+        }
     )
+    return HttpResponse(html_content, content_type='text/html')
 
 
 def get_service_buttons(request, image_id):
     # for a removebackground service. If logged in then function as normal
     # else present with a stripe form
     # when stripe says payemnt is successful, then process background removal
-    background_remnoval_service_url = reverse('images:service', args=[2, image_id])
+    background_removal_service_url = reverse('images:service', args=[2, image_id])
     if not request.user.is_authenticated:
-        background_remnoval_service_url = reverse('images:checkout', args=[2, image_id])
+        background_removal_service_url = reverse('images:checkout', args=[2, image_id])
     url_context = [
         {
             'url': reverse('images:service', args=[1, image_id]),
             'label': 'Convert to black and white',
             'icon': 'colorize',
-            'target': '#img-container'
+            'target': '#content'
         },
         {
-            'url': background_remnoval_service_url,
+            'url': background_removal_service_url,
             'label': 'Remove background',
             'icon': 'lock',
-            'target': '#img-container'
+            'target': '#content'
         },
         {
             'url': reverse('images:resize-form', args=[image_id]),
             'label': 'Resize',
             'icon': 'transform',
-            'target': '#img-container'
+            'target': '#content'
         },
         {
             'url': reverse('images:service', args=[4, image_id]),
             'label': 'Create thumbnail',
             'icon': 'image',
-            'target': '#img-container'
+            'target': '#content'
         },
         {
             'url': reverse('images:crop-tool', args=[5, image_id]),
             'label': 'Crop Image',
             'icon': 'crop',
-            'target': '#img-container'
+            'target': '#content'
         }
     ]
     html_content = ''
@@ -146,27 +129,39 @@ def service(request, service_id, image_id):
                 )
                 return HttpResponse(html_content, content_type='text/html')
         # crop_image.delay(image_id, x , y, width, height)
-    html_content = f'''
-            <div class="col s12 m12 center-align">
-                 <span hx-indicator="#indicator"></span>
-                <img class="responsive-img" hx-get="/images/processed/service/{image_id}/"  hx-trigger="load delay:1s"  hx-target="#img-container" hx-swap="innerHTML">
-            </div>
-    '''
+    unprocessed_page = UnprocessedImagePage()
+    html_content = unprocessed_page.render(
+        kwargs={
+            "hx_get_url": reverse('images:process_image', args=[image_id]),
+            "hx_target": "#content",
+            "hx_swap": "innerHTML",
+            "hx_trigger": "load delay:3s",
+            "image_url": img.image.url
+        }
+    )
     return HttpResponse(html_content, content_type='text/html')
 
 
 def processed_service(request, image_id):
     file = Image.objects.get(pk=image_id)
     if not file.processed:
-        return render(
-            request, 'images/unprocessed_image.html',
-            {'image_id': image_id}
+        unprocessed_image_page = UnprocessedImagePage()
+        html_content = unprocessed_image_page.render(
+            kwargs={
+                "hx_get_url": reverse('images:process_image', args=[image_id]),
+                "hx_target": "#content",
+                "hx_swap": "innerHTML",
+                "hx_trigger": "load",
+                "image_url": file.image.url
+            }
         )
+        return HttpResponse(html_content, content_type='text/html')
     else:
-        return render(
-            request, 'images/processed_image.html',
-            {'file': file}, status=286
+        processed_image_page = ProcessedImagePage()
+        html_content = processed_image_page.render(
+            args=[file]
         )
+        return HttpResponse(html_content, content_type='text/html')
 
 
 def resize_form_html(request, image_id):
@@ -180,7 +175,7 @@ def resize_form_html(request, image_id):
     data = {
             'id': 'image-resize-form',
             'hx-post': post_url,
-            'hx-target': "#img-container",
+            'hx-target': "#content",
             'hx-swap': "innerHTML",
     }
     if request.method == 'POST':
@@ -191,12 +186,18 @@ def resize_form_html(request, image_id):
             resize_image.delay(
                 image_id, width, height
             )
-
-            html_content = f'''
-            <div class="col s12 m12 center-align">
-                <img class="responsive-img" hx-get="/images/processed/service/{image_id}/" hx-indicator="#indicator" hx-trigger="load delay:1s"  hx-target="#img-container" hx-swap="innerHTML">
-            </div>
-            '''
+            unprocessed_image_page = UnprocessedImagePage()
+            html_content = unprocessed_image_page.render(
+                kwargs={
+                    "hx_get_url": reverse(
+                        'images:process_image', args=[image_id]
+                    ),
+                    "hx_target": "#content",
+                    "hx_swap": "innerHTML",
+                    "hx_trigger": "load delay:3s",
+                    "image_url": ""
+                }
+            )
             return HttpResponse(html_content, content_type='text/html')
     html_content = resize_form.render(
         kwargs={

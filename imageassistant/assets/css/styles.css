@@ -1,6 +1,27 @@
-/* .custom-container{
-    min-height: calc(100vh - 170px);
-} */
+.custom-container{
+    min-height: calc(100vh - 135px);
+}
+#content{
+    margin: 0,auto;
+    min-height: calc(100vh - 200px);
+    overflow-y: auto;
+}
+/* style the overflow on Y */
+#content::-webkit-scrollbar {
+    width: 10px;
+}
+#content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.banner-text{
+    font-size: 1.5em;
+    font-weight: bold;;
+    text-align: center;
+    margin:0;
+}
+
+
 /* Default size - Mobile */
 .logo-img {
     display: none;
@@ -38,34 +59,20 @@
     color:blue;
 }
 
-#indicator2 {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100px; /* Adjust height as needed */
-    width: 100%; /* Full width or adjust as needed */
-    position: relative; /* Ensure positioning context for centering */
-  }
+.custom-img-transform-button{
+    background-color: #284db7; /* Your custom color */
+    margin: 5px 0 0 5px;
+    color:white;
 
-  .spinner-layer {
-    width: 100px; /* Size of the spinner */
-    height: 100px; /* Size of the spinner */
-  }
-.img-container{
-    min-width: 100%;
-    max-width: 100%;
-    max-height:90vh;
-    min-height: 90vh;
-    display: inline-block;
-    overflow-y: auto;
-    overflow-x: auto;
 }
-/* when there is an overflow tidy the scrollbar */
-.img-container::-webkit-scrollbar {
-    width: 0.5em;
+.custom-img-transform-button:hover {
+    background-color:  #6d83c3; /* Your custom color */
 }
-.img-container::-webkit-scrollbar-track {
-    background: #f1f1f1;
+
+
+.spinner-layer {
+width: 100px; /* Size of the spinner */
+height: 100px; /* Size of the spinner */
 }
 #processed-img{
     background-image: url('../img/moroccan-flower.png');
@@ -96,6 +103,9 @@
 
 /* Small tablets and large phones */
 @media (min-width: 600px) {
+    .banner-text{
+        text-align: left;
+    }
     .logo-img {
         max-width: 200px;
         height: 64px;
@@ -108,6 +118,9 @@
 
 /* Tablets and small desktops */
 @media (min-width: 768px) {
+    .banner-text{
+        text-align: left;
+    }
     .logo-img {
         max-width: 220px;
         height: 64px;
@@ -120,6 +133,9 @@
 
 /* Desktop size */
 @media (min-width: 992px) {
+    .banner-text{
+        text-align: left;
+    }
     .logo-img {
         max-width: 250px;
         height: 64px;
@@ -132,6 +148,9 @@
 
 /* Large desktops and Surface Pro */
 @media (min-width: 1200px) {
+    .banner-text{
+        text-align: left;
+    }
     .logo-img {
         max-width: 300px;
         height: 64px;
@@ -144,6 +163,9 @@
 
 /* Surface Pro 7 specific media query */
 @media (min-width: 1366px) and (max-width: 2736px) {
+    .banner-text{
+        text-align: left;
+    }
     .logo-img {
         max-width: 320px;
         height: 64px;

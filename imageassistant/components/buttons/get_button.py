@@ -16,15 +16,3 @@ class GetButton(Component):
       <a  hx-get={{get_url}} hx-target={{target}}  hx-swap="innerHTML" class="waves-effect waves-light btn custom-img-transform-button"><span class="material-icons" style="color:white;">{{icon_name}}</span>{{label}}</a>
 
     """
-
-    css: types.css = """
-         .custom-img-transform-button{
-            background-color: #284db7; /* Your custom color */
-            margin: 5px 0 0 5px;
-            color:white;
-
-        }
-        .custom-img-transform-button:hover {
-            background-color:  #6d83c3; /* Your custom color */
-        }
-    """

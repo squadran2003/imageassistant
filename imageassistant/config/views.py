@@ -12,9 +12,10 @@ def base(request):
 
 def upload_content(request):
     token = csrf.get_token(request)
-    html_content = UploadContent().render(
-        args=[token],
-    )
+    # html_content = UploadContent().render(
+    #     args=[token],
+    # )
+    html_content = ""
     return HttpResponse(html_content, content_type='text/html')
 
 
