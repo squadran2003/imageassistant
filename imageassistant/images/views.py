@@ -90,33 +90,33 @@ def get_service_buttons(request, image_id):
             'target': '#content'
         }
     ]
-    if not settings.DEBUG:
-        url_context = [
-            {
-                'url': reverse('images:service', args=[1, image_id]),
-                'label': 'Convert to black and white',
-                'icon': 'colorize',
-                'target': '#content'
-            },
-            {
-                'url': reverse('images:resize-form', args=[image_id]),
-                'label': 'Resize',
-                'icon': 'transform',
-                'target': '#content'
-            },
-            {
-                'url': reverse('images:service', args=[4, image_id]),
-                'label': 'Create thumbnail',
-                'icon': 'image',
-                'target': '#content'
-            },
-            {
-                'url': reverse('images:crop-tool', args=[5, image_id]),
-                'label': 'Crop Image',
-                'icon': 'crop',
-                'target': '#content'
-            }
-        ]
+    # if not settings.DEBUG:
+    #     url_context = [
+    #         {
+    #             'url': reverse('images:service', args=[1, image_id]),
+    #             'label': 'Convert to black and white',
+    #             'icon': 'colorize',
+    #             'target': '#content'
+    #         },
+    #         {
+    #             'url': reverse('images:resize-form', args=[image_id]),
+    #             'label': 'Resize',
+    #             'icon': 'transform',
+    #             'target': '#content'
+    #         },
+    #         {
+    #             'url': reverse('images:service', args=[4, image_id]),
+    #             'label': 'Create thumbnail',
+    #             'icon': 'image',
+    #             'target': '#content'
+    #         },
+    #         {
+    #             'url': reverse('images:crop-tool', args=[5, image_id]),
+    #             'label': 'Crop Image',
+    #             'icon': 'crop',
+    #             'target': '#content'
+    #         }
+    #     ]
     html_content = ''
     for context in url_context:
         button = GetButton()

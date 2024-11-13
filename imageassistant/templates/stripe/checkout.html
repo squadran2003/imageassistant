@@ -2,6 +2,7 @@
 {% block content %}
 
 {% csrf_token %}
+<input type="hidden" id="stipe_publick_key" value="{{ stipe_publick_key }}">
 <div class="row">
     <div class="col s12 m12 lg12 x12 custom-margin-top">
         <div id="checkout">
@@ -15,7 +16,8 @@
     const service_id = document.querySelector("#service_id").value;
     const image_id = document.querySelector("#image_id").value;
     // This is your test secret API key.
-    const stripe = Stripe("pk_live_51Q99SfJfXU0eN0TRclOfyyEQcv1oQQW6GsvIcUFPPte5MXmONJmke9yruSszrtDkUhnmZ3fv6llqY2TBX08Q5DQf00atEnBI6p");
+    const stripPublicKey = document.getElementById('stipe_publick_key').value;
+    const stripe = Stripe(stripPublicKey);
 
     initialize();
 

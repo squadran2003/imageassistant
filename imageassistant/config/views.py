@@ -1,4 +1,4 @@
-from django.shortcuts import render, reverse
+from django.shortcuts import render
 from django.http import HttpResponse
 from django.conf import settings
 from django.middleware import csrf
@@ -47,6 +47,7 @@ def stripe_success_return(request):
 
 
 def stripe_checkout(request):
-    if settings.DEBUG:
-        return render(request, 'stripe/checkout_test.html')
-    return render(request, 'stripe/checkout.html')
+    return render(
+        request, 'stripe/checkout.html',
+        {'strip_public_key': settings.STRIPE_PUBLISHED_KEY}
+    )
