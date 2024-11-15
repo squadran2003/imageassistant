@@ -1,0 +1,22 @@
+
+{% component_css_dependencies %}
+<form {% html_attrs attrs default="" %} >
+    {% csrf_token %}
+    {% for field in form %}
+        <div class="file-field input-field">
+            <div class="waves-effect waves-light btn custom-img-transform-button">
+                <span>Upload a file</span>
+                {{ field }}
+            </div>
+            <div class="file-path-wrapper">
+                <input class="file-path validate" type="text">
+            </div>
+        </div>  
+         {% if field.errors %}
+            <div class="error">{{ field.errors|join:", " }}</div>
+        {% endif %}
+    {% endfor %}
+    <div class="htmx-indicator progress" id="indicator">
+        <div class="indeterminate"></div>
+    </div>
+</form>

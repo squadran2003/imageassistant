@@ -2,11 +2,13 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.conf import settings
 from django.middleware import csrf
+from images.forms import ImageUploadForm
 import os
 
 
 def base(request):
-    return render(request, 'index.html')
+    form = ImageUploadForm()
+    return render(request, 'index.html', {'form': form})
 
 
 def upload_content(request):

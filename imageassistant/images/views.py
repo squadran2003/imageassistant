@@ -6,10 +6,10 @@ from django.http import HttpResponse
 from django.conf import settings
 from django.http import JsonResponse
 from images.models import Image, Service
-from images.forms   import ImageForm, ImageResizeForm, CroppingForm
+from images.forms   import ImageUploadForm, ImageResizeForm, CroppingForm
 from components.buttons.get_button import GetButton
 from components.forms.resize_form import ResizeForm
-from components.forms.upload_form.upload_form import UploadForm
+from components.upload_component.upload_component import UploadComponent 
 from components.stripe.live_checkout.checkout import CheckoutContent
 from components.tools.crop_tool import CropTool
 from components.pages.initial_image_page import InitialImagePage
@@ -252,7 +252,7 @@ def crop_tool_content(request, service_id, image_id):
 
 
 def get_upload_form(request):
-    form = UploadForm()
+    form = UploadComponent()
     post_url = reverse('images:add')
     token = csrf.get_token(request)
     attrs = {

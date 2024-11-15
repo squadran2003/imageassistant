@@ -2,12 +2,14 @@ from images.models import Image
 
 from django import forms
 from django.urls import reverse
+from django.db import models
 
 
-class ImageForm(forms.ModelForm):
+class ImageUploadForm(forms.ModelForm):
     class Meta:
         model = Image
         fields = ['image']
+
 
     def clean_image(self):
         image = self.cleaned_data.get('image')
