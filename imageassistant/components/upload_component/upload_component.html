@@ -1,5 +1,4 @@
 
-{% component_css_dependencies %}
 <form {% html_attrs attrs default="" %} >
     {% csrf_token %}
     {% for field in form %}
@@ -9,11 +8,11 @@
                 {{ field }}
             </div>
             <div class="file-path-wrapper">
-                <input class="file-path validate" type="text">
+                <input class="file-path validate" type="text" onchange="htmx.trigger('#upload-form', 'submit')">
             </div>
         </div>  
          {% if field.errors %}
-            <div class="error">{{ field.errors|join:", " }}</div>
+            <div id="error">{{ field.errors|join:", " }}</div>
         {% endif %}
     {% endfor %}
     <div class="htmx-indicator progress" id="indicator">

@@ -15,6 +15,7 @@ from components.tools.crop_tool import CropTool
 from components.pages.initial_image_page import InitialImagePage
 from components.pages.unprocessed_image_page import UnprocessedImagePage
 from components.pages.processed_image_page import ProcessedImagePage
+from components.pages.main_content import MainContent
 from PIL import Image as PILImage
 from .tasks import (
     create_greyscale, remove_background,
@@ -26,13 +27,18 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 
 def add_image(request):
     if request.method == 'POST':
-        form = ImageForm(request.POST, request.FILES)
+        form = ImageUploadForm(request.POST, request.FILES)
         if form.is_valid():
             img = form.save(commit=False)
             img.save()
             return redirect("images:get_image", image_id=img.id)
-    else:
-        return HttpResponse("", content_type='text/html')
+        else:
+            main_content = MainContent()
+            html_content = main_content.render(
+                args=[form]
+            )
+            return HttpResponse(html_content, content_type='text/html')
+    return HttpResponse("", content_type='text/html')
 
 
 def get_image(request, image_id):

@@ -21,4 +21,4 @@ class UploadComponent(Component):
     template_name = "./upload_component.html"
 
     class Meta:
-        css = "upload_component.css"
+        css = "./upload_component.css"

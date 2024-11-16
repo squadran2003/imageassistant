@@ -1,3 +1,6 @@
 .image-resize-form{
     min-width: 100%;
 }
+.error{
+    color: red;
+}
