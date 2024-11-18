@@ -155,7 +155,7 @@ def crop_image(image_id, x, y, width, height):
     y = y * scale_factor_y
     width = width * scale_factor_x
     height = height * scale_factor_y
-    crop_img = img[int(y):int(min(y + height, file.image.height)), int(x):int(min(x + width, file.image.width))]
+    crop_img = img[int(x):int(min(x + height, file.image.height)), int(y):int(min(y + width, file.image.width))]
     crop_img_rgb = cv2.cvtColor(crop_img, cv2.COLOR_BGR2RGB)
     img2 = PILImage.fromarray(crop_img_rgb)
     img2.save(img_io, format='png', quality=100)
