@@ -138,8 +138,7 @@ height: 100px; /* Size of the spinner */
 /* Desktop size */
 @media (min-width: 992px) {
     #main-banner {
-        background-color: #1f3e96;
-        color:white;
+        background-color: #f4f7fc;
         margin-top: 10px;
     }
     .banner-text{
