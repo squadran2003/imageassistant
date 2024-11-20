@@ -33,6 +33,10 @@ class CropTool(Component):
                     y.value = event.detail.y;
                     width.value = event.detail.width;
                     height.value = event.detail.height;
+                    console.log(x.value);
+                    console.log(y.value);
+                    console.log(width.value);
+                    console.log(height.value);
                 }
             });
         })()

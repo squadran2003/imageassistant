@@ -142,23 +142,9 @@ def crop_image(image_id, x, y, width, height):
     else:
         img = PILImage.open(file.image.path)
     img_io = BytesIO()
-    if settings.DEBUG:
-        img = cv2.imread(file.image.path)
-    else:
-
-        url_response = urllib.request.urlopen(file.image.url)
-        img_array = np.array(bytearray(url_response.read()), dtype=np.uint8)
-        img = cv2.imdecode(img_array, -1)
-    scale_factor_x = file.image.width / width
-    scale_factor_y = file.image.height / height
-    x = x * scale_factor_x
-    y = y * scale_factor_y
-    width = width * scale_factor_x
-    height = height * scale_factor_y
-    crop_img = img[int(x):int(min(x + height, file.image.height)), int(y):int(min(y + width, file.image.width))]
-    crop_img_rgb = cv2.cvtColor(crop_img, cv2.COLOR_BGR2RGB)
-    img2 = PILImage.fromarray(crop_img_rgb)
-    img2.save(img_io, format='png', quality=100)
+    print(x, y, width, height)
+    img_cropped = img.crop((max(x, 0), max(y, 0), min(width+x, file.image.width), min(height+y, file.image.height)))
+    img_cropped.save(img_io, format='png', quality=100)
     img_content = ContentFile(img_io.getvalue())
     if not settings.DEBUG:
         # in prod saving the image to s3 and later updating the image field via lambda

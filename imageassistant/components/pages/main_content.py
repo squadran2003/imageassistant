@@ -92,7 +92,7 @@ class MainContent(Component):
                 </div>
             </div>
     """
-    
+
     def get_context_data(self, form):
         return {
             "form": form,
