@@ -7,7 +7,6 @@ class ResizeForm(Component):
         return {
             "width ": kwargs.get("width", ''),
             "height": kwargs.get("height", ''),
-            "token": kwargs.get("token", ""),
             "attrs": kwargs.get("attrs", {}),
             "errors": kwargs.get("errors", []),
             "form": kwargs.get("form", None),
@@ -18,7 +17,6 @@ class ResizeForm(Component):
          <div class="row">
             <div class="col s12 m12 lg12">
                 <form {% html_attrs attrs %}>
-                    <input type="hidden" name="csrfmiddlewaretoken" value="{{ token }}">
                     {% for field in form %}
                         <div class="input-field col s12 m12 lg12">
                             {% if not field.errors %}

@@ -200,7 +200,6 @@ def processed_service(request, image_id):
 def resize_form_html(request, image_id):
     """send a form to the client to get the width and height of the image"""
     form = ImageResizeForm()
-    token = csrf.get_token(request)
     # this is the url that the form will post to
     post_url = reverse('images:resize-form', args=[image_id])
     # this is the component that will be rendered
@@ -234,7 +233,6 @@ def resize_form_html(request, image_id):
             return HttpResponse(html_content, content_type='text/html')
     html_content = resize_form.render(
         kwargs={
-            "token": token,
             "attrs": data,
             "form": form
         }
@@ -245,14 +243,12 @@ def resize_form_html(request, image_id):
 
 def crop_tool_content(request, service_id, image_id):
     image = Image.objects.get(pk=image_id)
-    token = csrf.get_token(request)
     form = CroppingForm()
     form.service_id = service_id
     form.image_id = image_id
     crop_tool = CropTool()
-    print(image.image.url)
     html_content = crop_tool.render(
-        args=[image.image.url, form, service_id, image_id, token]
+        args=[image.image.url, form, service_id, image_id]
     )
     return HttpResponse(html_content, content_type='text/html')
 
@@ -282,9 +278,6 @@ def get_checkout_content(request, service_id, image_id):
     token = csrf.get_token(request)
     check_out_url = reverse('images:create_checkout_session', args=[service_id, image_id])
     html_content = ''
-    # if settings.DEBUG:
-    #     checkout_content = CheckoutTestContent()
-    # else:
     checkout_content = CheckoutContent()
     html_content = checkout_content.render(
         args=[service_id, image_id, token, settings.STRIPE_PUBLIC_KEY],
