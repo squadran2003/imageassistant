@@ -15,7 +15,7 @@
     <link  href="{% static  'css/dist_cropper/cropper.css' %}" rel="stylesheet">
     <script src="https://js.stripe.com/v3/"></script>
 </head>
-<body hx-headers='{"X-CSRFToken":"WfQhD1RddKw8NQsQgobgD0riUC8CdUyqMv07A8661RPpGNLfESMEvLmNssLq84QL"}'>
+<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
 
 <nav>
     <div class="nav-wrapper">
