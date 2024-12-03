@@ -57,18 +57,6 @@ class MainContent(Component):
                 <div class="col s12 xs12 m4 l4" style="margin-top: 50px;">
                     <div class="card custom-card-height">
                         <div class="card-image">
-                            <span class="card-title" style="color:black">Remove background</span>
-                        </div>
-                        <div class="card-content">
-                            <p>This is uses Machine learning to analyse an image and isolate the backrgound. This is a paid service.
-                            </p>
-                            <p><strong>Price:£1</strong></p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col s12 xs12 m4 l4" style="margin-top: 50px;">
-                    <div class="card custom-card-height">
-                        <div class="card-image">
                             <span class="card-title" style="color:black">Create Thumbnail</span>
                         </div>
                         <div class="card-content">
