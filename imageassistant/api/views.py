@@ -3,6 +3,8 @@ from rest_framework import status
 from rest_framework.views import APIView
 from images.models import Image
 from images.serializers import ImageSerializer
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
 
 
 class ImageListUpdate(APIView):
@@ -26,3 +28,10 @@ class ImageListUpdate(APIView):
         image.save()
         serializer = ImageSerializer(image)
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+
+@api_view(['GET'])
+# add allow any to allow any user to access this view
+@permission_classes([AllowAny])
+def test(request):
+    
+    return Response({'test': 'test'}, status=status.HTTP_200_OK)
