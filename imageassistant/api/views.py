@@ -33,5 +33,12 @@ class ImageListUpdate(APIView):
 # add allow any to allow any user to access this view
 @permission_classes([AllowAny])
 def test(request):
+    try:
+        value = int(request.GET.get("value", 0))
+    except ValueError:
+        return Response({"error": "Invalid value"}, status=status.HTTP_400_BAD_REQUEST)
+    # Perform a lightweight computation
+    squared = value ** 2
+    result = {"original": value, "squared": squared, "message": f"Square of {value} is {squared}"}
     
-    return Response({'test': 'test'}, status=status.HTTP_200_OK)
+    return Response(result, status=status.HTTP_200_OK)
