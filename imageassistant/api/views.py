@@ -3,8 +3,6 @@ from rest_framework import status
 from rest_framework.views import APIView
 from images.models import Image
 from images.serializers import ImageSerializer
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
 
 
 class ImageListUpdate(APIView):
