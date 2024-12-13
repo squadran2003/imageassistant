@@ -32,7 +32,7 @@ class ImageListUpdate(APIView):
 @api_view(['GET'])
 # add allow any to allow any user to access this view
 @permission_classes([AllowAny])
-def test(request):
+async def test(request):
     try:
         value = int(request.GET.get("value", 0))
     except ValueError:
