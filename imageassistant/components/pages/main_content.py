@@ -87,7 +87,7 @@ class MainContent(Component):
                             <p>This service enhances your image using Stability AI. It enhances the image resolution by 4x using predictive and generative AI.
                             Ideal for enhancing the quality of compressed images.
                             </p>
-                            <p><strong>Price:</strong>$2</p>
+                            <p><strong>Price:</strong>$3</p>
                         </div>
                     </div>
                 </div>

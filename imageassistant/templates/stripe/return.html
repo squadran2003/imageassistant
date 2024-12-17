@@ -4,12 +4,15 @@
 <div class="row">
     <div class="col s12 m12 lg12 x12 custom-margin-top">
         <div class="card">
-            <div class="card-content hidden" id="success">
-                <span class="card-title">Removing background</span>
-                We appreciate your business! A confirmation email will be sent to <span id="customer-email"></span>.
-      
+            <div class="card-title text-center">
+                <span id="service_name_holder"></span>
+            </div>
+            <div class="card-content hidden"  id="success">
+                <p><i class="material-icons">check_circle</i> Payment Successful. We appreciate your business! A confirmation email will be sent to <span id="customer-email"></span>.
+    
                 If you have any questions, please email <a href="mailto:cormackandy@hotmail.com"> quoting the service number </a><span id="service_id_display"></span>.
                 We are processing the image hold tight...
+                </p>
             </div>
         </div>
         <div class="progress htmx-indicator" id="indicator">
@@ -27,7 +30,10 @@
         const urlParams = new URLSearchParams(queryString);
         const sessionId = urlParams.get('session_id');
         const service_id = urlParams.get('service_id');
+        const service_name = urlParams.get('service_name');
         const service_id_display = document.getElementById('service_id_display');
+        const service_name_holder = document.getElementById('service_name_holder');
+        service_name_holder.textContent = service_name;
         const image_id = urlParams.get('image_id');
         const response = await fetch(`/images/check/checkout/status/?session_id=${sessionId}`);
         const session = await response.json();

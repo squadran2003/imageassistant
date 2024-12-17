@@ -93,7 +93,7 @@ def get_service_buttons(request, image_id):
             'target': '#content'
         },
         {
-            'url': reverse('images:service', args=[6, image_id]),
+            'url': enhance_image_service_url,
             'label': 'Inhance Image',
             'icon': 'color_lens',
             'target': '#content'
@@ -286,7 +286,7 @@ def create_checkout_session(request, service_id, image_id):
                 },
             ],
             mode='payment',
-            return_url=f"{settings.DOMAIN}/stripe/return/?session_id={{CHECKOUT_SESSION_ID}}&service_id={service_id}&image_id={image_id}",
+            return_url=f"{settings.DOMAIN}/stripe/return/?session_id={{CHECKOUT_SESSION_ID}}&service_id={service_id}&image_id={image_id}&service_name={service.name}",
             automatic_tax={'enabled': True},
         )
         client_secret = session.client_secret

@@ -35,6 +35,7 @@ services = (
     ('Remove Background', 'Remove Background'),
     ('Resize', 'Resize'),
     ('Thumbnail', 'Thumbnail'),
+    ('Enhancement', 'Enhancement'),
 )
 
 
