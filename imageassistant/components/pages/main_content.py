@@ -23,7 +23,7 @@ class MainContent(Component):
             </div>
             <div class="row">
                 <div class="col s12 xs12 m12 l12 x12" style="margin-bottom: 50px;">
-                    <h2 class="center">Our Services</h2>
+                    <h2 class="center">Services Offered</h2>
                 </div>
             </div>
             <div class="row">
@@ -75,6 +75,19 @@ class MainContent(Component):
                             <p>This service provides a tool that allows you to crop your image to a specified size.
                             </p>
                             <p><strong>Price:</strong>Free</p>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col s12 xs12 m4 l4" style="margin-top: 50px;">
+                    <div class="card custom-card-height">
+                        <div class="card-image">
+                            <span class="card-title" style="color:black">Image Enhancement</span>
+                        </div>
+                        <div class="card-content">
+                            <p>This service enhances your image using Stability AI. It enhances the image resolution by 4x using predictive and generative AI.
+                            Ideal for enhancing the quality of compressed images.
+                            </p>
+                            <p><strong>Price:</strong>$2</p>
                         </div>
                     </div>
                 </div>

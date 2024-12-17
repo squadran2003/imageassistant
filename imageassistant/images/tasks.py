@@ -160,6 +160,46 @@ def crop_image(image_id, x, y, width, height):
         file.save()
 
 
+@shared_task
+def enhance_image(image_id):
+    s3 = boto3.client('s3')
+    # https://api.stability.ai/v2beta/stable-image/edit/remove-background...
+    file = Image.objects.get(pk=image_id)
+    if not settings.DEBUG:
+        img = PILImage.open(urlopen(file.image.url))
+    else:
+        img = PILImage.open(file.image.path)
+    img_io = BytesIO()
+    img.save(img_io, format='png', quality=100)
+    response = requests.post(
+        "https://api.stability.ai/v2beta/stable-image/upscale/fast",
+        files={"image": img_io.getvalue()},
+        headers={
+            "Authorization": f"Bearer {settings.STABILITY_AI_KEY}",
+            "accept": "image/*"
+        },
+        data={
+            "output_format": "png",
+        },
+    )
+    img_io.write(response.content)
+    img_io.seek(0)
+    img_content = ContentFile(img_io.getvalue())
+    if not settings.DEBUG:
+        # in prod saving the image to s3 and later updating the image field via lambda
+        s3.put_object(
+            Bucket=settings.AWS_STORAGE_BUCKET_NAME,
+            Key=f"media/celery/{image_id}_{file.image.name}",
+            Body=img_io.getvalue()
+        )
+    else:
+        # in dev using celery to process the image
+        file.image.save(file.image.name, img_content)
+        file.processed = True
+        file.save()
+
+
+
 
 
 

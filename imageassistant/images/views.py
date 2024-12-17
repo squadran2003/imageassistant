@@ -19,7 +19,8 @@ from components.pages.main_content import MainContent
 from PIL import Image as PILImage
 from .tasks import (
     create_greyscale, remove_background,
-    resize_image, create_thumbnail, crop_image
+    resize_image, create_thumbnail, crop_image,
+    enhance_image
 )
 import stripe
 stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -62,8 +63,10 @@ def get_service_buttons(request, image_id):
     # else present with a stripe form
     # when stripe says payemnt is successful, then process background removal
     background_removal_service_url = reverse('images:service', args=[2, image_id])
+    enhance_image_service_url = reverse('images:service', args=[6, image_id])
     if not request.user.is_authenticated:
         background_removal_service_url = reverse('images:checkout', args=[2, image_id])
+        enhance_image_service_url = reverse('images:checkout', args=[6, image_id])
     url_context = [
         {
             'url': reverse('images:service', args=[1, image_id]),
@@ -87,6 +90,12 @@ def get_service_buttons(request, image_id):
             'url': reverse('images:crop-tool', args=[5, image_id]),
             'label': 'Crop Image',
             'icon': 'crop',
+            'target': '#content'
+        },
+        {
+            'url': reverse('images:service', args=[6, image_id]),
+            'label': 'Inhance Image',
+            'icon': 'color_lens',
             'target': '#content'
         }
     ]
@@ -128,6 +137,9 @@ def service(request, service_id, image_id):
                     args=[img.image.url, form, service_id, image_id, token]
                 )
                 return HttpResponse(html_content, content_type='text/html')
+    elif service_id == 6:
+        print("Enhancing image")
+        enhance_image.delay(image_id)
         # crop_image.delay(image_id, x , y, width, height)
     unprocessed_page = UnprocessedImagePage()
     html_content = unprocessed_page.render(
