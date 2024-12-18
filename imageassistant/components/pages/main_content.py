@@ -16,9 +16,6 @@ class MainContent(Component):
                                     </h5>
                                 </div>
                                 {% component "upload_component" id="upload-form" target="#content" swap="innerHTML"  url="images:add" form="{{form}}" %}{% endcomponent %}
-                                    <div class="htmx-indicator progress" id="indicator">
-                                        <div class="indeterminate"></div>
-                                    </div>
                             </div>
                         </div>
                     </div>
