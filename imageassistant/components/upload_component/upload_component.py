@@ -14,7 +14,6 @@ class UploadComponent(Component):
                 'hx-post': reverse(kwargs.get('url', '')),
                 'method': 'post',
                 'enctype': 'multipart/form-data',
-                'hx-indicator': '#indicator'
             }
         }
 
