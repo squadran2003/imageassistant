@@ -82,8 +82,14 @@ def get_service_buttons(request, image_id):
         },
         {
             'url': reverse('images:service', args=[4, image_id]),
-            'label': 'Create thumbnail',
-            'icon': 'image',
+            'label': 'Create Thumbnail',
+            'icon': 'crop_square',
+            'target': '#content'
+        },
+        {
+            'url': background_removal_service_url,
+            'label': 'Remove Background',
+            'icon': 'remove',
             'target': '#content'
         },
         {

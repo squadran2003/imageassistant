@@ -94,6 +94,18 @@ class MainContent(Component):
                         </div>
                     </div>
                 </div>
+                 <div class="col s12 xs12 m4 l4" style="margin-top: 50px;">
+                    <div class="card custom-card-height">
+                        <div class="card-image">
+                            <span class="card-title" style="color:black">Remove background</span>
+                        </div>
+                        <div class="card-content">
+                            <p>This service removes a image background using Stability AI.
+                            </p>
+                            <p><strong>Price:</strong>$5</p>
+                        </div>
+                    </div>
+                </div>
             </div>
     """
 
