@@ -181,7 +181,7 @@ def enhance_image(image_id):
     img_io = BytesIO()
     img.save(img_io, format='png', quality=100)
     response = requests.post(
-        "https://api.stability.ai/v2beta/stable-image/upscale/fast",
+        "https://api.stability.ai/v2beta/stable-image/upscale/conservative",
         files={"image": img_io.getvalue()},
         headers={
             "Authorization": f"Bearer {settings.STABILITY_AI_KEY}",
