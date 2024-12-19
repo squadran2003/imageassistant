@@ -88,7 +88,7 @@ def get_service_buttons(request, image_id):
         },
         {
             'url': background_removal_service_url,
-            'label': 'Remove Background',
+            'label': 'Remove Background: $5',
             'icon': 'remove',
             'target': '#content'
         },
@@ -100,7 +100,7 @@ def get_service_buttons(request, image_id):
         },
         {
             'url': enhance_image_service_url,
-            'label': 'Inhance Image',
+            'label': 'Inhance Image: $3',
             'icon': 'color_lens',
             'target': '#content'
         }

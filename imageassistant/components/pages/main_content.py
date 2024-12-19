@@ -84,7 +84,7 @@ class MainContent(Component):
                             <span class="card-title" style="color:black">Image Enhancement</span>
                         </div>
                         <div class="card-content">
-                            <p>This service enhances your image using Stability AI. It enhances the image resolution by 4x using predictive and generative AI.
+                            <p>This service enhances your image using AI. It enhances the image resolution by 4x using predictive and generative AI.
                             Ideal for enhancing the quality of compressed images.
                             </p>
                             <p><strong>Price:</strong>$3</p>
@@ -97,7 +97,7 @@ class MainContent(Component):
                             <span class="card-title" style="color:black">Remove background</span>
                         </div>
                         <div class="card-content">
-                            <p>This service removes a image background using Stability AI.
+                            <p>This service removes a image background using AI.
                             </p>
                             <p><strong>Price:</strong>$5</p>
                         </div>
