@@ -70,7 +70,7 @@ def get_service_buttons(request, image_id):
     url_context = [
         {
             'url': reverse('images:service', args=[1, image_id]),
-            'label': 'Convert to black and gray',
+            'label': 'Convert to black and white',
             'icon': 'colorize',
             'target': '#content'
         },
