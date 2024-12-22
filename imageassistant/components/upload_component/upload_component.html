@@ -1,4 +1,4 @@
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 <form {% html_attrs attrs default="" %} hx-indicator="#indicator">
     {% for field in form %}
         <div class="file-field input-field">
@@ -7,7 +7,7 @@
                 {{ field }}
             </div>
             <div class="file-path-wrapper">
-                <input class="file-path validate" type="text" onchange="htmx.trigger('#upload-form', 'submit')" aria-label="Upload a file">
+                <input class="file-path validate" type="text" onchange="htmx.trigger('#upload-form', 'submit')">
             </div>
         </div>  
          {% if field.errors %}
