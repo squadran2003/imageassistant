@@ -11,9 +11,9 @@ class MainContent(Component):
                             <div class="col s12 m12 l12 x12">
                                 <div class="banner-text">
                                     <h1 class="banner">Unlock Your Image's Full Potential</h1>
-                                    <h5>Transform and Enhance your images with ImageAssistant's powerful tools.
+                                    <p>Transform and Enhance your images with ImageAssistant's powerful tools.
                                         Start creating stunning visuals in just a few clicks!
-                                    </h5>
+                                    </p>
                                 </div>
                                 {% component "upload_component" id="upload-form" target="#content" swap="innerHTML"  url="images:add" form="{{form}}" %}{% endcomponent %}
                             </div>

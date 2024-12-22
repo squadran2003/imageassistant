@@ -7,7 +7,7 @@
                 {{ field }}
             </div>
             <div class="file-path-wrapper">
-                <input class="file-path validate" type="text" onchange="htmx.trigger('#upload-form', 'submit')">
+                <input class="file-path validate" type="text" onchange="htmx.trigger('#upload-form', 'submit')" aria-label="Upload a file">
             </div>
         </div>  
          {% if field.errors %}

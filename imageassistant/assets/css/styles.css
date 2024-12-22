@@ -21,9 +21,8 @@
     margin-top: 10px;
 }
 
-.banner-text{
+.banner-text p{
     font-size: 1.5em;
-    font-weight: bold;;
     text-align: left;
     margin:0;
     padding:5px;
