@@ -25,7 +25,10 @@
             <img class="logo-img" src="{% static 'img/logo.png' %}" alt="Image Assistant Logo">
             <span class="logo-text">Image Assistant</span>
         </a>
-        <!-- <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a> -->
+        <ul id="nav-mobile" class="left">
+            <li><a href="/" class="brand-logo left"><i class="material-icons">home</i></a></li>
+        </ul>
+        <!-- <a href="#" class="sidenav-trigger"><i class="material-icons">menu</i></a> -->
         <!-- <form class="hide-on-med-and-down">
             <div class="input-field right">
               <input id="search" type="search" required placeholder="search for services">
@@ -35,15 +38,6 @@
         </form> -->
     </div>
 </nav>
-<!-- <div class="sidenav" id="mobile-demo">
-    <form>
-        <div class="input-field left">
-            <input id="search" type="search" required placeholder="search for services">
-            <label class="left label-icon" for="search"><i class="material-icons">search</i></label>
-            <i class="left material-icons">close</i>
-        </div>
-    </form>
-</div> -->
 <div class="container-fluid custom-container">
     {% block content %}
        
@@ -58,11 +52,5 @@
 </footer>
 <script src="{% static 'js/htmx.min.js' %}"></script>
 <script src="{% static 'js/dist_cropper/cropper.js' %}"></script>
-<!-- <script>
-    document.addEventListener('DOMContentLoaded', function() {
-    var elems = document.querySelectorAll('.sidenav');
-    var instances = M.Sidenav.init(elems);
-  });
-</script> -->
 </body>
 </html>
