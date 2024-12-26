@@ -12,13 +12,13 @@ class UploadButton(Component):
     """
     css = """
        .custom-img-upload-button{
-            background-color: #284db7; /* Your custom color */
+            background-color: #000000; /* Your custom color */
             margin: 5px 0 0 5px;
             color:white;
 
         }
         .custom-img-upload-button:hover {
-            background-color: #6d83c3; /* Your custom color */
+            background-color: #000000; /* Your custom color */
         }
     """
 

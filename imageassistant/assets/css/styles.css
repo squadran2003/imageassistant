@@ -1,3 +1,6 @@
+.text{
+    color: white;
+}
 .custom-container{
     min-height: calc(100vh - 135px);
 }
@@ -13,14 +16,10 @@
 #content::-webkit-scrollbar-track {
     background: #f1f1f1;
 }
-#main-banner {
-    height: 500px;
-    color:black;
-    margin-bottom: 1%;
-    background-color: white
-    margin-top: 10px;
-}
 
+.banner-text, p{
+    color:white
+}
 .banner-text p{
     font-size: 1.5em;
     text-align: left;
@@ -28,9 +27,6 @@
     padding:5px;
 }
 
-.custom-card-height{
-    min-height: 258px;
-}
 /* Default size - Mobile */
 .logo-img {
     display: none;
@@ -110,6 +106,19 @@ height: 100px; /* Size of the spinner */
     width:50%;
 }
 
+/* the service cards on the home page */
+.service-card-title {
+    margin-left: 3%;
+}
+
+.custom-card{
+    min-height: 58%;
+    background-color: #443d3d; /* White cards */
+    color: white; /* Black text for contrast */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+
 /* Small tablets and large phones */
 @media (min-width: 600px) {
     .logo-img {
@@ -137,7 +146,6 @@ height: 100px; /* Size of the spinner */
 /* Desktop size */
 @media (min-width: 992px) {
     #main-banner {
-        background-color: #f4f7fc;
         margin-top: 10px;
     }
     .banner-text{

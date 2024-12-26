@@ -8,7 +8,7 @@ import os
 
 def base(request):
     form = ImageUploadForm()
-    return render(request, 'index.html', {'form': form})
+    return render(request, 'index.html', {'form': form, 'MEDIA_URL': settings.MEDIA_URL})
 
 
 def upload_content(request):

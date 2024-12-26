@@ -8,6 +8,7 @@ __pycache__/
 *.ini
 # Distribution / packaging
 .Python
+imageassistant/media/video/
 build/
 node_modules/
 develop-eggs/

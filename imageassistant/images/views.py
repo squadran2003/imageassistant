@@ -7,8 +7,10 @@ from django.conf import settings
 from django.http import JsonResponse
 from images.models import Image, Service
 from images.forms   import ImageUploadForm, ImageResizeForm, CroppingForm
+from images.forms import PromptForm as DjangoPromptForm
 from components.buttons.get_button import GetButton
 from components.forms.resize_form import ResizeForm
+from components.forms.prompt_form import PromptForm
 from components.upload_component.upload_component import UploadComponent 
 from components.stripe.live_checkout.checkout import CheckoutContent
 from components.tools.crop_tool import CropTool
@@ -63,14 +65,14 @@ def get_service_buttons(request, image_id):
     # else present with a stripe form
     # when stripe says payemnt is successful, then process background removal
     background_removal_service_url = reverse('images:service', args=[2, image_id])
-    enhance_image_service_url = reverse('images:service', args=[6, image_id])
+    enhance_image_service_url = reverse('images:get_prompt_form', args=[6, image_id])
     if not request.user.is_authenticated:
         background_removal_service_url = reverse('images:checkout', args=[2, image_id])
         enhance_image_service_url = reverse('images:checkout', args=[6, image_id])
     url_context = [
         {
             'url': reverse('images:service', args=[1, image_id]),
-            'label': 'Convert to black and white',
+            'label': 'Convert to black and GRAY',
             'icon': 'colorize',
             'target': '#content'
         },
@@ -145,7 +147,11 @@ def service(request, service_id, image_id):
                 return HttpResponse(html_content, content_type='text/html')
     elif service_id == 6:
         print("Enhancing image")
-        enhance_image.delay(image_id)
+        if request.method == 'POST':
+            form = DjangoPromptForm(request.POST)
+            if form.is_valid():
+                prompt = form.cleaned_data['prompt']
+                enhance_image.delay(image_id, prompt)
         # crop_image.delay(image_id, x , y, width, height)
     unprocessed_page = UnprocessedImagePage()
     html_content = unprocessed_page.render(
@@ -273,6 +279,25 @@ def get_checkout_content(request, service_id, image_id):
     return HttpResponse(html_content, content_type='text/html')
 
 
+def get_prompt_form(request, service_id, image_id):
+    prompt_form = PromptForm()
+    django_prompt_form = DjangoPromptForm()
+   
+    html_content = prompt_form.render(
+        kwargs={
+            "attrs": {
+                'id': 'prompt-form',
+                'hx-post': reverse('images:service', args=[service_id, image_id]),
+                'hx-target': "#content",
+                'hx-swap': "innerHTML",
+            },
+            'form': django_prompt_form,
+            "errors": []
+        }
+    )
+    return HttpResponse(html_content, content_type='text/html')
+
+
 def create_checkout_session(request, service_id, image_id):
     service = Service.objects.get(code=service_id)
     client_secret = ''
@@ -281,6 +306,7 @@ def create_checkout_session(request, service_id, image_id):
     # if no price id is set, then redirect to the service page as the service doesnt require payment
     if not service.stripe_price_id:
         return redirect('images:service', service_id, image_id)
+    return_url = f"{settings.DOMAIN}/stripe/return/?session_id={{CHECKOUT_SESSION_ID}}&service_id={service_id}&image_id={image_id}&service_name={service.name}"
     try:
         session = stripe.checkout.Session.create(
             ui_mode='embedded',
@@ -292,7 +318,7 @@ def create_checkout_session(request, service_id, image_id):
                 },
             ],
             mode='payment',
-            return_url=f"{settings.DOMAIN}/stripe/return/?session_id={{CHECKOUT_SESSION_ID}}&service_id={service_id}&image_id={image_id}&service_name={service.name}",
+            return_url=return_url,
             automatic_tax={'enabled': True},
         )
         client_secret = session.client_secret

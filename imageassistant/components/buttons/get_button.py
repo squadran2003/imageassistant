@@ -13,6 +13,6 @@ class GetButton(Component):
 
     template: types.django_html = """
         {% component_css_dependencies %}
-      <a  hx-get={{get_url}} hx-target={{target}}  hx-swap="innerHTML" class="waves-effect waves-light btn custom-img-transform-button"><span class="material-icons" style="color:white;">{{icon_name}}</span>{{label}}</a>
+      <a  hx-get={{get_url}} hx-target={{target}}  hx-swap="innerHTML" class="waves-effect btn"><span class="material-icons">{{icon_name}}</span>{{label}}</a>
 
     """

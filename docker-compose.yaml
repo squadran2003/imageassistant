@@ -19,6 +19,7 @@ services:
     environment:
       # - change this to your settings file
       - DJANGO_SETTINGS_MODULE=config.settings
+      - DOCKER_CONTAINER=True
     volumes:
       # change to your base directory
       - ./:/usr/src/imageassistant/

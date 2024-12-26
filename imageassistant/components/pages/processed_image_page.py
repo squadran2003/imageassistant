@@ -7,9 +7,9 @@ class ProcessedImagePage(Component):
         <div class="row">
                 <div class="col s12 m12 l12 xl12">
                     {% if file.alternate_url %}
-                        <a href="{{ file.alternate_url }}"  download="{{ file.alternate_url }}" class="waves-effect waves-light btn custom-img-transform-button"><span class="material-icons" style="color:white;margin-top:5px;">download</span>Download</a>
+                        <a href="{{ file.alternate_url }}"  download="{{ file.alternate_url }}" class="waves-effect waves-light btn"><span class="material-icons" style="margin-top:5px;">download</span>Download</a>
                     {% else %}
-                        <a href="{{ file.image.url }}" download="{{ file.image.url }}" class="waves-effect waves-light btn custom-img-transform-button"><span class="material-icons" style="color:white;margin-top:5px;">download</span>Download</a>
+                        <a href="{{ file.image.url }}" download="{{ file.image.url }}" class="waves-effect waves-light btn"><span class="material-icons" style="margin-top:5px;">download</span>Download</a>
                     {% endif %}   
                 </div>
             </div>

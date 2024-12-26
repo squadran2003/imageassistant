@@ -170,8 +170,11 @@ def crop_image(image_id, x, y, width, height):
 
 
 @shared_task
-def enhance_image(image_id):
+def enhance_image(image_id, prompt=None):
     s3 = boto3.client('s3')
+    if not prompt:
+        print("Prompt is required")
+        return
     # https://api.stability.ai/v2beta/stable-image/edit/remove-background...
     file = Image.objects.get(pk=image_id)
     if not settings.DEBUG:
@@ -189,6 +192,7 @@ def enhance_image(image_id):
         },
         data={
             "output_format": "png",
+            "prompt": prompt
         },
     )
     # reset img_io

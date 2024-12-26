@@ -3,15 +3,16 @@
 <input type="hidden" id="domain" value="{{ domain }}">
 <div class="row">
     <div class="col s12 m12 lg12 x12 custom-margin-top">
-            <div class="card-panel hidden"  id="success">
+            <div class="card-panel hidden"  id="success" style="font-size: 1.2em; min-width: 100%">
                 <span id="service_name_holder"></span>
                 <i class="material-icons">check_circle</i> 
-                <blockquote>
-                Payment Successful. We appreciate your business! A confirmation email will be sent to <span id="customer-email"></span>.
-    
-                If you have any questions, please email <a href="mailto:cormackandy@hotmail.com"></a>quoting the service number: <span id="service_id_display"></span>
-                and Image ID: <span id="image_id_display"></span>
-                We are processing the please wait...
+                <blockquote style="font-size: 1.2em; min-width: 100%">
+                    Payment Successful. We appreciate your business! A confirmation email will be sent to <span id="customer-email"></span>.
+        
+                    If you have any questions, please email <a href="mailto:cormackandy@hotmail.com"></a>quoting the service number: <span id="service_id_display"></span>
+                    and Image ID: <span id="image_id_display"></span>.
+                    Please fill in the additional information required below if asked and we will complete the processing. If no other information is required 
+                    please wait while we process your request...
                 </blockquote> 
             </div>
         <div id="content" class="img-container">
@@ -42,10 +43,19 @@
                 const successPara = document.getElementById('success');
                 successPara.classList.remove('hidden');
                 document.getElementById('customer-email').textContent = session.customer_email
-                htmx.ajax('GET', `${domain}/images/service/${service_id}/${image_id}/`, {
-                    target: '#content',
-                    indicator: '#indicator'
-                });
+                if(Number(service_id) === 6){
+                        htmx.ajax('GET', `${domain}/images/get/prompt/form/${service_id}/${image_id}/`, {
+                        target: '#content',
+                        indicator: '#indicator'
+                    });
+
+                }else{
+                    htmx.ajax('GET', `${domain}/images/service/${service_id}/${image_id}/`, {
+                        target: '#content',
+                        indicator: '#indicator'
+                    }
+                    );
+                }
                 service_id_display.textContent = service_id;
                 image_id_display.textContent = image_id;
                 return;

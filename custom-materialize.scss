@@ -2,17 +2,33 @@
 @import 'node_modules/materialize-css/sass/components/_color-variables.scss';
 
 // Define your custom colors
-$primary-color: #284db7 !default; // Navy Blue
+$primary-color: #000000 !default; // Navy Blue
 $primary-color-light: lighten($primary-color, 15%) !default;
 $primary-color-dark: darken($primary-color, 15%) !default;
 
 
 
 // Change secondary color
-$secondary-color: #612785;
+$secondary-color: purple;
 $secondary-color: lighten($secondary-color, 15%) !default;
 $secondary-color: darken($secondary-color, 15%) !default;
 
+$error-color: #F44336;  // Bold Red
+$warning-color: #FFC107;  // Warm Yellow
+$background-color: #f4f7fc;  // Light Grey
+$text-color: white;  // Dark Grey
+
+$page-background-color: #000000;  // Light Gray for the page background
+
+body {
+  background-color: $page-background-color;
+}
+
+// Customize button styles
+.btn {
+    background-color: #f4f7fc !important;
+    color: #000000 !important;
+}
 
 
 // Import Materialize to apply your custom colors

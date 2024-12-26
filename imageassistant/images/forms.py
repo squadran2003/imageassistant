@@ -111,3 +111,17 @@ class CroppingForm(forms.Form):
         if height <= 0:
             raise forms.ValidationError('Height must be greater than 0')
         return height
+
+
+class PromptForm(forms.Form):
+    prompt = forms.CharField(
+        required=True, help_text='Tell us more about the image you want to enhance', widget=forms.TextInput(
+            attrs={'class': "validate prompt-form"}
+        )
+    )
+
+    def clean_prompt(self):
+        prompt = self.cleaned_data.get('prompt')
+        if prompt is None or prompt == '':
+            raise forms.ValidationError('Prompt is required')
+        return prompt
