@@ -38,7 +38,7 @@ class MainContent(Component):
                         </div>
                         <div class="card-content">
                             <span class="card-title">Black & White Conversion</span>
-                            <p>Transform your images into classic black-and-white using advanced grayscale techniques with Pillow, a powerful Python library. This service is perfect for adding a timeless, artistic feel to photos or preparing images for use in documents, presentations, or websites where a monochrome aesthetic is preferred.
+                            <p>Transform your images into classic black-and-white using advanced grayscale techniques. This service is perfect for adding a timeless, artistic feel to photos or preparing images for use in documents, presentations, or websites where a monochrome aesthetic is preferred.
 
                             </p>
                             <p><strong>Price:</strong> Free</p>
