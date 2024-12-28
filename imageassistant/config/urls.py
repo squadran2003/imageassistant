@@ -20,7 +20,8 @@ from django.conf.urls.static import static
 from django.conf import settings
 from config.views import base, stripe_success_return, upload_content
 
-
+def trigger_error(request):
+    division_by_zero = 1 / 0
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -30,6 +31,7 @@ urlpatterns = [
     path('stripe/return/', stripe_success_return, name='stripe_success_return'),
     path('stripe/checkout/', stripe_success_return, name='stripe_checkout'),
     path('api/v1/', include(('api.urls', 'api'), namespace='api')),
+    path('sentry-debug/', trigger_error),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
