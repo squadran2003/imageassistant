@@ -21,6 +21,7 @@ from django.conf import settings
 from config.views import base, stripe_success_return, upload_content
 
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', base, name='base'),

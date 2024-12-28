@@ -25,6 +25,9 @@ from .tasks import (
     enhance_image
 )
 import stripe
+from sentry_sdk import capture_message
+
+
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
@@ -323,6 +326,8 @@ def create_checkout_session(request, service_id, image_id):
         )
         client_secret = session.client_secret
     except Exception as e:
+        # capture message in sentry with info from stripe, like the payment intent id
+        capture_message(f"Error creating stripe checkout session: {str(e)}", level='error')
         return HttpResponse(str(e), status=500)
     return JsonResponse(data={'clientSecret':client_secret}, safe=False)
 
