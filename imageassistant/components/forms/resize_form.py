@@ -39,6 +39,12 @@ class ResizeForm(Component):
         .image-resize-form{
             min-width: 100%;
         }
+        #id_width{
+            color: white;
+        }
+        #id_height{
+            color: white;
+        }
         #error{
             color: red;
         }
