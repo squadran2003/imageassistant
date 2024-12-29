@@ -3,12 +3,17 @@ from django.http import HttpResponse
 from django.conf import settings
 from django.middleware import csrf
 from images.forms import ImageUploadForm
+from images.models import Service
 import os
 
 
 def base(request):
     form = ImageUploadForm()
-    return render(request, 'index.html', {'form': form, 'MEDIA_URL': settings.MEDIA_URL})
+    services = Service.objects.all().order_by('code')
+    return render(
+        request, 'index.html',
+        {'form': form, 'MEDIA_URL': settings.MEDIA_URL, 'services': services}
+    )
 
 
 def upload_content(request):

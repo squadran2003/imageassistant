@@ -36,13 +36,19 @@ services = (
     ('Resize', 'Resize'),
     ('Thumbnail', 'Thumbnail'),
     ('Enhancement', 'Enhancement'),
+    ('Cropping', 'Cropping'),
 )
 
 
 class Service(models.Model):
     code = models.IntegerField()
     name = models.CharField(max_length=255, choices=services)
+    description = models.TextField(blank=True, null=True)
     stripe_price_id = models.CharField(max_length=255, blank=True, null=True)
+    free = models.BooleanField(default=True)
+    cost = models.IntegerField(default=0)
+    video_path = models.CharField(max_length=500, blank=True, null=True)
+    poster_path = models.CharField(max_length=500, blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

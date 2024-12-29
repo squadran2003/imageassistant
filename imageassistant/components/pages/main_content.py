@@ -26,126 +26,38 @@ class MainContent(Component):
                 </div>
             </div>
             <div class="row">
-                <div class="col s12 xs12 m4 l4" style="margin-top: 50px;">
-                     <div class="card custom-card">
-                        <div class="card-image">
-                            <div class="response-video">
-                                <video controls style="max-width:100%; min-height:100%" poster="{% static 'img/greyscale_video_thumbnail.png' %}">
-                                    <source src="{{MEDIA_URL}}video/image_assistant_greyscale_video.mp4" type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>
-                            </div>
-                        </div>
-                        <div class="card-content">
-                            <span class="card-title">Black & White Conversion</span>
-                            <p>Transform your images into classic black-and-white using advanced grayscale techniques. This service is perfect for adding a timeless, artistic feel to photos or preparing images for use in documents, presentations, or websites where a monochrome aesthetic is preferred.
-
-                            </p>
-                            <p><strong>Price:</strong> Free</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col s12 xs12 m4 l4" style="margin-top: 50px;">
-                    <div class="card custom-card">
-                        <div class="card-image">
-                            <div class="response-video">
-                                <video controls style="max-width:100%; min-height:100%" poster="{% static 'img/image_enhancement.png' %}">
-                                    <source src="{{MEDIA_URL}}video/image_assistant_image_enhance_video.mp4" type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>
-                            </div>
-                        </div>
-                        <div class="card-content">
-                            <span class="card-title">Image Enhancement</span>
-                            <p>This service enhances your image using AI. It enhances the image resolution by 4x using predictive and generative AI. Ideal for enhancing the quality of compressed images.
-
-                            </p>
-                            <p><strong>Price:</strong> $3</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col s12 xs12 m4 l4" style="margin-top: 50px;">
-                    <div class="card custom-card">
+                {% for service in services %}
+                    <div class="col s12 xs12 m4 l4" style="margin-top: 50px;">
+                        <div class="card custom-card">
                             <div class="card-image">
                                 <div class="response-video">
-                                    <video controls style="max-width:100%; min-height:100%" poster="{% static 'img/remove_background.png' %}">
-                                        <source src="{{MEDIA_URL}}video/remove_background_demo.mp4" type="video/mp4">
+                                    <video controls style="max-width:100%; min-height:100%" poster="{{service.poster_path}}">
+                                        <source src="{{service.video_path}}" type="video/mp4">
                                         Your browser does not support the video tag.
                                     </video>
                                 </div>
                             </div>
                             <div class="card-content">
-                                <span class="card-title">Remove Background</span>
-                                <p>This service removes a image background using AI.
+                                <span class="card-title">{{service.name}}</span>
+                                <p>{{service.description|safe}}
 
                                 </p>
-                                <p><strong>Price:</strong>$5</p>
-                            </div>
-                    </div>
-                </div>
-                <div class="col s12 xs12 m4 l4" style="margin-top: 50px;">
-                     <div class="card custom-card">
-                        <div class="card-image">
-                            <div class="response-video">
-                                <video controls style="max-width:100%; min-height:100%" poster="{% static 'img/thumbnail.png' %}">
-                                    <source src="{{MEDIA_URL}}video/remove_background_demo.mp4" type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>
+                                {% if service.free %}
+                                    <p><strong>Price:</strong> Free</p>
+                                {% else %}
+                                    <p><strong>Price:</strong> ${{service.cost}}</p>
+                                {% endif %}
                             </div>
                         </div>
-                        <div class="card-content">
-                            <span class="card-title">Thumbnail Generation</span>
-                            <p>This service takes your image and resizes it to a thumbnail size.
-
-                            </p>
-                            <p><strong>Price:</strong> FREE</p>
-                        </div>
                     </div>
-                </div>
-                 <div class="col s12 xs12 m4 l4" style="margin-top: 50px;">
-                    <div class="card custom-card">
-                        <div class="card-image">
-                            <div class="response-video">
-                                <video controls style="max-width:100%; min-height:100%" poster="{% static 'img/crop_images.png' %}">
-                                    <source src="{{MEDIA_URL}}video/image_assistant_cropping_video.mp4" type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>
-                            </div>
-                        </div>
-                        <div class="card-content">
-                            <span class="card-title">Image Cropping</span>
-                            <p>This service provides a tool that allows you to crop your image to a specified size.
-
-                            </p>
-                            <p><strong>Price:</strong> FREE</p>
-                        </div>
-                    </div>
-                </div>
-                 <div class="col s12 xs12 m4 l4" style="margin-top: 50px;">
-                    <div class="card custom-card">
-                        <div class="card-image">
-                            <div class="response-video">
-                                <video controls style="max-width:100%; min-height:100%" poster="{% static 'img/resizing.png' %}">
-                                    <source src="{{MEDIA_URL}}video/remove_background_demo.mp4" type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>
-                            </div>
-                        </div>
-                        <div class="card-content">
-                            <span class="card-title">Resizing</span>
-                            <p>Ensure your images fit perfectly for any platform with our high-quality resizing service. We can resize images to specified dimensions while maintaining optimal clarity and resolution.
-                            Attention! a small image when resized to a larger size may lose quality, in this case try our Image Enhancement service.
-
-                            </p>
-                            <p><strong>Price:</strong> FREE</p>
-                        </div>
-                    </div>
-                </div>
+                {% endfor %}
+                
             </div>
     """
 
-    def get_context_data(self, form, media_url):
+    def get_context_data(self, form, media_url, services=[]):
         return {
             "form": form,
-            "MEDIA_URL":  media_url
+            "MEDIA_URL":  media_url,
+            "services": services
         }
