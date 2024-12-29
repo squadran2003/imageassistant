@@ -70,8 +70,12 @@ def get_service_buttons(request, image_id):
     background_removal_service_url = reverse('images:service', args=[2, image_id])
     enhance_image_service_url = reverse('images:get_prompt_form', args=[6, image_id])
     if not request.user.is_authenticated:
-        background_removal_service_url = reverse('images:checkout', args=[2, image_id])
-        enhance_image_service_url = reverse('images:checkout', args=[6, image_id])
+        back_ground_removal_service = Service.objects.get(code=2)
+        enhance_image_service = Service.objects.get(code=6)
+        if not back_ground_removal_service.free:
+            background_removal_service_url = reverse('images:checkout', args=[2, image_id])
+        if not enhance_image_service.free:
+            enhance_image_service_url = reverse('images:checkout', args=[6, image_id])
     url_context = [
         {
             'url': reverse('images:service', args=[1, image_id]),
