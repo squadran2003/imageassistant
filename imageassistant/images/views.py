@@ -69,13 +69,17 @@ def get_service_buttons(request, image_id):
     # when stripe says payemnt is successful, then process background removal
     background_removal_service_url = reverse('images:service', args=[2, image_id])
     enhance_image_service_url = reverse('images:get_prompt_form', args=[6, image_id])
+    background_removal_label = 'Remove Background'
+    enhance_image_label = 'Enhance Image'
     if not request.user.is_authenticated:
         back_ground_removal_service = Service.objects.get(code=2)
         enhance_image_service = Service.objects.get(code=6)
         if not back_ground_removal_service.free:
             background_removal_service_url = reverse('images:checkout', args=[2, image_id])
+            background_removal_label = 'Remove Background: $5'
         if not enhance_image_service.free:
             enhance_image_service_url = reverse('images:checkout', args=[6, image_id])
+            enhance_image_label = 'Enhance Image: $3'
     url_context = [
         {
             'url': reverse('images:service', args=[1, image_id]),
@@ -97,7 +101,7 @@ def get_service_buttons(request, image_id):
         },
         {
             'url': background_removal_service_url,
-            'label': 'Remove Background: $5',
+            'label': background_removal_label,
             'icon': 'remove',
             'target': '#content'
         },
@@ -109,7 +113,7 @@ def get_service_buttons(request, image_id):
         },
         {
             'url': enhance_image_service_url,
-            'label': 'Enhance Image: $3',
+            'label': enhance_image_label,
             'icon': 'color_lens',
             'target': '#content'
         }
