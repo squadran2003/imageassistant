@@ -29,11 +29,3 @@ class ImageListUpdate(APIView):
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
 
-class TestServiceView(APIView):
-    queryset = Service.objects.all()
-
-    def get(self, request):
-        service = Service.objects.get(code=2)
-        serializer = ServiceSerializer(service)
-        return Response(serializer.data)
-
