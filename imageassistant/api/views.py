@@ -1,9 +1,8 @@
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
-from images.models import Image, Service
+from images.models import Image
 from images.serializers import ImageSerializer
-from api.serializers import ServiceSerializer
 
 
 class ImageListUpdate(APIView):
