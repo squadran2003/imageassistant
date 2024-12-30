@@ -1,8 +1,9 @@
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
-from images.models import Image
+from images.models import Image, Service
 from images.serializers import ImageSerializer
+from api.serializers import ServiceSerializer
 
 
 class ImageListUpdate(APIView):
@@ -26,3 +27,13 @@ class ImageListUpdate(APIView):
         image.save()
         serializer = ImageSerializer(image)
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+
+
+class TestServiceView(APIView):
+    queryset = Service.objects.all()
+
+    def get(self, request):
+        service = Service.objects.get(code=2)
+        serializer = ServiceSerializer(service)
+        return Response(serializer.data)
+
