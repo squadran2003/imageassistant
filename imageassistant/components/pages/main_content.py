@@ -31,7 +31,7 @@ class MainContent(Component):
                         <div class="card custom-card">
                             <div class="card-image">
                                 <div class="response-video">
-                                    <video controls style="max-width:100%; min-height:100%" poster="{{service.poster_path}}">
+                                    <video controls style="max-width:100%; min-height:100%" poster="{{service.poster_path}}" loading="lazy">
                                         <source src="{{service.video_path}}" type="video/mp4">
                                         Your browser does not support the video tag.
                                     </video>
