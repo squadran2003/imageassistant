@@ -94,3 +94,5 @@ Contributions are welcome! If you have suggestions or improvements, please feel 
 
 This project is licensed under the MIT License. See the LICENSE file for details.
 
+ffmpeg -i input.mp4 -vcodec libx264 -crf 23 output.mp4
+

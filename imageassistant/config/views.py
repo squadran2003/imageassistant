@@ -12,7 +12,7 @@ def base(request):
     services = Service.objects.all().order_by('code')
     return render(
         request, 'index.html',
-        {'form': form, 'MEDIA_URL': settings.MEDIA_URL, 'services': services}
+        {'form': form, 'services': services}
     )
 
 

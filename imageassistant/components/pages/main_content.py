@@ -55,9 +55,8 @@ class MainContent(Component):
             </div>
     """
 
-    def get_context_data(self, form, media_url, services=[]):
+    def get_context_data(self, form, services=[]):
         return {
             "form": form,
-            "MEDIA_URL":  media_url,
             "services": services
         }
