@@ -26,7 +26,7 @@ jobs:
     - name: Install Dependencies
       run: |
         pip install poetry
-        poetry config virtualenvs.create false && poetry install --no-dev --no-interaction --no-ansi --no-root
+        poetry config virtualenvs.create false && poetry install  --no-interaction --no-ansi --no-root
     - name: Run Tests
       run: |
         python manage.py test
