@@ -29,4 +29,5 @@ jobs:
         poetry config virtualenvs.create false && poetry install  --no-interaction --no-ansi --no-root
     - name: Run Tests
       run: |
+        cd ./imageassistant
         python manage.py test
