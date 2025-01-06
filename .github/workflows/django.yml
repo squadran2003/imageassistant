@@ -13,6 +13,19 @@ jobs:
       max-parallel: 4
       matrix:
         python-version: [3.10.13]
+    services:
+      postgres:
+        image: postgres:13
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_DB: test_db
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: password
+          DB_NAME: test_db
+          DB_USER: user
+          DB_PASSWORD: password
+          DB_HOST: localhost
 
     steps:
     - uses: actions/checkout@v4
