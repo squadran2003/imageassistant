@@ -4,7 +4,6 @@ from django_components import Component, register, types
 class MainContent(Component):
 
     template = """
-            {% load static %}
             <div class="row">
                 <div class="col s12">
                         <div class="row">

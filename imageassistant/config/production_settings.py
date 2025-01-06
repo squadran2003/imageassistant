@@ -6,6 +6,7 @@ from botocore.exceptions import ClientError
 
 DEBUG = False
 
+
 ALLOWED_HOSTS = ["imageassistant.io", "ec2-18-207-173-160.compute-1.amazonaws.com"]
 
 CSRF_TRUSTED_ORIGINS = [

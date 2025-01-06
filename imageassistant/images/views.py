@@ -40,8 +40,9 @@ def add_image(request):
             return redirect("images:get_image", image_id=img.id)
         else:
             main_content = MainContent()
+            services = Service.objects.all().order_by('code')
             html_content = main_content.render(
-                args=[form]
+                args=[form, services]
             )
             return HttpResponse(html_content, content_type='text/html')
     return HttpResponse("", content_type='text/html')
