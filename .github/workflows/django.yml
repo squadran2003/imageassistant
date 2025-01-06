@@ -22,10 +22,6 @@ jobs:
           POSTGRES_DB: test_db
           POSTGRES_USER: user
           POSTGRES_PASSWORD: password
-          DB_NAME: test_db
-          DB_USER: user
-          DB_PASSWORD: password
-          DB_HOST: localhost
 
     steps:
     - uses: actions/checkout@v4
@@ -40,7 +36,14 @@ jobs:
       run: |
         pip install poetry
         poetry config virtualenvs.create false && poetry install  --no-interaction --no-ansi --no-root
-    - name: Run Tests
+    - name: Run migrations and tests
+      env:
+        DB_NAME: test_db
+        DB_USER: user
+        DB_PASSWORD: password
+        DB_HOST: localhost
+        DB_PORT: 5432
       run: |
         cd ./imageassistant
+        python manage.py migrate
         python manage.py test
