@@ -38,14 +38,15 @@ def add_image(request):
             img = form.save(commit=False)
             img.save()
             return redirect("images:get_image", image_id=img.id)
-        else:
-            main_content = MainContent()
-            services = Service.objects.all().order_by('code')
-            html_content = main_content.render(
-                args=[form, services]
-            )
-            return HttpResponse(html_content, content_type='text/html')
-    return HttpResponse("", content_type='text/html')
+    # if the form is not valid return the main content back
+    main_content = MainContent()
+    html_content = main_content.render(
+        args=[
+            form,
+            Service.objects.all().order_by('code')
+        ]
+    )
+    return HttpResponse(html_content, content_type='text/html')
 
 
 def get_image(request, image_id):
