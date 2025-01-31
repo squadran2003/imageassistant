@@ -115,8 +115,14 @@ class CroppingForm(forms.Form):
 
 class PromptForm(forms.Form):
     prompt = forms.CharField(
-        required=True, help_text='Tell us more about the image you want to enhance', widget=forms.TextInput(
-            attrs={'class': "validate prompt-form"}
+        required=True, widget=forms.Textarea(
+           attrs={
+                'class': "shadow appearance-none border rounded mt-2 min-h-20 mb-2 p-2 w-full text-gray-700 focus:outline-none focus:shadow-outline",
+                "rows": 5,
+                "cols": 40,
+                "placeholder": "Tell us more about the image you want to generate",
+                "style": "resize:none;"
+            },
         )
     )
 
@@ -124,4 +130,6 @@ class PromptForm(forms.Form):
         prompt = self.cleaned_data.get('prompt')
         if prompt is None or prompt == '':
             raise forms.ValidationError('Prompt is required')
+        if len(prompt) > 350:
+            raise forms.ValidationError('Prompt must be less than 20 characters')
         return prompt

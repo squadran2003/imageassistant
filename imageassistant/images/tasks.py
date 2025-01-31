@@ -220,6 +220,44 @@ def enhance_image(image_id, prompt=None):
     file.save()
 
 
+@shared_task
+def create_image_from_prompt(image_id, prompt):
+    file = Image.objects.get(pk=image_id)
+    file_name = f"{image_id}_{prompt[:min(20, len(prompt))]}.png"
+    response = requests.post(
+        f"https://api.stability.ai/v2beta/stable-image/generate/sd3",
+        headers={
+            "authorization": f"Bearer {settings.STABILITY_AI_KEY}",
+            "accept": "image/*"
+        },
+        files={"none": ''},
+        data={
+            "prompt": prompt,
+            "output_format": "png",
+        },
+    )
+    img_io = BytesIO()
+    if response.status_code == 200:
+        s3 = boto3.client('s3')
+        img_io.seek(0)
+        img_io.write(response.content)
+        img_content = ContentFile(img_io.getvalue())
+        if not settings.DEBUG:
+            # in prod saving the image to s3 and later updating the image field via lambda
+            s3.put_object(
+                Bucket=settings.AWS_STORAGE_BUCKET_NAME,
+                Key=f"media/celery/{file_name}",
+                Body=img_io.getvalue()
+            )
+        else:
+            # in dev using celery to process the image
+            file.image.save(file_name, img_content)
+            file.processed = True
+            file.save()
+    else:
+        raise Exception(str(response.json()))
+
+
 
 
 

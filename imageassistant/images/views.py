@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from django.conf import settings
 from django.http import JsonResponse
 from images.models import Image, Service
-from images.forms   import ImageUploadForm, ImageResizeForm, CroppingForm
+from images.forms   import ImageUploadForm, ImageResizeForm, CroppingForm, PromptForm as DjangoPromptForm
 from images.forms import PromptForm as DjangoPromptForm
 from components.buttons.get_button import GetButton
 from components.forms.resize_form import ResizeForm
@@ -22,7 +22,7 @@ from PIL import Image as PILImage
 from .tasks import (
     create_greyscale, remove_background,
     resize_image, create_thumbnail, crop_image,
-    enhance_image
+    enhance_image, create_image_from_prompt
 )
 import stripe
 from sentry_sdk import capture_message
@@ -165,40 +165,45 @@ def service(request, service_id, image_id):
             if form.is_valid():
                 prompt = form.cleaned_data['prompt']
                 enhance_image.delay(image_id, prompt)
+    elif service_id == 7:
+        print("Creating image from prompt")
+        print(request.method)
+        if request.method == 'POST':
+            form = DjangoPromptForm(request.POST)
+            if form.is_valid():
+                prompt = form.cleaned_data['prompt']
+                create_image_from_prompt.delay(image_id, prompt)
         # crop_image.delay(image_id, x , y, width, height)
-    unprocessed_page = UnprocessedImagePage()
-    html_content = unprocessed_page.render(
-        kwargs={
-            "hx_get_url": reverse('images:process_image', args=[image_id]),
-            "hx_target": "#content",
-            "hx_swap": "innerHTML",
-            "hx_trigger": "load delay:3s",
-            "image_url": img.image.url
-        }
+    # unprocessed_page = UnprocessedImagePage()
+    # html_content = unprocessed_page.render(
+    #     kwargs={
+    #         "hx_get_url": reverse('images:process_image', args=[image_id]),
+    #         "hx_target": "#content",
+    #         "hx_swap": "innerHTML",
+    #         "hx_trigger": "load delay:3s",
+    #         "image_url": img.image.url
+    #     }
+    # )
+    poll_url = reverse(
+        'images:process_image', args=[
+            image_id
+        ]
     )
-    return HttpResponse(html_content, content_type='text/html')
+    return render(
+        request, 'create_image.html#img-svg-poll', {'poll_url': poll_url, 'image': img}
+    )
 
 
 def processed_service(request, image_id):
     file = Image.objects.get(pk=image_id)
+    # create_image.html#content'
     if not file.processed:
-        unprocessed_image_page = UnprocessedImagePage()
-        html_content = unprocessed_image_page.render(
-            kwargs={
-                "hx_get_url": reverse('images:process_image', args=[image_id]),
-                "hx_target": "#content",
-                "hx_swap": "innerHTML",
-                "hx_trigger": "load delay:3s",
-                "image_url": file.image.url
-            }
-        )
-        return HttpResponse(html_content, content_type='text/html', status=200)
+        poll_url = reverse('images:process_image', args=[image_id])
+        return render(request, 'create_image.html#img-svg-poll', {'poll_url': poll_url, 'image': file})
     else:
-        processed_image_page = ProcessedImagePage()
-        html_content = processed_image_page.render(
-            args=[file]
-        )
-        return HttpResponse(html_content, content_type='text/html', status=286)
+        print("Image has been processed")
+        return render(request, 'create_image.html#img-processed', {'image': file})
+
 
 
 def resize_form_html(request, image_id):
@@ -346,4 +351,29 @@ def session_status(request):
     session_id = request.GET.get('session_id')
     session = stripe.checkout.Session.retrieve(session_id)
     return JsonResponse(data={'status': session.status, 'customer_email': session.customer_details.email}, safe=False)
+
+
+def create_image(request):
+    form = DjangoPromptForm()
+    post_url = reverse('images:create_image')
+    if request.method == 'POST':
+        form = DjangoPromptForm(request.POST)
+        # create a new image object where this response will be stored
+        # create a dummy image object
+        image = Image.objects.create(image='dummy.png')
+        if form.is_valid():
+            template = 'create_image.html#prompt-form'
+            redirect_url = reverse('images:service', args=[7, image.id])
+            print(redirect_url)
+            return render(
+                request, template, {'form': form, 'post_url': redirect_url, 'target': '#image-container', 'trigger': 'load'}
+            )
+        else:
+            print(form.errors)
+            template = 'create_image.html#prompt-form'
+            form.fields['prompt'].widget.attrs['class'] = 'shadow appearance-none border rounded mt-2 min-h-50 mb-2 p-2 w-full text-gray-700 focus:outline-none focus:shadow-outline required:border-red-500'
+            return render(request, template, {'form': form, 'post_url': post_url, 'target':'this', 'trigger': None})
+    else:
+        template = 'create_image.html'
+        return render(request, template, {'form': form, 'post_url': post_url, 'target':'this', 'trigger': None})
 

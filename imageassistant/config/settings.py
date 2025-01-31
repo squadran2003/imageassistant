@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "template_partials",
     'django_components',
     'rest_framework',
     'storages',
@@ -71,7 +72,12 @@ COMPONENTS = {
          os.path.join(BASE_DIR, "components"),
      ],
 }
-
+default_loaders = [
+    "django.template.loaders.filesystem.Loader",
+    "django.template.loaders.app_directories.Loader",
+]
+cached_loaders = [("django.template.loaders.cached.Loader", default_loaders)]
+partial_loaders = [("template_partials.loader.Loader", cached_loaders)]
 
 TEMPLATES = [
     {
@@ -84,19 +90,8 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
-            'builtins': [
-                'django_components.templatetags.component_tags',
-            ],
-            'loaders': [(
-               'django.template.loaders.cached.Loader', [
-                  # Default Django loader
-                  'django.template.loaders.filesystem.Loader',
-                  # Inluding this is the same as APP_DIRS=True
-                  'django.template.loaders.app_directories.Loader',
-                  # Components loader
-                  'django_components.template_loader.Loader',
-               ]
-            )],
+            "debug": True,
+            'loaders': partial_loaders,
         },
     },
 ]
@@ -215,3 +210,5 @@ DOMAIN = "http://localhost:8084"
 STRIPE_PRICE_ID = config('STRIPE_PRICE_ID', os.environ.get('STRIPE_PRICE_ID'))
 STRIPE_PUBLIC_KEY = config('STRIPE_PUBLISHED_KEY', os.environ.get('STRIPE_PUBLISHED_KEY'))
 STABILITY_AI_KEY = config('STABILITY_AI_KEY', os.environ.get('STABILITY_AI_KEY'))
+
+

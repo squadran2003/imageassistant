@@ -29,6 +29,8 @@ numpy = "^1.24"
 opencv-python-headless="4.8.0.76"
 django-cors-headers = "^4.0.0"
 sentry-sdk = {extras = ["django"], version = "^1.4.3"}
+django-compressor = "^4.5.1"
+django-template-partials = "^24.4"
 
 
 

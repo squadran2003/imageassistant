@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load partials %}
+{% load static %}
+
+
+{% partialdef prompt-form %}
+    {% if trigger %}
+        <form hx-post="{{post_url}}" hx-target={{target}} hx-trigger={{trigger}} hx-swap="outerHTML" id="prompt-form" class="bg-[#262c3d] shadow-md rounded px-8 pt-6 pb-8 mb-4 mt-1">
+    {% else %}
+        <form hx-post="{{post_url}}" hx-target={{target}}  hx-swap="outerHTML" id="prompt-form" class="bg-[#262c3d] shadow-md rounded px-8 pt-6 pb-8 mb-4 mt-1">
+    {% endif %}
+        {% csrf_token %}
+        {% for field in form %}
+            {{ field.label_tag }} {{ field }}
+            {% if field.errors %}
+                <div class="text-red-700 px-4 py-3 rounded relative bg-[#c9aab6] text-sm">{{field.errors}}</div>
+            {% endif %}
+        {% endfor %}
+        <button type="submit" onclick="htmx.trigger('#prompt-form', 'submit')" class="mt-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium  text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" id="prompt-button">
+            <div class="hidden htmx-indicator progress" id="indicator">
+                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+            </div>
+            <span id="prompt-progress-text">Submit</span>
+        </button>
+    </form>
+{% endpartialdef %}
+{% partialdef img-svg %}
+<div class="w-full h-full flex items-center justify-center">
+    <svg class="w-full h-full text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 150" fill="none">
+        <rect width="100%" height="100%" fill="#ddd" />
+        <rect x="10" y="10" width="180" height="130" fill="#bbb" stroke="gray" />
+        <text x="50%" y="50%" font-size="16" fill="gray" text-anchor="middle" alignment-baseline="middle">Image will go here</text>
+    </svg>
+</div>
+{% endpartialdef %}
+
+{% partialdef img-svg-poll %}
+<div class="w-full h-full flex items-center justify-center text-center" hx-get="{{poll_url}}" hx-trigger="load delay:3s"  hx-swap="outerHTML" hx-target="this">
+    <svg class="animate-spin ml-auto mr-auto w-12 h-12 mb-[20%] text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+    </svg>
+</div>
+{% endpartialdef %}
+{% partialdef img-processed %}
+<div id="image-container" class="col-span-12 m-5">
+    <div class="mb-5">
+        <a href="{{ image.image.url }}" download="{{ image.image.url }}" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-md text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Download</a>
+    </div>
+    <div class="w-full h-full flex items-center justify-center mb-5">
+        <img src="{{ image.image.url }}" class="w-full h-full"/>
+    </div>
+</div>
+{% endpartialdef %}
+
+
+
+{% partialdef content %}
+<div id="content" class="grid grid-cols-12">
+    <div class="col-span-12 m-5">
+        <h1 class="text-3xl font-bold">Create Image</h1>
+            {% csrf_token %}
+            {% partial prompt-form %}
+    </div>
+    <div id="image-container" class="col-span-12 m-5">
+            {% partial img-svg %}
+    </div>
+</div>
+
+{% endpartialdef %}
+
+
+
+{% block content %}
+{% partial content %}
+{% endblock %}
