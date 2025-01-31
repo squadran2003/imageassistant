@@ -234,6 +234,7 @@ def create_image_from_prompt(image_id, prompt):
         data={
             "prompt": prompt,
             "output_format": "png",
+            "aspect_ratio": "16:9"
         },
     )
     img_io = BytesIO()
