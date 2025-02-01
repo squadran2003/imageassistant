@@ -114,6 +114,12 @@ class CroppingForm(forms.Form):
 
 
 class PromptForm(forms.Form):
+    # this should be a hidden field
+    bot_field = forms.CharField(
+        required=False, widget=forms.TextInput(
+            attrs={'class': 'validate', 'type': 'hidden'}
+        )
+    )
     prompt = forms.CharField(
         required=True, widget=forms.Textarea(
            attrs={
@@ -128,6 +134,9 @@ class PromptForm(forms.Form):
 
     def clean_prompt(self):
         prompt = self.cleaned_data.get('prompt')
+        bot_field = self.cleaned_data.get('bot_field')
+        if bot_field:
+            raise forms.ValidationError('Invalid request')
         if prompt is None or prompt == '':
             raise forms.ValidationError('Prompt is required')
         if len(prompt) > 350:

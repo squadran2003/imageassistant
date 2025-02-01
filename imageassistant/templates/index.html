@@ -1,8 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<div id="header" class="md:h-auto">
-    <img src="{% static 'img/banner_background.png' %}" alt="Banner Background" class="w-full h-auto">
+<div class="grid grid-cols-12">
+    <div id="header" class="col-span-12 w-full h-[50%]">
+        <img src="{% static 'img/banner_background.png' %}" alt="Banner Background" class="w-full h-auto">
+    </div>
 </div>
 <div class="grid grid-cols-12 mb-5">
     <div class="col-span-12 m-2 sm:col-span-12 text-left sm:text-center">
