@@ -10,7 +10,7 @@
         <form hx-post="{{post_url}}" hx-target={{target}}  hx-swap="outerHTML" id="prompt-form" class="bg-[#262c3d] shadow-md rounded px-8 pt-6 pb-8 mb-4 mt-1">
     {% endif %}
         {% csrf_token %}
-        {% for field in form %}
+        {% for field in form.visible_fields %}
             {{ field.label_tag }} {{ field }}
             {% if field.errors %}
                 <div class="text-red-700 px-4 py-3 rounded relative bg-[#c9aab6] text-sm">{{field.errors}}</div>
