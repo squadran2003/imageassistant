@@ -366,14 +366,18 @@ def create_image(request):
             redirect_url = reverse('images:service', args=[7, image.id])
             print(redirect_url)
             return render(
-                request, template, {'form': form, 'post_url': redirect_url, 'target': '#image-container', 'trigger': 'load'}
+                request, template, {
+                    'form': form, 'post_url': redirect_url, 
+                    'target': '#image-container', 'trigger': 'load'
+                },
+                status=200
             )
         else:
             print(form.errors)
             template = 'create_image.html#prompt-form'
             form.fields['prompt'].widget.attrs['class'] = 'shadow appearance-none border rounded mt-2 min-h-50 mb-2 p-2 w-full text-gray-700 focus:outline-none focus:shadow-outline required:border-red-500'
-            return render(request, template, {'form': form, 'post_url': post_url, 'target':'this', 'trigger': None})
+            return render(request, template, {'form': form, 'post_url': post_url, 'target':'this', 'trigger': None}, status=400)
     else:
         template = 'create_image.html'
-        return render(request, template, {'form': form, 'post_url': post_url, 'target':'this', 'trigger': None})
+        return render(request, template, {'form': form, 'post_url': post_url, 'target':'this', 'trigger': None}, status=200)
 
