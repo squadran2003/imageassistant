@@ -43,6 +43,7 @@ jobs:
         DB_PASSWORD: password
         DB_HOST: localhost
         DB_PORT: 5432
+        DJANGO_SETTINGS_MODULE: config.settings
       run: |
         cd ./imageassistant
         python manage.py migrate
