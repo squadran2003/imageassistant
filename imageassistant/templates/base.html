@@ -22,12 +22,10 @@
         <li class="inline-block mt-2 mr-1 text-white-200 hover:text-white-800 p-2"><a href="{% url 'about' %}" >About</a></li> 
     </ul>
 </nav>
-<div class="grid grid-cols-12 h-[85-vh]">
-    <div class="col-span-12 m-5">
+<div class="m-3 h-[85-vh]">
         {% block content %}
        
         {% endblock %}
-    </div>
 </div>
 {% block footer %}
 {% endblock %}
