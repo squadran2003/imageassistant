@@ -15,7 +15,7 @@
     <link rel="icon" href="{% static 'img/logo.png' %}" type="image/x-icon" aria-label="Image Assistant browser tab logo">
     <link  href="{% static  'css/dist_cropper/cropper.css' %}" rel="stylesheet">
 </head>
-<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' class="bg-[#111827] text-white">
+<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' class="bg-[#111827] text-white" >
 <nav class="bg-[#1f2537] p-2">
     <ul class="list-none flex items-right justify-end">
         <li class="inline-block mt-2 mr-1 text-white-200 hover:text-white-800 p-2"><a href="/" >Home</a></li>
@@ -35,6 +35,16 @@
 {% endblock %}
 
 <script src="{% static 'js/htmx.min.js' %}"></script>
+<script>
+    htmx.on("htmx:beforeSwap", (e) => {
+        // Allow 422 and 400 responses to swap
+        // We treat these as form validation errors
+        if (e.detail.xhr.status === 422 || e.detail.xhr.status === 400) {
+            e.detail.shouldSwap = true;
+            e.detail.isError = false;
+        }
+    });
+</script>
 <script src="{% static 'js/dist_cropper/cropper.js' %}"></script>
 </body>
 </html>
