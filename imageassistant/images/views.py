@@ -31,6 +31,7 @@ from sentry_sdk import capture_message
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
+
 def add_image(request):
     if request.method == 'POST':
         form = ImageUploadForm(request.POST, request.FILES)

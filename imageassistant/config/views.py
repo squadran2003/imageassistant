@@ -1,10 +1,24 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.conf import settings
+from django.urls import reverse
 from django.middleware import csrf
+from django.contrib.sitemaps import Sitemap
 from images.forms import ImageUploadForm
 from images.models import Service
 import os
+
+
+class StaticViewSitemap(Sitemap):
+    """Sitemap for static pages"""
+    priority = 0.5
+    changefreq = 'monthly'
+
+    def items(self):
+        return ['base', 'images:create_image']  # URL names from urls.py
+
+    def location(self, item):
+        return reverse(item)
 
 
 def base(request):
