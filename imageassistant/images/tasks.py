@@ -233,7 +233,7 @@ def create_image_from_prompt(image_id, prompt):
         files={"none": ''},
         data={
             "prompt": prompt,
-            "output_format": "png",
+            "output_format": "jpeg",
             "aspect_ratio": "16:9"
         },
     )

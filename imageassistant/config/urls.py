@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
-from config.views import base, stripe_success_return, upload_content, StaticViewSitemap
+from config.views import base, stripe_success_return, upload_content, StaticViewSitemap, about
 from django.contrib.sitemaps.views import sitemap
 
 
@@ -27,8 +27,9 @@ sitemaps = {
 }
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
     path('', base, name='base'),
+    path('about/', about, name='about'),
+    path('admin/', admin.site.urls),
     path('upload/content/', upload_content, name='upload_content'),
     path('images/', include(('images.urls', 'images'), namespace='images')),
     path('stripe/return/', stripe_success_return, name='stripe_success_return'),
