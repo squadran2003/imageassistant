@@ -2,7 +2,7 @@ from django.test import TestCase
 
 from django.test import TestCase
 from django.urls import reverse
-from .views import create_image
+from .views import generate_image
 from .models import Image
 
 class CreateImageViewTests(TestCase):
