@@ -180,7 +180,7 @@ def service(request, service_id, image_id):
         ]
     )
     return render(
-        request, 'create_image.html#img-svg-poll', {'poll_url': poll_url, 'image': img}
+        request, 'generate_image.html#img-svg-poll', {'poll_url': poll_url, 'image': img}
     )
 
 
@@ -189,10 +189,10 @@ def processed_service(request, image_id):
     # create_image.html#content'
     if not file.processed:
         poll_url = reverse('images:process_image', args=[image_id])
-        return render(request, 'create_image.html#img-svg-poll', {'poll_url': poll_url, 'image': file})
+        return render(request, 'generate_image.html#img-svg-poll', {'poll_url': poll_url, 'image': file})
     else:
         print("Image has been processed")
-        return render(request, 'create_image.html#img-processed', {
+        return render(request, 'generate_image.html#img-processed', {
             'image': file}
         )
 
@@ -344,16 +344,16 @@ def session_status(request):
     return JsonResponse(data={'status': session.status, 'customer_email': session.customer_details.email}, safe=False)
 
 
-def create_image(request):
+def generate_image(request):
     form = DjangoPromptForm()
-    post_url = reverse('images:create_image')
+    post_url = reverse('images:generate_image')
     if request.method == 'POST':
         form = DjangoPromptForm(request.POST)
         # create a new image object where this response will be stored
         # create a dummy image object
         image = Image.objects.create(image='dummy.png')
         if form.is_valid():
-            template = 'create_image.html#prompt-form'
+            template = 'generate_image.html#prompt-form'
             redirect_url = reverse('images:service', args=[7, image.id])
             print(redirect_url)
             return render(
@@ -365,10 +365,10 @@ def create_image(request):
             )
         else:
             print(form.errors)
-            template = 'create_image.html#prompt-form'
+            template = 'generate_image.html#prompt-form'
             form.fields['prompt'].widget.attrs['class'] = 'shadow appearance-none border rounded mt-2 min-h-50 mb-2 p-2 w-full text-gray-700 focus:outline-none focus:shadow-outline required:border-red-500'
             return render(request, template, {'form': form, 'post_url': post_url, 'target':'this', 'trigger': None}, status=400)
     else:
-        template = 'create_image.html'
+        template = 'generate_image.html'
         return render(request, template, {'form': form, 'post_url': post_url, 'target':'this', 'trigger': None}, status=200)
 

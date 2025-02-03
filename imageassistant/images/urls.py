@@ -19,5 +19,5 @@ urlpatterns = [
     path('create/checkout/session/<int:service_id>/<int:image_id>/<str:prompt>/', views.create_checkout_session, name='create_checkout_session'),
     path('check/checkout/status/', views.session_status, name='stripe_session_status'),
     path('get/prompt/form/<int:service_id>/<int:image_id>/', views.get_prompt_form, name='get_prompt_form'),
-    path('create/image/', views.create_image, name='create_image'),
+    path('generate/image/', views.generate_image, name='generate_image'),
 ]
