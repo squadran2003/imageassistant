@@ -29,12 +29,6 @@ def base(request):
         {'form': form, 'services': services}
     )
 
-
-def about(request):
-    print("about")
-    return render(request, 'about.html')
-
-
 def upload_content(request):
     token = csrf.get_token(request)
     # html_content = UploadContent().render(
