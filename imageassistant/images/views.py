@@ -174,17 +174,6 @@ def service(request, service_id, image_id):
             if form.is_valid():
                 prompt = form.cleaned_data['prompt']
                 create_image_from_prompt.delay(image_id, prompt)
-        # crop_image.delay(image_id, x , y, width, height)
-    # unprocessed_page = UnprocessedImagePage()
-    # html_content = unprocessed_page.render(
-    #     kwargs={
-    #         "hx_get_url": reverse('images:process_image', args=[image_id]),
-    #         "hx_target": "#content",
-    #         "hx_swap": "innerHTML",
-    #         "hx_trigger": "load delay:3s",
-    #         "image_url": img.image.url
-    #     }
-    # )
     poll_url = reverse(
         'images:process_image', args=[
             image_id
@@ -203,8 +192,9 @@ def processed_service(request, image_id):
         return render(request, 'create_image.html#img-svg-poll', {'poll_url': poll_url, 'image': file})
     else:
         print("Image has been processed")
-        return render(request, 'create_image.html#img-processed', {'image': file})
-
+        return render(request, 'create_image.html#img-processed', {
+            'image': file}
+        )
 
 
 def resize_form_html(request, image_id):
