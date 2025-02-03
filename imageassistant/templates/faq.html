@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="p-2 mx-auto rounded-1l">
+    <div class="w-full" x-data="{ open: false }">
+        <button @click="open = !open" class="w-full px-4 py-2 text-left bg-[#111827] rounded-t-lg focus:outline-none border-2 border-purple-800">
+            <span class="text-[#7b90bd]">I dont see options to enhance and edit?</span>
+            <span x-show="!open">+</span>
+            <span x-show="open">-</span>
+        </button>
+        <div x-show="open" class="px-4 py-2 bg-[#111827]">
+            <p class="text-[#e7eaef]">These services will be coming in the near future</p>
+        </div>
+    </div>
+    <div class="w-full" x-data="{ open: false }" class="mt-2">
+        <button @click="open = !open" class="w-full px-4 py-2 text-left bg-[#111827] rounded-t-lg focus:outline-none border-2 border-purple-800">
+            <span class="text-[#7b90bd]">Is it free to use?</span>
+            <span x-show="!open">+</span>
+            <span x-show="open">-</span>
+        </button>
+        <div x-show="open" class="px-4 py-2 bg-[#111827]">
+            <p class="text-[#e7eaef]">Yes, currently the platform runs a free model, this could change in the future</p>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js" defer></script>
+{% endblock %}
+{% block footer %}
+<footer class="text-center text-white-200 bg-[#1f2537] p-2 h-[20-vh]">
+    © 2025 imageassistant
+</footer>
+{% endblock %}
