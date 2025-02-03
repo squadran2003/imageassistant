@@ -7,7 +7,7 @@ from .models import Image
 
 class CreateImageViewTests(TestCase):
     def setUp(self):
-        self.url = reverse('images:create_image')
+        self.url = reverse('images:generate_image')
         self.invalid_propmpt = """
                 Contrary to popular belief, Lorem Ipsum is not simply random text. 
                 It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, 
