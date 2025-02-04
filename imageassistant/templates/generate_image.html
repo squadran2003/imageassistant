@@ -46,7 +46,7 @@
 </div>
 {% endpartialdef %}
 {% partialdef img-processed %}
-<div id="image-container" class="col-span-12 m-5 mb-5">
+<div id="image-container" class="m-5 mb-5">
     <div class="mb-5">
         {% if image.alternate_url %}
             <a href="{{ image.alternate_url }}" download="{{ image.image.alternate_url }}" class="text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-md text-sm px-5 py-2.5 dark:bg-purple-600 dark:hover:bg-purple-700 focus:outline-none dark:focus:ring-blue-800">Download</a>
@@ -67,13 +67,13 @@
 
 
 {% partialdef content %}
-<div id="content" class="grid grid-cols-12">
-    <div class="col-span-12 m-5">
+<div id="content" class="grid grid-cols-1 gp-5">
+    <div>
         <h1 class="text-3xl font-bold">Generate Image</h1>
             {% csrf_token %}
             {% partial prompt-form %}
     </div>
-    <div id="image-container" class="col-span-12 m-5">
+    <div id="image-container" class="cm-5">
             {% partial img-svg %}
     </div>
 </div>
