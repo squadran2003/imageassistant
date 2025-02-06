@@ -7,6 +7,7 @@ from django.contrib.sitemaps import Sitemap
 from images.forms import ImageUploadForm
 from images.models import Service
 import os
+from datetime import datetime
 
 
 class StaticViewSitemap(Sitemap):
@@ -24,6 +25,14 @@ class StaticViewSitemap(Sitemap):
 def base(request):
     form = ImageUploadForm()
     services = Service.objects.all().order_by('code')
+    if request.session.get('image_assistant_start'):
+        start_time = datetime.strptime(request.session['image_assistant_start'], '%Y-%m-%d %H:%M:%S')
+        if (datetime.now() - start_time).seconds * 60 *60 > 24:
+            request.session['image_assistant_start'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            request.session['image_assistant_download_count'] = 0
+    else:
+        request.session['image_assistant_start'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        request.session['image_assistant_download_count'] = 0
     return render(
         request, 'index.html',
         {'form': form, 'services': services}

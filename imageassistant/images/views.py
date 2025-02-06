@@ -19,6 +19,7 @@ from components.pages.unprocessed_image_page import UnprocessedImagePage
 from components.pages.processed_image_page import ProcessedImagePage
 from components.pages.main_content import MainContent
 from PIL import Image as PILImage
+from datetime import datetime
 from .tasks import (
     create_greyscale, remove_background,
     resize_image, create_thumbnail, crop_image,
@@ -348,6 +349,20 @@ def generate_image(request):
     form = DjangoPromptForm()
     post_url = reverse('images:generate_image')
     if request.method == 'POST':
+        # find out what time the session was started
+        if request.session.get('image_assistant_start'):
+            start_time = datetime.strptime(request.session['image_assistant_start'], '%Y-%m-%d %H:%M:%S')
+            if (datetime.now() - start_time).seconds * 60 * 60 > 24:
+                request.session['image_assistant_download_count'] +=1
+        if request.session.get('image_assistant_download_count') > 2:
+            return render(
+                request, 'generate_image.html#content',
+                    {
+                        'form': form, 'post_url': post_url, 'target': 'this', 'trigger': None,
+                        'download_limit_exceeded': True
+                    },
+                status=400
+            )
         form = DjangoPromptForm(request.POST)
         # create a new image object where this response will be stored
         # create a dummy image object
