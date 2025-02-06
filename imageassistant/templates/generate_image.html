@@ -45,7 +45,7 @@
 {% endpartialdef %}
 
 {% partialdef img-svg-poll %}
-<div class="w-full h-full flex items-center justify-center text-center" hx-get="{{poll_url}}" hx-trigger="load delay:3s"  hx-swap="innerHTML" hx-target="#content">
+<div class="mt-5 w-full h-full flex items-center justify-center text-center" hx-get="{{poll_url}}" hx-trigger="load delay:3s"  hx-swap="innerHTML" hx-target="#content">
     <svg class="animate-spin ml-auto mr-auto w-12 h-12 mb-[20%] text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -53,7 +53,7 @@
 </div>
 {% endpartialdef %}
 {% partialdef img-processed %}
-<div id="image-container" class="m-5 mb-5">
+<div id="image-container" class="m-5">
     <div class="mb-5">
         {% if image.alternate_url %}
             <a href="{{ image.alternate_url }}" download="{{ image.image.alternate_url }}" class="text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-md text-sm px-5 py-2.5 dark:bg-purple-600 dark:hover:bg-purple-700 focus:outline-none dark:focus:ring-blue-800">Download</a>
@@ -87,7 +87,7 @@
 {% endpartialdef %}
 
 {% partialdef download-count-error %}
-    <div class="mt-2 mb-2 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+    <div class="mt-2 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
         <strong class="font-bold">Download Limit Exceeded!</strong>
         <span class="block sm:inline">You have exceeded the maximum number of downloads allowed within a 24 hr period. Come back later</span>
     </div>
