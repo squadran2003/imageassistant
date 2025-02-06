@@ -361,13 +361,11 @@ def generate_image(request):
             request.session['image_assistant_start'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             request.session['image_assistant_download_count'] = 0
         if request.session.get('image_assistant_download_count') > 2:
-            return render(
-                request, 'generate_image.html#download-count-error',
-                    {
-                        'form': form, 'post_url': post_url, 'target': 'this', 'trigger': None,
-                        'download_limit_exceeded': True
-                    },
-                status=400
+            template = 'generate_image.html#prompt-form'
+            return render(request, template, {
+                'form': form, 'post_url': post_url, 'target':'this', 'trigger': None,
+                'download_limit_exceeded': True
+                }, status=400
             )
         form = DjangoPromptForm(request.POST)
         # create a new image object where this response will be stored

@@ -4,6 +4,9 @@
 
 
 {% partialdef prompt-form %}
+        {% if download_limit_exceeded and not shown %}
+            {% partial download-count-error %}
+        {% endif %}
     {% if trigger %}
         <form hx-post="{{post_url}}" hx-target={{target}} hx-trigger={{trigger}} hx-swap="outerHTML" id="prompt-form" class="bg-[#262c3d] shadow-md rounded px-8 pt-6 pb-8 mb-4 mt-1">
     {% else %}
@@ -71,9 +74,6 @@
 
 {% partialdef content %}
 <div id="content" class="grid grid-cols-1 gp-5">
-    {% if download_limit_exceeded %}
-        {% partial download-count-error %}
-    {% endif %}
     <div>
         <h1 class="text-3xl font-bold">Generate Image</h1>
             {% csrf_token %}
