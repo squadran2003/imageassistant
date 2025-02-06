@@ -32,6 +32,7 @@ DB_USER = config('DB_USER', default=os.environ.get('DB_USER'))
 DB_PASSWORD = config('DB_PASSWORD', default=os.environ.get('DB_PASSWORD'))
 DB_HOST = config('DB_HOST', default=os.environ.get('DB_HOST'))
 DJANGO_SETTINGS_MODULE = config('DJANGO_SETTINGS_MODULE', default=os.environ.get('DJANGO_SETTINGS_MODULE'))
+REDIS_URL = config('REDIS_URL', default="redis://redis-imageassistant:6379/1")
 
 
 # Application definition
@@ -186,7 +187,7 @@ CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers.DatabaseScheduler"
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://redis-imageassistant:6379/1",
+        "LOCATION": REDIS_URL,
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
