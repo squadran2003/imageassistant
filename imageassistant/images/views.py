@@ -350,16 +350,19 @@ def generate_image(request):
     post_url = reverse('images:generate_image')
     if request.method == 'POST':
         # find out what time the session was started
-        if request.session.get('image_assistant_start'):
+        if request.session.get('image_assistant_start', None):
             start_time = datetime.strptime(request.session['image_assistant_start'], '%Y-%m-%d %H:%M:%S')
             # if visits the site the same day, increment the download count
             if ((datetime.now() - start_time).total_seconds() / (3600 * 24)) < 1:
                 request.session['image_assistant_download_count'] += 1
             else:
                 request.session['image_assistant_download_count'] = 0
+        else:
+            request.session['image_assistant_start'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            request.session['image_assistant_download_count'] = 0
         if request.session.get('image_assistant_download_count') > 2:
             return render(
-                request, 'generate_image.html#content',
+                request, 'generate_image.html#download-count-error',
                     {
                         'form': form, 'post_url': post_url, 'target': 'this', 'trigger': None,
                         'download_limit_exceeded': True
@@ -373,7 +376,6 @@ def generate_image(request):
         if form.is_valid():
             template = 'generate_image.html#prompt-form'
             redirect_url = reverse('images:service', args=[7, image.id])
-            print(redirect_url)
             return render(
                 request, template, {
                     'form': form, 'post_url': redirect_url, 

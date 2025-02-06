@@ -92,6 +92,7 @@ class CreateImageViewTests(TestCase):
         data = self.valid_data.copy()
         data['prompt'] = 'Cat fighting'
         response = client.post(self.url, data)
+        # test for a redirect
         self.assertEqual(response.status_code, 400)
     
     

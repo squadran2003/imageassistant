@@ -10,8 +10,12 @@
         <form hx-post="{{post_url}}" hx-target={{target}}  hx-swap="outerHTML" id="prompt-form" class="bg-[#262c3d] shadow-md rounded px-8 pt-6 pb-8 mb-4 mt-1">
     {% endif %}
         {% csrf_token %}
-        {% for field in form.visible_fields %}
-            {{ field.label_tag }} {{ field }}
+        {% for field in form %}
+            {% if field.visible %}
+                {{ field.label_tag }} {{ field }}
+            {% else %}
+                {{ field }}
+            {% endif %}
             {% if field.errors %}
                 <div class="text-red-700 px-4 py-3 rounded relative bg-[#c9aab6] text-sm">{{field.errors}}</div>
             {% endif %}
@@ -65,14 +69,10 @@
 {% endpartialdef %}
 
 
-
 {% partialdef content %}
 <div id="content" class="grid grid-cols-1 gp-5">
-    {%if download_limit_exceeded %}
-        <div class="mt-2 mb-2 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-            <strong class="font-bold">Download Limit Exceeded!</strong>
-            <span class="block sm:inline">You have exceeded the maximum number of downloads allowed within a 24 hr period. Come back later</span>
-        </div>
+    {% if download_limit_exceeded %}
+        {% partial download-count-error %}
     {% endif %}
     <div>
         <h1 class="text-3xl font-bold">Generate Image</h1>
@@ -86,6 +86,12 @@
 
 {% endpartialdef %}
 
+{% partialdef download-count-error %}
+    <div class="mt-2 mb-2 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+        <strong class="font-bold">Download Limit Exceeded!</strong>
+        <span class="block sm:inline">You have exceeded the maximum number of downloads allowed within a 24 hr period. Come back later</span>
+    </div>
+{% endpartialdef %}
 
 
 {% block content %}

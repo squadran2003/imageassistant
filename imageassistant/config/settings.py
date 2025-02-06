@@ -66,6 +66,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "default"
+
+ESSION_COOKIE_AGE = 86400  # One day in seconds, adjust as needed
+SESSION_SAVE_EVERY_REQUEST = True  # Save the session to the database on every request
+
 SITE_ID = 1
 
 ROOT_URLCONF = 'config.urls'
@@ -213,5 +219,6 @@ DOMAIN = "http://localhost:8084"
 STRIPE_PRICE_ID = config('STRIPE_PRICE_ID', os.environ.get('STRIPE_PRICE_ID'))
 STRIPE_PUBLIC_KEY = config('STRIPE_PUBLISHED_KEY', os.environ.get('STRIPE_PUBLISHED_KEY'))
 STABILITY_AI_KEY = config('STABILITY_AI_KEY', os.environ.get('STABILITY_AI_KEY'))
+
 
 
