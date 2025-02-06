@@ -352,8 +352,11 @@ def generate_image(request):
         # find out what time the session was started
         if request.session.get('image_assistant_start'):
             start_time = datetime.strptime(request.session['image_assistant_start'], '%Y-%m-%d %H:%M:%S')
-            if (datetime.now() - start_time).seconds * 60 * 60 > 24:
-                request.session['image_assistant_download_count'] +=1
+            # if visits the site the same day, increment the download count
+            if ((datetime.now() - start_time).total_seconds() / (3600 * 24)) < 1:
+                request.session['image_assistant_download_count'] += 1
+            else:
+                request.session['image_assistant_download_count'] = 0
         if request.session.get('image_assistant_download_count') > 2:
             return render(
                 request, 'generate_image.html#content',

@@ -30,6 +30,10 @@ def base(request):
         if (datetime.now() - start_time).seconds * 60 *60 > 24:
             request.session['image_assistant_start'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             request.session['image_assistant_download_count'] = 0
+        else:
+            request.session['image_assistant_start'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            request.session['image_assistant_download_count'] = 0
+
     else:
         request.session['image_assistant_start'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         request.session['image_assistant_download_count'] = 0
