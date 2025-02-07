@@ -83,10 +83,10 @@ class CreateImageViewTests(TestCase):
     def test_max_downloads_exceeded_gives_bad_request(self):
         client = self.client
         session = client.session
-        # its within 24 hrs but count is greater than 2
+        # its within 24 hrs but count is greater than 1
         session.update({
             'image_assistant_start': "2025-02-06 04:22:00",
-            'image_assistant_download_count': 3
+            'image_assistant_download_count': 2
         })
         session.save()
         data = self.valid_data.copy()
@@ -100,10 +100,10 @@ class CreateImageViewTests(TestCase):
     def test_max_downloads_resets_when_over_24hrs_exceeded(self):
         client = self.client
         session = client.session
-        # when 24hrs exceeded but count greater than 3 it resets
+        # when 24hrs exceeded but count greater than 2 it resets
         session.update({
             'image_assistant_start': "2025-02-05 08:22:00",
-            'image_assistant_download_count': 3
+            'image_assistant_download_count': 2
         })
         session.save()
         data = self.valid_data.copy()

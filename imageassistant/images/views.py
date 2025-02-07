@@ -360,10 +360,10 @@ def generate_image(request):
         else:
             request.session['image_assistant_start'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             request.session['image_assistant_download_count'] = 0
-        if request.session.get('image_assistant_download_count') > 2:
+        if request.session.get('image_assistant_download_count') > 1:
             template = 'generate_image.html#prompt-form'
             return render(request, template, {
-                'form': form, 'post_url': post_url, 'target':'this', 'trigger': None,
+                'form': form, 'post_url': post_url, 'target': 'this', 'trigger': None,
                 'download_limit_exceeded': True
                 }, status=400
             )
