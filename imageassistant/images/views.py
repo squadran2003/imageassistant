@@ -353,8 +353,6 @@ def generate_image(request):
         # create a new image object where this response will be stored
         # create a dummy image object
         image = Image.objects.create(image='dummy.png')
-        print(request.session.get('image_assistant_start', None))
-        print(request.session.get('image_assistant_download_count', None))
         if form.is_valid():
             # find out what time the session was started
             if request.session.get('image_assistant_start', None):

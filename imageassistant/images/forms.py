@@ -117,7 +117,7 @@ class PromptForm(forms.Form):
     # this should be a hidden field
     bot_field = forms.CharField(
         required=False, widget=forms.TextInput(
-            attrs={'class': 'validate', 'type': 'hidden'}
+            attrs={'class': 'display:none;'}
         )
     )
     prompt = forms.CharField(
