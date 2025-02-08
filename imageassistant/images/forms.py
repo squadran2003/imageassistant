@@ -131,14 +131,39 @@ class PromptForm(forms.Form):
             },
         )
     )
+    confirm_your_a_human = forms.BooleanField(
+        required=True,
+        widget=forms.CheckboxInput(
+            attrs={
+                'class': 'form-check-input m-2',
+                'type': 'checkbox',
+                'required': 'required',
+                'name': 'confirm_your_a_human',
+                'placeholder': 'I am not a robot'
+            }
+        )
+    )
 
     def clean_prompt(self):
-        prompt = self.cleaned_data.get('prompt')
-        bot_field = self.cleaned_data.get('bot_field')
-        if bot_field:
-            raise forms.ValidationError('Invalid request')
+        prompt = self.cleaned_data.get('prompt', None)
+        if len(prompt) > 350:
+            raise forms.ValidationError('Prompt must be less than 20 characters')
         if prompt is None or prompt == '':
             raise forms.ValidationError('Prompt is required')
         if len(prompt) > 350:
             raise forms.ValidationError('Prompt must be less than 20 characters')
         return prompt
+
+    def clean_bot_field(self):
+        bot_field = self.cleaned_data.get('bot_field')
+        if bot_field:
+            raise forms.ValidationError('Invalid request')
+        if bot_field:
+            raise forms.ValidationError('Invalid request')
+        return bot_field
+    
+    def clean_confirm_your_a_human(self):
+        confirm_your_a_human = self.cleaned_data.get('confirm_your_a_human', False)
+        if not confirm_your_a_human:
+            raise forms.ValidationError('Please confirm you are not a robot')
+        return confirm_your_a_human

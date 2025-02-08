@@ -37,6 +37,8 @@ class CreateImageViewTests(TestCase):
         session.save()
         data = self.valid_data.copy()
         data['prompt'] = self.invalid_propmpt
+        data['confirm_your_a_human'] = 'on'
+        data['bot_field'] = ''
         response = self.client.post(self.url, data)
         self.assertEqual(response.status_code, 400)
     
@@ -50,6 +52,8 @@ class CreateImageViewTests(TestCase):
         session.save()
         data = self.valid_data.copy()
         data['prompt'] = ''
+        data['confirm_your_a_human'] = 'on'
+        data['bot_field'] = ''
         response = self.client.post(self.url, data)
         self.assertEqual(response.status_code, 400)
     
@@ -63,6 +67,22 @@ class CreateImageViewTests(TestCase):
         session.save()
         data = self.valid_data.copy()
         data['bot_field'] = 'bot'
+        data['confirm_your_a_human'] = 'on'
+        response = self.client.post(self.url, data)
+        self.assertEqual(response.status_code, 400)
+    
+    @freeze_time("2025-02-06 09:22:00")
+    def test_create_image_without_confirm_bot_field_return_error(self):
+        session = self.client.session
+        session.update({
+            'image_assistant_start': "2025-02-05 08:22:00",
+            'image_assistant_download_count': 0
+        })
+        session.save()
+        data = self.valid_data.copy()
+        data['prompt'] = 'Cat fighting'
+        data['confirm_your_a_human'] = ''
+        data['bot_field'] = ''
         response = self.client.post(self.url, data)
         self.assertEqual(response.status_code, 400)
     
@@ -76,6 +96,8 @@ class CreateImageViewTests(TestCase):
         session.save()
         data = self.valid_data.copy()
         data['prompt'] = 'Cat fighting'
+        data['confirm_your_a_human'] = 'on'
+        data['bot_field'] = ''
         response = self.client.post(self.url, data)
         self.assertEqual(response.status_code, 200)
     
@@ -91,6 +113,8 @@ class CreateImageViewTests(TestCase):
         session.save()
         data = self.valid_data.copy()
         data['prompt'] = 'Cat fighting'
+        data['confirm_your_a_human'] = 'on'
+        data['bot_field'] = ''
         response = client.post(self.url, data)
         # test for a redirect
         self.assertEqual(response.status_code, 400)
@@ -108,5 +132,7 @@ class CreateImageViewTests(TestCase):
         session.save()
         data = self.valid_data.copy()
         data['prompt'] = 'Cat fighting'
+        data['confirm_your_a_human'] = 'on'
+        data['bot_field'] = ''
         response = client.post(self.url, data)
         self.assertEqual(response.status_code, 200)
