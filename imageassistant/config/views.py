@@ -18,7 +18,9 @@ class StaticViewSitemap(Sitemap):
         return ['base', 'images:generate_image']  # URL names from urls.py
 
     def location(self, item):
-        return f"{settings.SITE_URL}{reverse(item)}"
+        url = reverse(item)
+        url = url.replace("http://", "https://")
+        return url
 
 
 def base(request):
