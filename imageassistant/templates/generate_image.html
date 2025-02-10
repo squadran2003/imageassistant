@@ -15,7 +15,14 @@
         {% csrf_token %}
         {% for field in form %}
             {% if field.name == 'confirm_your_a_human' %}
-                {{ field.label_tag }} {{ field }}
+            <label class="md:w-2/3 block text-[#c0cce3] font-bold">
+                <span class="text-[1rem]">{{ field.label_tag }}</span> {{ field }}
+            </label>
+            {% elif field.name == 'aspect_ratio' %}
+                <label class="block uppercase tracking-wide text-[#c0cce3] text-xs font-bold mb-2" for="grid-state">
+                    {{ field.label_tag }}
+                </label>
+                {{ field }}
             {% else %}
                 {{ field }}
             {% endif %}

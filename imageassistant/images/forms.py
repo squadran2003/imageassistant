@@ -113,6 +113,17 @@ class CroppingForm(forms.Form):
         return height
 
 
+aspect_ratio_choices = [
+    ('16:9', '16:9'),
+    ('1:1', '1:1'),
+    ('21:9', '21:9'),
+    ('2:3', '2:3'),
+    ('3:2', '3:2'),
+    ('4:5', '4:5'),
+    ('5:4', '5:4'),
+    ('9:16', '9:16'),
+    ('9:21', '9:21')
+]
 class PromptForm(forms.Form):
     # this should be a hidden field
     bot_field = forms.CharField(
@@ -131,11 +142,24 @@ class PromptForm(forms.Form):
             },
         )
     )
+    aspect_ratio = forms.CharField(
+        required=True,
+        widget=forms.Select(
+            choices=aspect_ratio_choices,
+            attrs={
+                'class': 'block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500',
+                'label': 'Aspect Ratio',
+                'name': 'aspect_ratio'
+            }, 
+        ),
+        empty_value='16:9'
+
+    )
     confirm_your_a_human = forms.BooleanField(
         required=True,
         widget=forms.CheckboxInput(
             attrs={
-                'class': 'form-check-input m-2',
+                'class': 'mt-5',
                 'type': 'checkbox',
                 'required': 'required',
                 'name': 'confirm_your_a_human',

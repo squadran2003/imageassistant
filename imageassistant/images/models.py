@@ -24,6 +24,7 @@ class Image(models.Model):
     image = models.ImageField(max_length=500)
     alternate_url = models.URLField(max_length=500, blank=True, null=True)
     processed = models.BooleanField(default=False)
+    aspect_ratio = models.CharField(max_length=50, default="16:9")
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

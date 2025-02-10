@@ -375,9 +375,12 @@ def generate_image(request):
                 )
             template = 'generate_image.html#prompt-form'
             redirect_url = reverse('images:service', args=[7, image.id])
+            # add in the aspect ratio the user has selected
+            image.aspect_ratio = form.cleaned_data['aspect_ratio']
+            image.save()
             return render(
                 request, template, {
-                    'form': form, 'post_url': redirect_url, 
+                    'form': form, 'post_url': redirect_url,
                     'target': '#image-container', 'trigger': 'load'
                 },
                 status=200
