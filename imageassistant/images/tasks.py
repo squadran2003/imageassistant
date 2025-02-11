@@ -12,6 +12,7 @@ import cv2
 import numpy as np
 import urllib
 import requests
+import datetime
 
 
 
@@ -256,6 +257,11 @@ def create_image_from_prompt(image_id, prompt):
             file.processed = True
             file.save()
     else:
+        file.image.name = file_name
+        file.ai_response = response.json()
+        file.ai_response['date'] = str(datetime.datetime.now())
+        file.processed = True
+        file.save()
         raise Exception(str(response.json()))
 
 

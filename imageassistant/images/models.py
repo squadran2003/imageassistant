@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 from django.conf import settings
+from django.db.models import JSONField
 import os
 import boto3
 
@@ -25,6 +26,7 @@ class Image(models.Model):
     alternate_url = models.URLField(max_length=500, blank=True, null=True)
     processed = models.BooleanField(default=False)
     aspect_ratio = models.CharField(max_length=50, default="16:9")
+    ai_response = JSONField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -38,6 +40,7 @@ services = (
     ('Thumbnail', 'Thumbnail'),
     ('Enhancement', 'Enhancement'),
     ('Cropping', 'Cropping'),
+    ('GenerateImage', 'GenerateImage'),
 )
 
 
