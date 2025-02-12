@@ -47,8 +47,8 @@ class ContactForm(forms.Form):
 
     def clean_message(self):
         message = self.cleaned_data.get('message', None)
-        if not message or len(message) < 10:
-            raise forms.ValidationError("Message is too short. Please explain in more detail.")
+        if not message or len(message) < 100:
+            raise forms.ValidationError("Message is too short; messages must be at least 100 characters.")
         return message
 
     def clean_confirm_your_a_human(self):
