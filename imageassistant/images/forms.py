@@ -147,7 +147,7 @@ class PromptForm(forms.Form):
         widget=forms.Select(
             choices=aspect_ratio_choices,
             attrs={
-                'class': 'block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500',
+                'class': 'block appearance-none w-full bg-[#3e4559] border border-[#3e4559] text-white py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-[#3e4559] focus:border-gray-500',
                 'label': 'Aspect Ratio',
                 'name': 'aspect_ratio'
             }, 
