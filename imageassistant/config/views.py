@@ -53,8 +53,8 @@ def contact(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)
         if form.is_valid():
-            subject = "There was a message from imageassistant.io"
-            recipient_list = [form.cleaned_data['email']]
+            subject = f"ImageAssistant.io - message from {form.cleaned_data['email']}"
+            recipient_list = ["cormackandy@hotmail.com"]
             from_email = "no-reply@imageassistant.io"
             message = form.cleaned_data['message']
             with get_connection(
