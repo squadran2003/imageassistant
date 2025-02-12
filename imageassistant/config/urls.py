@@ -19,7 +19,10 @@ from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
 from django.views.generic import TemplateView
-from config.views import base, faq, stripe_success_return, upload_content, StaticViewSitemap
+from config.views import (
+    base, faq, stripe_success_return, upload_content, StaticViewSitemap,
+    contact
+)
 from django.contrib.sitemaps.views import sitemap
 
 
@@ -31,6 +34,7 @@ urlpatterns = [
     path('', base, name='base'),
     path('faq/', faq, name='faq'),
     path('admin/', admin.site.urls),
+    path('contact/', contact, name='contact'),
     path('upload/content/', upload_content, name='upload_content'),
     path('images/', include(('images.urls', 'images'), namespace='images')),
     path('stripe/return/', stripe_success_return, name='stripe_success_return'),

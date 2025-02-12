@@ -127,7 +127,7 @@ aspect_ratio_choices = [
 class PromptForm(forms.Form):
     # this should be a hidden field
     bot_field = forms.CharField(
-        required=False, widget=forms.TextInput(
+        required=False, widget=forms.HiddenInput(
             attrs={'class': 'display:none;'}
         )
     )

@@ -33,7 +33,10 @@ DB_PASSWORD = config('DB_PASSWORD', default=os.environ.get('DB_PASSWORD'))
 DB_HOST = config('DB_HOST', default=os.environ.get('DB_HOST'))
 DJANGO_SETTINGS_MODULE = config('DJANGO_SETTINGS_MODULE', default=os.environ.get('DJANGO_SETTINGS_MODULE'))
 REDIS_URL = config('REDIS_URL', default="redis://redis-imageassistant:6379/1")
-
+MAILERSEND_SMTP_PORT=config('MAILERSEND_SMTP_PORT', os.environ.get('MAILERSEND_SMTP_PORT'))
+MAILERSEND_SMTP_USERNAME=config('MAILERSEND_SMTP_USERNAME', os.environ.get('MAILERSEND_SMTP_USERNAME'))
+MAILERSEND_SMTP_PASSWORD=config('MAILERSEND_SMTP_PASSWORD', os.environ.get('MAILERSEND_SMTP_PASSWORD'))
+MAILERSEND_SMTP_HOST=config('MAILERSEND_SMTP_HOST', os.environ.get('MAILERSEND_SMTP_HOST'))
 
 # Application definition
 
@@ -222,4 +225,4 @@ STRIPE_PUBLIC_KEY = config('STRIPE_PUBLISHED_KEY', os.environ.get('STRIPE_PUBLIS
 STABILITY_AI_KEY = config('STABILITY_AI_KEY', os.environ.get('STABILITY_AI_KEY'))
 
 
-
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

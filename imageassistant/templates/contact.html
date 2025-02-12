@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load partials %}
+{% load static %}
+{% partialdef message-sent %}
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+            <strong class="font-bold">Success!</strong>
+            <span class="block sm:inline"> Message sent.</span>
+        </div>
+{% endpartialdef %}
+{% partialdef message-error %}
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+            <strong class="font-bold">Error!</strong>
+            <span class="block sm:inline"> Message not sent.</span>
+        </div>
+{% endpartialdef %}
+{% partialdef content %}
+<div id="content" class="grid-cols-12 gp-5 h-[calc(100vh-130px)]">
+    <div id="message">
+    </div>
+    {% csrf_token %}
+    <form class="rounded px-8 pt-6 pb-8 mb-4 mt-1" hx-post="{% url 'contact' %}" hx-target="#message" hx-swap="outerHTML">
+        {% for field in form %}
+            {% if field.name == 'confirm_your_a_human' %}
+                <label class="md:w-2/3 block text-[#c0cce3] font-bold">
+                    <span class="text-[1rem]">{{ field.label_tag }}</span> {{ field }}
+                </label>
+            {% elif field.name == 'bot_field' %}
+                    {{ field }}
+            {% else %}
+                {{ field.label_tag }} {{ field }}
+            {%endif%}
+            {% if field.errors %}
+                <div class="text-red-700 px-4 py-3 rounded relative bg-[#c9aab6] text-sm">{{field.errors}}</div>
+            {% endif %}
+        {% endfor %}
+        <button type="submit" class="bg-[#a724ff] text-white-200 p-4 rounded-md p-2 mt-4">Send</button>
+    </form>
+</div>
+{% endpartialdef %}
+
+
+{% block content %}
+    {% partial content %}
+{% endblock %}
+{% block footer %}
+<div class="grid grid-cols-12">
+    <footer class="col-span-12 text-center text-white-200 bg-[#1f2537] p-2">
+        © 2025 imageassistant
+    </footer>
+
+</div>
+{% endblock %}

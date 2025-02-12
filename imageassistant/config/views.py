@@ -4,6 +4,8 @@ from django.conf import settings
 from django.urls import reverse
 from django.middleware import csrf
 from django.contrib.sitemaps import Sitemap
+from django.core.mail import EmailMessage, get_connection
+from config.forms import ContactForm
 from images.forms import ImageUploadForm
 from images.models import Service
 import os
@@ -46,15 +48,42 @@ def upload_content(request):
 
 
 def contact(request):
-    html_content = """
-        <div class="row">
-            <div class="col s12 m12">
-                <h5>Contact content</h5>
-                <p>This is the left column content.</p>
-            </div>
-        </div>
-    """
-    return HttpResponse(html_content, content_type='text/html')
+    form = ContactForm()
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            subject = "There was a message from imageassistant.io"
+            recipient_list = [form.cleaned_data['email']]
+            from_email = "no-reply@imageassistant.io"
+            message = form.cleaned_data['message']
+            with get_connection(
+                host=settings.MAILERSEND_SMTP_HOST,
+                port=settings.MAILERSEND_SMTP_PORT,
+                username=settings.MAILERSEND_SMTP_USERNAME,
+                password=settings.MAILERSEND_SMTP_PASSWORD,
+                use_tls=True,
+                ) as connection:
+                    r = EmailMessage(
+                          subject=subject,
+                          body=message,
+                          to=recipient_list,
+                          from_email=from_email,
+                          connection=connection).send()
+            return render(request, 'contact.html#message-sent', {
+                'form': form,
+            })
+        else:
+            if 'message' in form.errors:
+                form.fields['message'].widget.attrs['class'] = 'shadow appearance-none border rounded mt-2 min-h-20 mb-2 p-2 w-full text-white focus:outline-none focus:shadow-outline required:border-red-500'
+            if 'email' in form.errors:
+                form.fields['email'].widget.attrs['class'] = 'shadow appearance-none border rounded mt-2 min-h-20 mb-2 p-2 w-full text-white focus:outline-none focus:shadow-outline required:border-red-500'
+            return render(request, 'contact.html#content', {
+                'form': form,
+            })
+
+    return render(request, 'contact.html', {
+        'form': form,
+    })
 
 
 def stripe_success_return(request):
