@@ -16,6 +16,13 @@
 {% partialdef content %}
 <div id="content" class="grid-cols-12 gp-5 h-[calc(100vh-130px)]">
     <div id="message">
+        {% for message in messages %}
+            {% if message.tags == 'success' %}
+                {% partial message-sent %}
+            {% elif message.tags == 'error' %}
+                {% partial message-error %}
+            {% endif %}
+        {% endfor %}
     </div>
     {% csrf_token %}
     <form class="rounded px-8 pt-6 pb-8 mb-4 mt-1" hx-post="{% url 'contact' %}" hx-target="#message" hx-swap="outerHTML">

@@ -6,7 +6,7 @@ class ContactForm(forms.Form):
     email = forms.EmailField(
         required=True, widget=forms.EmailInput(
             attrs={
-                "class": "shadow appearance-none border rounded mt-2 min-h-20 mb-2 p-2 w-full text-[#fff] focus:outline-none focus:shadow-outline",
+                "class": "shadow appearance-none border rounded mt-2 min-h-20 mb-2 p-2 w-full text-white focus:outline-none focus:shadow-outline",
                 "placeholder": "Your email address"
             }
         )
@@ -47,8 +47,8 @@ class ContactForm(forms.Form):
 
     def clean_message(self):
         message = self.cleaned_data.get('message', None)
-        if not message or len(message) < 100:
-            raise forms.ValidationError("Message is too short; messages must be at least 100 characters.")
+        if not message or len(message) < 50:
+            raise forms.ValidationError("Message is too short; messages must be at least 50 characters.")
         return message
 
     def clean_confirm_your_a_human(self):

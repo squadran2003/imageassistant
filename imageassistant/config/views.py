@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.middleware import csrf
 from django.contrib.sitemaps import Sitemap
 from django.core.mail import EmailMessage, get_connection
+from django.contrib import messages
 from config.forms import ContactForm
 from images.forms import ImageUploadForm
 from images.models import Service
@@ -69,10 +70,14 @@ def contact(request):
                           to=recipient_list,
                           from_email=from_email,
                           connection=connection).send()
-            return render(request, 'contact.html#message-sent', {
+            messages.success(request, 'Message sent!')
+            form.fields['email'].widget.attrs['class'] = 'shadow appearance-none border rounded mt-2 min-h-20 mb-2 p-2 w-full text-white focus:outline-none focus:shadow-outline'
+            form.fields['message'].widget.attrs['class'] = 'shadow appearance-none border rounded mt-2 min-h-20 mb-2 p-2 w-full text-white focus:outline-none focus:shadow-outline'
+            return render(request, 'contact.html#content', {
                 'form': form,
             })
         else:
+            messages.error(request, 'There was an error with your message.')
             if 'message' in form.errors:
                 form.fields['message'].widget.attrs['class'] = 'shadow appearance-none border rounded mt-2 min-h-20 mb-2 p-2 w-full text-white focus:outline-none focus:shadow-outline required:border-red-500'
             if 'email' in form.errors:
