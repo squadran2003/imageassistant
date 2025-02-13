@@ -388,7 +388,7 @@ def generate_image(request):
         else:
             print(form.errors)
             template = 'generate_image.html#prompt-form'
-            form.fields['prompt'].widget.attrs['class'] = 'shadow appearance-none border rounded mt-2 min-h-50 mb-2 p-2 w-full text-gray-700 focus:outline-none focus:shadow-outline required:border-red-500'
+            form.fields['prompt'].widget.attrs['class'] = 'shadow appearance-none border rounded mt-2 min-h-20 mb-2 p-2 w-full text-[#1e1a1a] focus:outline-none focus:shadow-outline required:border-red-500'
             return render(request, template, {'form': form, 'post_url': post_url, 'target':'this', 'trigger': None}, status=400)
     else:
         template = 'generate_image.html'

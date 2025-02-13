@@ -138,7 +138,7 @@ class PromptForm(forms.Form):
                 "rows": 5,
                 "cols": 40,
                 "placeholder": "Tell us more about the image you want to generate",
-                "style": "resize:none;"
+                "style": "color:black"
             },
         )
     )
