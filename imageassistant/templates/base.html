@@ -40,6 +40,12 @@
             e.detail.isError = false;
         }
     });
+    document.addEventListener("contextmenu", function (event) {
+        if (event.target.tagName === "IMG") {
+        event.preventDefault();
+        }
+    });
+
 </script>
 <script src="{% static 'js/dist_cropper/cropper.js' %}"></script>
 </body>
