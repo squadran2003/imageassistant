@@ -6,7 +6,7 @@ class ContactForm(forms.Form):
     email = forms.EmailField(
         required=True, widget=forms.EmailInput(
             attrs={
-                "class": "shadow appearance-none border rounded mt-2 min-h-20 mb-2 p-2 w-full text-white focus:outline-none focus:shadow-outline",
+                "class": "shadow appearance-none border rounded mt-2 min-h-20 mb-2 p-2 w-full text-[#1e1a1a] focus:outline-none focus:shadow-outline",
                 "placeholder": "Your email address"
             }
         )
@@ -14,7 +14,7 @@ class ContactForm(forms.Form):
     message = forms.CharField(
         required=True, widget=forms.Textarea(
             attrs={
-                'class': "shadow appearance-none border rounded mt-2 min-h-20 mb-2 p-2 w-full text-white focus:outline-none focus:shadow-outline",
+                'class': "shadow appearance-none border rounded mt-2 min-h-20 mb-2 p-2 w-full text-[#1e1a1a] focus:outline-none focus:shadow-outline",
                 "placeholder": "Please send us a message if you are having issues or have any questions."
             }
         )

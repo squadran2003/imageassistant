@@ -134,7 +134,7 @@ class PromptForm(forms.Form):
     prompt = forms.CharField(
         required=True, widget=forms.Textarea(
            attrs={
-                'class': "shadow appearance-none border rounded mt-2 min-h-20 mb-2 p-2 w-full text-gray-700 focus:outline-none focus:shadow-outline",
+                'class': "shadow appearance-none border rounded mt-2 min-h-20 mb-2 p-2 w-full text-[#1e1a1a] focus:outline-none focus:shadow-outline",
                 "rows": 5,
                 "cols": 40,
                 "placeholder": "Tell us more about the image you want to generate",
