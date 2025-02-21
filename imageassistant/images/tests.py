@@ -3,7 +3,7 @@ from django.test import TestCase
 from django.test import TestCase
 from django.urls import reverse
 from .views import generate_image
-from .models import Image
+from .models import Image, Service
 from freezegun import freeze_time
 from datetime import datetime
 
@@ -26,6 +26,7 @@ class CreateImageViewTests(TestCase):
             'bot_field': '',
         }
         self.maxDiff = None
+        Service.objects.create(name='GenerateImage', code=7)
 
     @freeze_time("2025-02-06 09:22:00")
     def test_create_image_with_prompt_but_too_long(self):

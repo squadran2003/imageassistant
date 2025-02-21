@@ -191,8 +191,8 @@ def process_service(request, service_id, image_id):
     service = Service.objects.get(code=service_id)
     payment_made = request.GET.get('payment_made', False)
     payment_made = True if payment_made == 'true' else False
-    service.payment_made = payment_made
-    service.save()
+    file.payment_made = payment_made
+    file.save()
     # create_image.html#content'
     if not file.processed:
         poll_url = reverse('images:process_service', args=[service_id, image_id])
@@ -204,7 +204,7 @@ def process_service(request, service_id, image_id):
                 'service_id': service_id,
                 'cost': service.cost,
                 'free': service.free,
-                'payment_made': service.payment_made
+                'payment_made': file.payment_made
             }
         )
 
@@ -357,31 +357,33 @@ def session_status(request):
 def generate_image(request):
     form = DjangoPromptForm()
     post_url = reverse('images:generate_image')
+    service = Service.objects.get(code=7)
     if request.method == 'POST':
         form = DjangoPromptForm(request.POST)
         # create a new image object where this response will be stored
         # create a dummy image object
         image = Image.objects.create(image='dummy.png')
         if form.is_valid():
-            #find out what time the session was started
-            if request.session.get('image_assistant_start', None):
-                start_time = datetime.strptime(request.session['image_assistant_start'], '%Y-%m-%d %H:%M:%S')
-                # if visits the site the same day, increment the download count
-                if ((datetime.now() - start_time).total_seconds() / (3600 * 24)) < 1:
-                    request.session['image_assistant_download_count'] += 1
+            # if the service is free, then check if the user has downloaded more than 2 images
+            if service.free:
+                if request.session.get('image_assistant_start', None):
+                    start_time = datetime.strptime(request.session['image_assistant_start'], '%Y-%m-%d %H:%M:%S')
+                    # if visits the site the same day, increment the download count
+                    if ((datetime.now() - start_time).total_seconds() / (3600 * 24)) < 1:
+                        request.session['image_assistant_download_count'] += 1
+                    else:
+                        request.session['image_assistant_start'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                        request.session['image_assistant_download_count'] = 0
                 else:
                     request.session['image_assistant_start'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                     request.session['image_assistant_download_count'] = 0
-            else:
-                request.session['image_assistant_start'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                request.session['image_assistant_download_count'] = 0
-            if request.session.get('image_assistant_download_count') > 1:
-                template = 'generate_image.html#prompt-form'
-                return render(request, template, {
-                    'form': form, 'post_url': post_url, 'target': 'this', 'trigger': None,
-                    'download_limit_exceeded': True
-                    }, status=400
-                )
+                if request.session.get('image_assistant_download_count') > 1:
+                    template = 'generate_image.html#prompt-form'
+                    return render(request, template, {
+                        'form': form, 'post_url': post_url, 'target': 'this', 'trigger': None,
+                        'download_limit_exceeded': True
+                        }, status=400
+                    )
             template = 'generate_image.html#prompt-form'
             redirect_url = reverse('images:service', args=[7, image.id])
             # add in the aspect ratio the user has selected
