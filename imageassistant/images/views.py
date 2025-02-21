@@ -176,7 +176,8 @@ def service(request, service_id, image_id):
                 prompt = form.cleaned_data['prompt']
                 create_image_from_prompt.delay(image_id, prompt)
     poll_url = reverse(
-        'images:process_image', args=[
+        'images:process_service', args=[
+            service_id,
             image_id
         ]
     )
@@ -185,16 +186,26 @@ def service(request, service_id, image_id):
     )
 
 
-def processed_service(request, image_id):
+def process_service(request, service_id, image_id):
     file = Image.objects.get(pk=image_id)
+    service = Service.objects.get(code=service_id)
+    payment_made = request.GET.get('payment_made', False)
+    payment_made = True if payment_made == 'true' else False
+    service.payment_made = payment_made
+    service.save()
     # create_image.html#content'
     if not file.processed:
-        poll_url = reverse('images:process_image', args=[image_id])
+        poll_url = reverse('images:process_service', args=[service_id, image_id])
         return render(request, 'generate_image.html#img-svg-poll', {'poll_url': poll_url, 'image': file})
     else:
         print("Image has been processed")
         return render(request, 'generate_image.html#img-processed', {
-            'image': file}
+                'image': file,
+                'service_id': service_id,
+                'cost': service.cost,
+                'free': service.free,
+                'payment_made': service.payment_made
+            }
         )
 
 
@@ -275,24 +286,21 @@ def get_upload_form(request):
     return HttpResponse(html_content, content_type='text/html')
 
 
-def get_checkout_content(request, service_id, image_id):
-    token = csrf.get_token(request)
-    check_out_url = reverse('images:create_checkout_session', args=[service_id, image_id])
-    html_content = ''
-    checkout_content = CheckoutContent()
-    html_content = checkout_content.render(
-        args=[service_id, image_id, token, settings.STRIPE_PUBLIC_KEY],
-        kwargs={
-            "check_out_url": check_out_url,
-        }
+def build_checkout_session(request, service_id, image_id):
+    return render(
+        request, "generate_image.html#stripe-checkout-form",
+        {
+            'service_id': service_id, 'image_id': image_id,
+            "stripe_public_key": settings.STRIPE_PUBLIC_KEY
+        },
+        status=200
     )
-    return HttpResponse(html_content, content_type='text/html')
 
 
 def get_prompt_form(request, service_id, image_id):
     prompt_form = PromptForm()
     django_prompt_form = DjangoPromptForm()
-   
+
     html_content = prompt_form.render(
         kwargs={
             "attrs": {
@@ -335,6 +343,7 @@ def create_checkout_session(request, service_id, image_id):
     except Exception as e:
         # capture message in sentry with info from stripe, like the payment intent id
         capture_message(f"Error creating stripe checkout session: {str(e)}", level='error')
+        print("Error creating stripe checkout session")
         return HttpResponse(str(e), status=500)
     return JsonResponse(data={'clientSecret':client_secret}, safe=False)
 
@@ -355,24 +364,24 @@ def generate_image(request):
         image = Image.objects.create(image='dummy.png')
         if form.is_valid():
             # find out what time the session was started
-            if request.session.get('image_assistant_start', None):
-                start_time = datetime.strptime(request.session['image_assistant_start'], '%Y-%m-%d %H:%M:%S')
-                # if visits the site the same day, increment the download count
-                if ((datetime.now() - start_time).total_seconds() / (3600 * 24)) < 1:
-                    request.session['image_assistant_download_count'] += 1
-                else:
-                    request.session['image_assistant_start'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                    request.session['image_assistant_download_count'] = 0
-            else:
-                request.session['image_assistant_start'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                request.session['image_assistant_download_count'] = 0
-            if request.session.get('image_assistant_download_count') > 1:
-                template = 'generate_image.html#prompt-form'
-                return render(request, template, {
-                    'form': form, 'post_url': post_url, 'target': 'this', 'trigger': None,
-                    'download_limit_exceeded': True
-                    }, status=400
-                )
+            # if request.session.get('image_assistant_start', None):
+            #     start_time = datetime.strptime(request.session['image_assistant_start'], '%Y-%m-%d %H:%M:%S')
+            #     # if visits the site the same day, increment the download count
+            #     if ((datetime.now() - start_time).total_seconds() / (3600 * 24)) < 1:
+            #         request.session['image_assistant_download_count'] += 1
+            #     else:
+            #         request.session['image_assistant_start'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            #         request.session['image_assistant_download_count'] = 0
+            # else:
+            #     request.session['image_assistant_start'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            #     request.session['image_assistant_download_count'] = 0
+            # if request.session.get('image_assistant_download_count') > 1:
+            #     template = 'generate_image.html#prompt-form'
+            #     return render(request, template, {
+            #         'form': form, 'post_url': post_url, 'target': 'this', 'trigger': None,
+            #         'download_limit_exceeded': True
+            #         }, status=400
+            #     )
             template = 'generate_image.html#prompt-form'
             redirect_url = reverse('images:service', args=[7, image.id])
             # add in the aspect ratio the user has selected
@@ -392,5 +401,10 @@ def generate_image(request):
             return render(request, template, {'form': form, 'post_url': post_url, 'target':'this', 'trigger': None}, status=400)
     else:
         template = 'generate_image.html'
-        return render(request, template, {'form': form, 'post_url': post_url, 'target':'this', 'trigger': None}, status=200)
+        return render(
+            request, template,
+            {
+                'form': form, 'post_url': post_url, 'target': 'this', 'trigger': None,
 
+            }, status=200
+        )

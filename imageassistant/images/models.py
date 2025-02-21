@@ -51,6 +51,7 @@ class Service(models.Model):
     stripe_price_id = models.CharField(max_length=255, blank=True, null=True)
     free = models.BooleanField(default=True)
     cost = models.IntegerField(default=0)
+    payment_made = models.BooleanField(default=False)
     video_path = models.CharField(max_length=500, blank=True, null=True)
     poster_path = models.CharField(max_length=500, blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)

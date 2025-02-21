@@ -2,107 +2,201 @@
 {% load partials %}
 {% load static %}
 
-
 {% partialdef prompt-form %}
-        {% if download_limit_exceeded and not shown %}
-            {% partial download-count-error %}
-        {% endif %}
-    {% if trigger %}
-        <form hx-post="{{post_url}}" hx-target={{target}} hx-trigger={{trigger}} hx-swap="outerHTML" id="prompt-form" class="bg-[#262c3d] shadow-md rounded px-8 pt-6 pb-8 mb-4 mt-1">
+{% if download_limit_exceeded and not shown %}
+{% partial download-count-error %}
+{% endif %}
+{% if trigger %}
+<form hx-post="{{post_url}}" hx-target={{target}} hx-trigger={{trigger}}
+    hx-swap="outerHTML" id="prompt-form"
+    class="bg-[#262c3d] shadow-md rounded px-8 pt-6 pb-8 mb-4 mt-1">
     {% else %}
-        <form hx-post="{{post_url}}" hx-target={{target}}  hx-swap="outerHTML" id="prompt-form" class="bg-[#262c3d] shadow-md rounded px-8 pt-6 pb-8 mb-4 mt-1">
-    {% endif %}
+    <form hx-post="{{post_url}}" hx-target={{target}} hx-swap="outerHTML"
+        id="prompt-form"
+        class="bg-[#262c3d] shadow-md rounded px-8 pt-6 pb-8 mb-4 mt-1">
+        {% endif %}
         {% csrf_token %}
         {% for field in form %}
-            {% if field.name == 'confirm_your_a_human' %}
-            <label class="md:w-2/3 block text-[#c0cce3] font-bold">
-                <span class="text-[1rem]">{{ field.label_tag }}</span> {{ field }}
-            </label>
-            {% elif field.name == 'aspect_ratio' %}
-                <label class="block uppercase tracking-wide text-[#c0cce3] text-xs font-bold mb-2" for="grid-state">
-                    {{ field.label_tag }}
-                </label>
-                {{ field }}
-            {% else %}
-                {{ field }}
-            {% endif %}
-            {% if field.errors %}
-                <div class="text-red-700 px-4 py-3 rounded relative bg-[#c9aab6] text-sm">{{field.errors}}</div>
-            {% endif %}
+        {% if field.name == 'confirm_your_a_human' %}
+        <label class="md:w-2/3 block text-[#c0cce3] font-bold">
+            <span class="text-[1rem]">{{ field.label_tag }}</span> {{ field }}
+        </label>
+        {% elif field.name == 'aspect_ratio' %}
+        <label
+            class="block uppercase tracking-wide text-[#c0cce3] text-xs font-bold mb-2"
+            for="grid-state">
+            {{ field.label_tag }}
+        </label>
+        {{ field }}
+        {% else %}
+        {{ field }}
+        {% endif %}
+        {% if field.errors %}
+        <div
+            class="text-red-700 px-4 py-3 rounded relative bg-[#c9aab6] text-sm">{{field.errors}}</div>
+        {% endif %}
         {% endfor %}
         <div>
-            <button type="submit" onclick="htmx.trigger('#prompt-form', 'submit')" class="mt-2 text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium  text-sm px-5 py-2.5 dark:bg-purple-600 dark:hover:bg-purple-700 focus:outline-none dark:focus:ring-purple-800" id="prompt-button">
+            <button type="submit"
+                onclick="htmx.trigger('#prompt-form', 'submit')"
+                class="mt-2 text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium  text-sm px-5 py-2.5 dark:bg-purple-600 dark:hover:bg-purple-700 focus:outline-none dark:focus:ring-purple-800"
+                id="prompt-button">
                 <div class="hidden htmx-indicator progress" id="indicator">
-                    <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                        xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10"
+                            stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
                 </div>
                 <span id="prompt-progress-text">Submit</span>
             </button>
-        </div>  
+        </div>
     </form>
+    {% endpartialdef %}
+
+{% partialdef stripe-checkout-form %}
+    <input type="hidden" id="stripe_public_key" value="{{ stripe_public_key }}">
+    <div class="row">
+        <div class="col s12">
+            <input type="hidden" id="service_id" value="{{ service_id }}">
+            <input type="hidden" id="image_id" value="{{ image_id }}">
+            {% csrf_token %}
+            <div id="checkout">
+                <!-- Checkout will insert the payment form here -->
+            </div>
+            <script src="https://js.stripe.com/v3/" onload="initializeStripe()"></script>
+            <script>
+                function initializeStripe() {
+                        const stripePublicKey = document.querySelector("#stripe_public_key").value;
+                        const stripe = Stripe(stripePublicKey);
+                        const token = document.querySelector('[name="csrfmiddlewaretoken"]').value;
+
+                        const service_id = document.querySelector("#service_id").value;
+                        const image_id = document.querySelector("#image_id").value;
+                        initialize();
+    
+                        // Create a Checkout Session using redirectToCheckout
+                        async function initialize() {
+                            const fetchClientSecret = async () => {
+                                const response = await fetch(`/images/create/checkout/session/${service_id}/${image_id}/`, {
+                                    method: "POST",
+                                    headers: {
+                                        "Content-Type": "application/json",
+                                        "X-CSRFToken": token,
+                                    },
+                                });
+                                const { clientSecret } = await response.json();
+                                return clientSecret;
+                            };
+    
+                            const checkout = await stripe.initEmbeddedCheckout({
+                                fetchClientSecret,
+                            });
+
+                            // Mount Checkout
+                            checkout.mount('#checkout');
+                        }
+                }
+            </script>
+        </div>
+    </div>
 {% endpartialdef %}
+
 {% partialdef img-svg %}
-<div class="w-full h-full flex items-center justify-center">
-    <svg class="w-full h-full text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 150" fill="none">
-        <rect width="100%" height="100%" fill="gray" />
-        <rect x="10" y="10" width="180" height="130" fill="#bbb" stroke="gray" />
-        <text x="50%" y="50%" font-size="16" fill="gray" text-anchor="middle" alignment-baseline="middle">Image will go here</text>
-    </svg>
-</div>
-{% endpartialdef %}
-
-{% partialdef img-svg-poll %}
-<div class="mt-5 w-full h-full flex items-center justify-center text-center" hx-get="{{poll_url}}" hx-trigger="load delay:3s"  hx-swap="innerHTML" hx-target="#content">
-    <svg class="animate-spin ml-auto mr-auto w-12 h-12 mb-[20%] text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-    </svg>
-</div>
-{% endpartialdef %}
-{% partialdef img-processed %}
-<div id="image-container">
-    <div class="mb-5">
-        {% if image.alternate_url %}
-            <a href="{{ image.alternate_url }}" download="{{ image.image.alternate_url }}" class="text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-md text-sm px-5 py-2.5 dark:bg-purple-600 dark:hover:bg-purple-700 focus:outline-none dark:focus:ring-blue-800">Download</a>
-        {% else %}
-            <a href="{{ image.image.url }}" download="{{ image.image.url }}" class="text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-md text-sm px-5 py-2.5 dark:bg-purple-600 dark:hover:bg-purple-700 focus:outline-none dark:focus:ring-purple-800">Download</a>
-        {% endif %}
+    <div class="w-full h-full flex items-center justify-center">
+        <svg class="w-full h-full text-gray-500"
+            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 150"
+            fill="none">
+            <rect width="100%" height="100%" fill="gray" />
+            <rect x="10" y="10" width="180" height="130" fill="#bbb"
+                stroke="gray" />
+            <text x="50%" y="50%" font-size="16" fill="gray"
+                text-anchor="middle" alignment-baseline="middle">Image will go
+                here</text>
+        </svg>
     </div>
-    <div class="w-full h-full flex items-center justify-center m-2">
-        {% if image.alternate_url %}
-            <img src="{{ image.alternate_url }}" class="w-full h-full"/>
-        {% else %}
-            <img src="{{ image.image.url }}" class="w-full h-full"/>
-        {% endif %}
+    {% endpartialdef %}
+
+    {% partialdef img-svg-poll %}
+    <div class="mt-5 w-full h-full flex items-center justify-center text-center"
+        hx-get="{{poll_url}}" hx-trigger="load delay:3s" hx-swap="innerHTML"
+        hx-target="#content">
+        <svg class="animate-spin ml-auto mr-auto w-12 h-12 mb-[20%] text-white"
+            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10"
+                stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
     </div>
-</div>
-{% endpartialdef %}
+    {% endpartialdef %}
+    {% partialdef donwload-button %}
+        {% if image.alternate_url %}
+        <a href="{{ image.alternate_url }}"
+            download="{{ image.image.alternate_url }}"
+            class="text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-md text-sm px-5 py-2.5 dark:bg-purple-600 dark:hover:bg-purple-700 focus:outline-none dark:focus:ring-blue-800">Download</a>
+        {% else %}
+        <a href="{{ image.image.url }}" download="{{ image.image.url }}"
+            class="text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-md text-sm px-5 py-2.5 dark:bg-purple-600 dark:hover:bg-purple-700 focus:outline-none dark:focus:ring-purple-800">Download</a>
+        {% endif %}
+    {% endpartialdef %}
 
+    {% partialdef img-processed %}
+    <div id="image-container">
+        <div class="mb-5">
+            {% if free %}
+                {% partial donwload-button %}
+            {% else %}
+                {% if payment_made %}
+                    {% partial donwload-button %}
+                {% else %}
+                    <a href="#"
+                    hx-get="{% url 'images:build_checkout_session' service_id image.id %}"
+                    hx-target="#image-container" hx-swap="innerHTML"
+                    hx-trigger="click"
+                    class="text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-md text-sm px-5 py-2.5 dark:bg-purple-600 dark:hover:bg-purple-700 focus:outline-none dark:focus:ring-blue-800">Download:
+                    <span class="text-bold">Price {{cost}}$</span></a>
+                {% endif %}
+            {% endif %}
+        </div>
+        <div class="w-full h-full flex items-center justify-center m-2">
+            {% if image.alternate_url %}
+            <img src="{{ image.alternate_url }}" class="w-full h-full" />
+            {% else %}
+            <img src="{{ image.image.url }}" class="w-full h-full" />
+            {% endif %}
+        </div>
+    </div>
+    {% endpartialdef %}
 
-{% partialdef content %}
-<div id="content" class="grid grid-cols-1 gp-5">
-    <div>
-        <h1 class="text-3xl font-bold">Generate Image</h1>
+    {% partialdef content %}
+    <div id="content" class="grid grid-cols-1 gp-5">
+        <div>
+            <h1 class="text-3xl font-bold">Generate Image</h1>
             {% csrf_token %}
             {% partial prompt-form %}
-    </div>
-    <div id="image-container" class="cm-5">
+        </div>
+        <div id="image-container" class="cm-5">
             {% partial img-svg %}
+        </div>
     </div>
-</div>
 
-{% endpartialdef %}
+    {% endpartialdef %}
 
-{% partialdef download-count-error %}
-    <div class="mt-2 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+    {% partialdef download-count-error %}
+    <div
+        class="mt-2 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+        role="alert">
         <strong class="font-bold">Download Limit Exceeded!</strong>
-        <span class="block sm:inline">You have exceeded the maximum number of downloads allowed, you can only download 2 images in a 24 hr period. Come back later</span>
+        <span class="block sm:inline">You have exceeded the maximum number of
+            downloads allowed, you can only download 2 images in a 24 hr period.
+            Come back later</span>
     </div>
-{% endpartialdef %}
+    {% endpartialdef %}
 
-
-{% block content %}
-{% partial content %}
-{% endblock %}
+    {% block content %}
+    {% partial content %}
+    {% endblock %}
