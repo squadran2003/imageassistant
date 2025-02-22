@@ -225,9 +225,8 @@ def enhance_image(image_id, prompt=None):
 @shared_task
 def create_image_from_prompt(image_id, prompt):
     file = Image.objects.get(pk=image_id)
-    file_name = f"{image_id}_{prompt[:min(20, len(prompt))]}.png"
+    file_name = f"{image_id}_prompt.png"
     # URL-encode the filename to replace spaces with %20
-    encoded_file_name = urllib.parse.quote(file_name)
     response = requests.post(
         f"https://api.stability.ai/v2beta/stable-image/generate/sd3",
         headers={
@@ -251,7 +250,7 @@ def create_image_from_prompt(image_id, prompt):
             # in prod saving the image to s3 and later updating the image field via lambda
             s3.put_object(
                 Bucket=settings.AWS_STORAGE_BUCKET_NAME,
-                Key=f"media/celery/{encoded_file_name}",
+                Key=f"media/celery/{file_name}",
                 Body=img_io.getvalue()
             )
         else:
