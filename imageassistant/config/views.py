@@ -16,7 +16,7 @@ class StaticViewSitemap(Sitemap):
     changefreq = 'monthly'
 
     def items(self):
-        return ['base', 'images:generate_image']  # URL names from urls.py
+        return ['base', 'users:login', 'users:signup']  # URL names from urls.py
 
     def location(self, item):
         url = reverse(item)
