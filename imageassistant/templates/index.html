@@ -1,49 +1,63 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<div class="md:h-[calc(100vh-10px)]">
+<div class="md:h-[calc(100vh-10px)] m-2">
     <div class="grid grid-cols-1">
         <div class="mt-2 mb-2 text-left sm:text-center">
-            <h1 class="text-5xl font-bold text-[#a724ff]">Image Assistant</h1>
-            <h6 class="text-left md:text-center text-xl text-[#778195] mt-2">Platform that helps you  generate, enhance, and edit images using AI.</h6>
+            <h1 class="text-5xl font-bold">Image Assistant</h1>
+            <h6 class="text-left md:text-center text-xl mt-2">Platform that helps you  generate, enhance, and edit images using AI.</h6>
         </div>
-        <div class="mt-4 mb-6 text-left sm:text-center">
-            <a href="{% url 'images:generate_image' %}" class="bg-[#a724ff] text-white-200 p-4 rounded-md">Generate Image</a>
-        </div>
+        {% if not user.is_authenticated %}
+            <div class="mt-4 mb-6 text-left sm:text-center">
+                <a href="{% url 'custom_users:signup' %}" class="bg-indigo-600 hover:bg-indigo-700 text-white p-4 rounded-full">
+                    Get Started
+                
+                </a>
+            </div>
+        {% endif %}
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-2">
         
         <div>
-            <img src="{% static 'img/kitten_in_a_forest.png' %}" alt="Kitten in a forest" class="object-scale-down border-solid border-2 border-3 border-purple-800"/>
+            <img src="{% static 'img/kitten_in_a_forest.png' %}" alt="Kitten in a forest" class="object-scale-down border-solid border-4 border-gray-300"/>
             <h6 class="text-sm text-[1rem] m-2 ">Prompt: kitten in a forest</h6>
         </div>
         <div>
-            <img src="{% static 'img/man_walking_in_the_forst.png' %}" alt="Man walking in the forest" class="object-scale-down border-solid border-2 border-3 border-purple-800"/>
+            <img src="{% static 'img/man_walking_in_the_forst.png' %}" alt="Man walking in the forest" class="object-scale-down border-solid border-solid border-4 border-gray-300"/>
             <h6 class="text-sm text-[1rem] m-2 ">Prompt: Man walking in the forest</h6>
         </div>
         <div>
-            <img src="{% static 'img/rat_in_a_trap.png' %}" alt="Rat in a trap" class="object-scale-down border-solid border-2 border-3 border-purple-800"/>
+            <img src="{% static 'img/rat_in_a_trap.png' %}" alt="Rat in a trap" class="object-scale-down border-solid border-solid border-4 border-gray-300"/>
             <h6 class="text-sm text-[1rem] m-2 ">Prompt: Rat in a trap</h6>
         </div>
         <div>
-            <img src="{% static 'img/woody_cottage_in_a_jungle.png' %}" alt="Woody cottage in a jungle" class="object-scale-down border-solid border-2 border-3 border-purple-800"/>
+            <img src="{% static 'img/woody_cottage_in_a_jungle.png' %}" alt="Woody cottage in a jungle" class="object-scale-down border-solid border-solid border-4 border-gray-300"/>
             <h6 class="text-sm text-[1rem] m-2 ">Prompt: Animated Woody cottage in a jungle</h6>
         </div>
         <div>
-            <img src="{% static 'img/animated_dog.png' %}" alt="Animated dog" class="object-scale-down order-solid border-2 border-3 border-purple-800"/>
+            <img src="{% static 'img/animated_dog.png' %}" alt="Animated dog" class="object-scale-down order-solid border-solid border-4 border-gray-300"/>
             <h6 class="text-sm text-[1rem] m-2 ">Prompt: Animated dog</h6>
         </div>
         <div>
-            <img src="{% static 'img/house_in_the_forset.png' %}" alt="House in the forest" class="object-scale-down border-solid border-2 border-3 border-purple-800"/>
+            <img src="{% static 'img/house_in_the_forset.png' %}" alt="House in the forest" class="object-scale-down border-solid border-solid border-4 border-gray-300"/>
             <h6 class="text-sm text-[1rem] m-2 ">Prompt: House in the forest</h6>
+        </div>
+        <div>
+            <img src="{% static 'img/megatron_fighting.png' %}" alt="Megatron fighting animated" class="object-scale-down border-solid border-solid border-4 border-gray-300"/>
+            <h6 class="text-sm text-[1rem] m-2 ">Prompt: Megatron fighting, must be animated</h6>
+        </div>
+        <div>
+            <img src="{% static 'img/thor_with_hammer.png' %}" alt="Thor with hammer coming down from heaven" class="object-scale-down border-solid border-solid border-4 border-gray-300"/>
+            <h6 class="text-sm text-[1rem] m-2 ">Prompt: Thor with his hammer comming down from heaven, must be animated</h6>
         </div>
     </div>
 </div>
+
 {% endblock %}
 {% block footer %}
 <div class="grid grid-cols-12">
-    <footer class="col-span-12 text-center text-white-200 bg-[#1f2537] p-2">
-        © 2025 imageassistant
+    <footer class="col-span-12 text-center p-2">
+        © {% now "Y" %} Image Assistant. All rights reserved.
     </footer>
 
 </div>

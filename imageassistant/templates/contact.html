@@ -28,7 +28,7 @@
     <form class="rounded px-8 pt-6 pb-8 mb-4 mt-1" hx-post="{% url 'contact' %}" hx-target="#message" hx-swap="outerHTML">
         {% for field in form %}
             {% if field.name == 'confirm_your_a_human' %}
-                <label class="md:w-2/3 block text-[#c0cce3] font-bold">
+                <label class="md:w-2/3 block font-bold">
                     <span class="text-[1rem]">{{ field.label_tag }}</span> {{ field }}
                 </label>
             {% elif field.name == 'bot_field' %}
@@ -40,7 +40,7 @@
                 <div class="text-red-700 px-4 py-3 rounded relative bg-[#c9aab6] text-sm">{{field.errors}}</div>
             {% endif %}
         {% endfor %}
-        <button type="submit" class="bg-[#a724ff] text-white-200 p-4 rounded-md p-2 mt-4">Send</button>
+        <button type="submit" class="mt-2 bg-indigo-600 hover:bg-indigo-700 text-white p-4 rounded-lg">Send</button>
     </form>
 </div>
 {% endpartialdef %}
@@ -51,8 +51,8 @@
 {% endblock %}
 {% block footer %}
 <div class="grid grid-cols-12">
-    <footer class="col-span-12 text-center text-white-200 bg-[#1f2537] p-2">
-        © 2025 imageassistant
+    <footer class="col-span-12 text-center p-2">
+        © {% now "Y" %} Image Assistant. All rights reserved.
     </footer>
 
 </div>

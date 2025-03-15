@@ -32,14 +32,17 @@ sitemaps = {
 
 urlpatterns = [
     path('', base, name='base'),
+    path('dashboard/', base, name='dashboard'),
     path('faq/', faq, name='faq'),
     path('admin/', admin.site.urls),
     path('contact/', contact, name='contact'),
     path('upload/content/', upload_content, name='upload_content'),
     path('images/', include(('images.urls', 'images'), namespace='images')),
+    path('users/', include(('users.urls', 'users'), namespace='custom_users')),
     path('stripe/return/', stripe_success_return, name='stripe_success_return'),
     path('stripe/checkout/', stripe_success_return, name='stripe_checkout'),
     path('api/v1/', include(('api.urls', 'api'), namespace='api')),
+    path('users/', include(('users.urls', 'users'), namespace='users')),
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
     path('robots.txt', TemplateView.as_view(template_name="robots.txt", content_type='text/plain')),
 ]

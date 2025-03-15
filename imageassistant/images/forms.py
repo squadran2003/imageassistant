@@ -124,6 +124,8 @@ aspect_ratio_choices = [
     ('9:16', '9:16'),
     ('9:21', '9:21')
 ]
+
+
 class PromptForm(forms.Form):
     # this should be a hidden field
     bot_field = forms.CharField(
@@ -134,7 +136,7 @@ class PromptForm(forms.Form):
     prompt = forms.CharField(
         required=True, widget=forms.Textarea(
            attrs={
-                'class': "shadow appearance-none border rounded mt-2 min-h-20 mb-2 p-2 w-full text-[#1e1a1a] focus:outline-none focus:shadow-outline",
+                'class': "shadow appearance-none border rounded mt-2 min-h-20 mb-2 p-2 w-full  focus:outline-none focus:shadow-outline",
                 "rows": 5,
                 "cols": 40,
                 "placeholder": "Tell us more about the image you want to generate",
@@ -147,7 +149,7 @@ class PromptForm(forms.Form):
         widget=forms.Select(
             choices=aspect_ratio_choices,
             attrs={
-                'class': 'block appearance-none w-full bg-[#3e4559] border border-[#3e4559] text-white py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-[#3e4559] focus:border-gray-500',
+                'class': 'block appearance-none w-full border border-[#fffff] bg-[#ffff] py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-[#ffff] focus:border-gray-500',
                 'label': 'Aspect Ratio',
                 'name': 'aspect_ratio'
             }, 
@@ -176,6 +178,9 @@ class PromptForm(forms.Form):
             raise forms.ValidationError('Prompt is required')
         if len(prompt) > 350:
             raise forms.ValidationError('Prompt must be less than 20 characters')
+        # check for xss javascript
+        if '<script>' in prompt:
+            raise forms.ValidationError('Invalid request')
         return prompt
 
     def clean_bot_field(self):

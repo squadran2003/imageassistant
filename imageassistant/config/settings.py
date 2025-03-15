@@ -15,6 +15,7 @@ from decouple import config, Csv
 import os
 
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -49,13 +50,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sitemaps',
     "template_partials",
-    'django_components',
     'rest_framework',
     'storages',
     'corsheaders',
     'django_celery_beat',
     'images',
     'api',
+    'users'
 ]
 
 
@@ -80,31 +81,18 @@ SITE_ID = 1
 
 ROOT_URLCONF = 'config.urls'
 
-COMPONENTS = {
-    "dirs": [
-         os.path.join(BASE_DIR, "components"),
-     ],
-}
-default_loaders = [
-    "django.template.loaders.filesystem.Loader",
-    "django.template.loaders.app_directories.Loader",
-]
-cached_loaders = [("django.template.loaders.cached.Loader", default_loaders)]
-partial_loaders = [("template_partials.loader.Loader", cached_loaders)]
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': ["templates"],
         'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+             "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
             ],
-            "debug": True,
-            'loaders': partial_loaders,
         },
     },
 ]
@@ -211,8 +199,6 @@ STATICFILES_FINDERS = [
     # Default finders
     "django.contrib.staticfiles.finders.FileSystemFinder",
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
-    # Django components
-    "django_components.finders.ComponentsFileSystemFinder",
 ]
 CLOUDFRONT_DOMAIN = config('CLOUDFRONT_DOMAIN', os.environ.get('CLOUDFRONT_DOMAIN'))
 
@@ -226,3 +212,11 @@ STABILITY_AI_KEY = config('STABILITY_AI_KEY', os.environ.get('STABILITY_AI_KEY')
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = MAILERSEND_SMTP_HOST
+EMAIL_PORT = MAILERSEND_SMTP_PORT
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = MAILERSEND_SMTP_USERNAME
+EMAIL_HOST_PASSWORD = MAILERSEND_SMTP_PASSWORD
+AUTH_USER_MODEL = "users.CustomUser"
+LOGOUT_REDIRECT_URL = "/dashboard"
+EMAIL_DOMAIN = "localhost:8084"

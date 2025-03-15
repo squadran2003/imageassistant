@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load partials %}
+
+
+{% partialdef signup-success %}
+{% if success %}
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                <strong class="font-bold">Account successfully created!</strong>
+                <a href="{% url 'custom_users:login' %}" class="absolute top-0 bottom-0 right-0 px-4 py-3">
+                    Proceed to login
+                    <svg class="h-6 w-6 text-green-700" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <title>Close</title>
+                        <path fill-rule="evenodd" d="M14.293 5.293a1 1 0 0 1 1.414 1.414L11.414 10l4.293 4.293a1 1 0 1 1-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 0 1-1.414-1.414L8.586 10 4.293 5.707a1 1 0 0 1 1.414-1.414L10 8.586l4.293-4.293z" clip-rule="evenodd" />
+                    </svg>
+
+                </a>
+            </div>
+        {% endif %}
+{% endpartialdef %}
+
+{% partialdef signup-form %}
+        {% partial signup-success %}
+        <form id="signup-form" hx-post="{% url 'custom_users:signup' %}" hx-target="#signup-form-container" class="mt-6" hx-swap="innerHTML">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="mb-4">
+                    <label for="email" class="block text-sm font-medium">{{field.label}}</label>
+                    {{field}}
+                    {% if field.help_text %}
+                        <p class="text-sm text-gray-500">{{field.help_text}}</p>
+                    {% endif %}
+                    {% for error in field.errors %}
+                        <p class="text-sm text-red-500">{{error}}</p>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+            <button type="submit" onclick="htmx.trigger('#signup-form', 'submit')" class="w-full py-2 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-color">Sign Up</button>
+        </form>
+{% endpartialdef %}
+
+
+{% block content %}
+<div class="grid grid-cols-6 gap-4 m-2">
+    <div class="col-start-1 col-end-7 lg:col-start-2 lg:col-end-4 ml-8 md:mt-[150px]">
+            <h1 class="text-[2.5rem] md:text-[3rem]">Lets get started</h1>
+            <h3 class="text-[1.5rem]">Create an account, and enjoy the services below.</h3>
+            <ul class="mt-6 flex flex-col space-y-4">
+                <li class="text-[1.1rem] flex items-center">
+                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4zm5 4l4 4m0 0l4-4m-4 4v4"></path>
+                    </svg>
+                    <span>Create images by prompting the model</span>
+                </li>
+                <li class="text-[1.1rem] flex items-center">
+                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16M9 5v14"></path>
+                    </svg>
+                    <span>Remove background from images</span>
+                </li>
+                <li class="text-[1.1rem] flex items-center">
+                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01z"></path>
+                    </svg>
+                    <span>Enhance images using AI</span>
+                </li>
+            </ul>
+            
+    </div>
+    <div class="col-start-1 col-end-7 lg:col-start-4 lg:col-end-7 w-full max-w-4xl p-8 md:mt-[125px]">
+        <h2 class="text-2xl font-bold mb-6">Sign up</h2>
+        {% if success %}
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                <strong class="font-bold">Account successfully created!</strong>
+            </div>
+        {% endif %}
+        <div id="signup-form-container">
+            {% partial signup-form %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

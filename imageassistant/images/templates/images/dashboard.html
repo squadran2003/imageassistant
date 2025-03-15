@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="md:h-[calc(100vh-10px)] m-2">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-2">
+        {% if images %}
+            {% for image in images %}
+                {% if image.alternate_url %}
+                    <div>
+                        <img src={{image.alternate_url}} alt="Kitten in a forest" class="object-scale-down border-solid border-4 border-gray-300"/>
+                        <h6 class="text-sm text-[1rem] mt-2 mb-2 "><strong>Prompt:</strong> {{image.prompt}}</h6>
+                        <a href="{{ image.alternate_url }}"
+                        download="{{ image.image.alternate_url }}"
+                        class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 p-4">Download</a>
+                    </div>
+                {% else %}
+                    <div>
+                        <img src={{image.image.url}} alt="Kitten in a forest" class="object-scale-down border-solid border-4 border-gray-300"/>
+                        <h6 class="text-sm text-[1rem] mt-2 mb-2"><strong>Prompt:</strong> {{image.prompt}}</h6>
+                        <a href="{{ image.image.url }}"
+                        download="{{ image.image.url }}"
+                        class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 p-4">Download</a>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            <div class="col-span-4 text-center">
+                <h1 class="text-2xl">No images found</h1>
+            </div>
+        {% endif %}
+    
+    </div>
+</div>
+
+{% endblock %}
+{% block footer %}
+<div class="grid grid-cols-12">
+    <footer class="col-span-12 text-center p-2">
+        © {% now "Y" %} Image Assistant. All rights reserved.
+    </footer>
+
+</div>
+{% endblock %}

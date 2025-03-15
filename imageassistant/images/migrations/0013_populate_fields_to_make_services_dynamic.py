@@ -58,6 +58,9 @@ def populate_free_flag_and_description(apps, schema_editor):
             service.description = 'This service provides a tool that allows you to crop your image to a specified size.'
             service.video_path = f"{settings.MEDIA_URL}video/image_assistant_crop_video.mp4"
             service.poster_path = f"{settings.STATIC_URL}img/crop_images.png"
+        else:
+            service.free = True
+            service.description = 'This service is for generating images from a prompt.'
         service.save()
 
 

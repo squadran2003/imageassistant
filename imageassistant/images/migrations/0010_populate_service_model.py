@@ -9,7 +9,8 @@ def populate_services(apps, schema_editor):
         Service(code=1, name='Greyscale'),
         Service(code=2, name='Remove Background'),
         Service(code=3, name='Resize'),
-        Service(code=4, name='Thumbnail')
+        Service(code=4, name='Thumbnail'),
+        Service(code=7, name='Generate Image')
     ])
 
 

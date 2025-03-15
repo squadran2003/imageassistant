@@ -7,8 +7,6 @@ from django.contrib.sitemaps import Sitemap
 from django.core.mail import EmailMessage, get_connection
 from django.contrib import messages
 from config.forms import ContactForm
-from images.forms import ImageUploadForm
-from images.models import Service
 import os
 
 
@@ -27,11 +25,8 @@ class StaticViewSitemap(Sitemap):
 
 
 def base(request):
-    form = ImageUploadForm()
-    services = Service.objects.all().order_by('code')
     return render(
-        request, 'index.html',
-        {'form': form, 'services': services}
+        request, 'index.html'
     )
 
 

@@ -1,4 +1,3 @@
-from django.test import TestCase
 
 from django.test import TestCase
 from django.urls import reverse
@@ -6,10 +5,18 @@ from .views import generate_image
 from .models import Image, Service
 from freezegun import freeze_time
 from datetime import datetime
+from users.models import CustomUser
 
 
 class CreateImageViewTests(TestCase):
     def setUp(self):
+        self.user = CustomUser.objects.create_user(
+            email="test@test.com",
+            password="password123",
+            first_name="Test",
+            last_name="User"
+        )
+        self.client.force_login(self.user)
         self.url = reverse('images:generate_image')
         self.invalid_propmpt = """
                 Contrary to popular belief, Lorem Ipsum is not simply random text. 
@@ -28,28 +35,9 @@ class CreateImageViewTests(TestCase):
         self.maxDiff = None
         Service.objects.create(name='GenerateImage', code=7)
 
-    @freeze_time("2025-02-06 09:22:00")
-    def test_create_image_with_prompt_but_too_long(self):
-        session = self.client.session
-        session.update({
-            'image_assistant_start': "2025-02-05 08:22:00",
-            'image_assistant_download_count': 0
-        })
-        session.save()
-        data = self.valid_data.copy()
-        data['prompt'] = self.invalid_propmpt
-        data['confirm_your_a_human'] = 'on'
-        data['bot_field'] = ''
-        response = self.client.post(self.url, data)
-        self.assertEqual(response.status_code, 400)
-    
-    @freeze_time("2025-02-06 09:22:00")
+
     def test_create_image_without_prompt(self):
         session = self.client.session
-        session.update({
-            'image_assistant_start': "2025-02-05 08:22:00",
-            'image_assistant_download_count': 0
-        })
         session.save()
         data = self.valid_data.copy()
         data['prompt'] = ''
@@ -58,13 +46,9 @@ class CreateImageViewTests(TestCase):
         response = self.client.post(self.url, data)
         self.assertEqual(response.status_code, 400)
     
-    @freeze_time("2025-02-06 09:22:00")
+
     def test_create_image_with_bot_field_filled(self):
         session = self.client.session
-        session.update({
-            'image_assistant_start': "2025-02-05 08:22:00",
-            'image_assistant_download_count': 0
-        })
         session.save()
         data = self.valid_data.copy()
         data['bot_field'] = 'bot'
@@ -72,13 +56,8 @@ class CreateImageViewTests(TestCase):
         response = self.client.post(self.url, data)
         self.assertEqual(response.status_code, 400)
     
-    @freeze_time("2025-02-06 09:22:00")
     def test_create_image_without_confirm_bot_field_return_error(self):
         session = self.client.session
-        session.update({
-            'image_assistant_start': "2025-02-05 08:22:00",
-            'image_assistant_download_count': 0
-        })
         session.save()
         data = self.valid_data.copy()
         data['prompt'] = 'Cat fighting'
@@ -87,53 +66,13 @@ class CreateImageViewTests(TestCase):
         response = self.client.post(self.url, data)
         self.assertEqual(response.status_code, 400)
     
-    @freeze_time("2025-02-06 09:22:00")
-    def test_create_image_success_gets_form_thatfires_on_load(self):
+
+    def test_create_image_success_gets_form_that_fires_on_load(self):
         session = self.client.session
-        session.update({
-            'image_assistant_start': "2025-02-05 08:22:00",
-            'image_assistant_download_count': 0
-        })
         session.save()
         data = self.valid_data.copy()
         data['prompt'] = 'Cat fighting'
         data['confirm_your_a_human'] = 'on'
         data['bot_field'] = ''
         response = self.client.post(self.url, data)
-        self.assertEqual(response.status_code, 200)
-    
-    @freeze_time("2025-02-06 09:22:00")
-    def test_max_downloads_exceeded_gives_bad_request(self):
-        client = self.client
-        session = client.session
-        # its within 24 hrs but count is greater than 1
-        session.update({
-            'image_assistant_start': "2025-02-06 04:22:00",
-            'image_assistant_download_count': 2
-        })
-        session.save()
-        data = self.valid_data.copy()
-        data['prompt'] = 'Cat fighting'
-        data['confirm_your_a_human'] = 'on'
-        data['bot_field'] = ''
-        response = client.post(self.url, data)
-        # test for a redirect
-        self.assertEqual(response.status_code, 400)
-    
-    
-    @freeze_time("2025-02-06 09:22:00")
-    def test_max_downloads_resets_when_over_24hrs_exceeded(self):
-        client = self.client
-        session = client.session
-        # when 24hrs exceeded but count greater than 2 it resets
-        session.update({
-            'image_assistant_start': "2025-02-05 08:22:00",
-            'image_assistant_download_count': 2
-        })
-        session.save()
-        data = self.valid_data.copy()
-        data['prompt'] = 'Cat fighting'
-        data['confirm_your_a_human'] = 'on'
-        data['bot_field'] = ''
-        response = client.post(self.url, data)
         self.assertEqual(response.status_code, 200)

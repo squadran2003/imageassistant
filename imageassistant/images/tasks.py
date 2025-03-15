@@ -266,10 +266,16 @@ def create_image_from_prompt(image_id, prompt):
         file.save()
         raise Exception(str(response.json()))
 
-
-
-
-
-
-
-
+@shared_task
+def delete(image_id):
+    file = Image.objects.get(pk=image_id)
+    if not settings.DEBUG:
+        s3 = boto3.client('s3')
+        s3.delete_object(
+            Bucket=settings.AWS_STORAGE_BUCKET_NAME,
+            Key=f"media/celery/{image_id}_{file.image.name}"
+        )
+    else:
+        if os.path.isfile(file.image.path):
+            os.remove(file.image.path)
+    file.delete()

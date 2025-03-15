@@ -1,6 +1,4 @@
 {% load static %}
-{% load component_tags %}
-{% component_css_dependencies %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,17 +8,71 @@
     <meta name="description" content="Create stunning AI-generated images for free with ImageAssistant.io. Enhance, transform, and download AI-powered art instantly. Try it now!">
     <meta name="author" content="ImageAssistant">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="icon" href="{% static 'img/logo.png' %}" type="image/x-icon" aria-label="Image Assistant browser tab logo">
 </head>
-<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' class="bg-[#111827] text-white" >
-<nav class="bg-[#1f2537] p-2" role="navigation" aria-label="Main navigation">
-    <ul class="list-none flex items-left justify-left">
-        <li class="inline-block mt-2 mr-1 text-[#6b95ed] hover:text-[#3f5278] p-2"><a href="/" >Home</a></li>
-        <li class="inline-block mt-2 mr-1 text-[#6b95ed] hover:text-[#3f5278] p-2"><a href="{% url 'contact' %}" >Contact</a></li>
-        <li class="inline-block mt-2 mr-1 text-[#6b95ed] hover:text-[#3f5278] p-2"><a href="{% url 'faq' %}">FAQs</a></li>
+<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' class="bg-[#F5F5F5]" >
+{% if messages %}
+    <div class="bg-red-500 text-white p-4 text-center">
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+    </div>
+{% endif %}
+<nav class="bg-[#1E293B] p-2" role="navigation" aria-label="Main navigation">
+    <button class="md:hidden p-4 text-white hover:text-white" aria-label="Open menu" onclick="toggleMenu()">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+    </button>
+    <ul class="flex flex-col items-left justify-left">
+        <li class="hidden mt-2 mr-1 text-gray-200 text-lg hover:text-[#15936a] p-2" id="drop-down-link"><a href="/" >Home</a></li>
+        <li class="hidden mt-2 mr-1 text-gray-200 text-lg hover:text-[#15936a] p-2" id="drop-down-link"><a href="{% url 'contact' %}" >Contact</a></li>
+        <li class="hidden mt-2 mr-1 text-gray-200 text-lg hover:text-[#15936a] p-2" id="drop-down-link"><a href="{% url 'faq' %}">FAQs</a></li>
+        {% if user.is_authenticated %}
+            <li class="hidden mt-2 mr-1 text-gray-200 text-lg hover:text-[#15936a] p-2" id="drop-down-link"><a href="{% url 'images:dashboard' %}">Your Images</a></li>
+            <li class="hidden mt-2 mr-1 text-gray-200 text-lg hover:text-[#d2deff] p-2" id="drop-down-link" onclick="toggleServicesMenu()">
+                <a href="#" class="flex items-center">
+                    Services
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </a>
+                <ul class="absolute hidden bg-[#1f2537] text-white mt-2 rounded-lg shadow-lg" id="service-dropdown-links">
+                    <li class="p-2 hover:bg-[#612785] w-full"><a href="{% url 'images:generate_image' %}">Generate Image</a></li>
+                    <li class="p-2 hover:bg-[#612785]" ><a href="#">Remove background</a></li>
+                    <li class="p-2 hover:bg-[#612785]" ><a href="#">Enhance image</a></li>
+                </ul>
+            </li>
+            <li class="hidden mt-2 text-white hover:text-white-700 p-2" id="drop-down-link"><a href="{% url 'custom_users:logout' %}" class="bg-indigo-600 hover:bg-indigo-700 text-white p-4 rounded-lg mb-2">Logout</a></li>
+        {% else %}
+            <li class="hidden mt-2 mr-1 text-white hover:text-white-700 p-2" id="drop-down-link"><a href="{% url 'custom_users:login' %}" class="bg-indigo-600 hover:bg-indigo-700 text-white p-4 rounded-lg mb-2">Login</a></li>
+        {% endif %}
+    </ul>
+    <ul class="list-none flex items-left justify-start">
+        <li class="hidden md:inline-block mt-2 mr-1 text-gray-200 hover:text-[#15936a] p-2 text-left"><a href="/" >Home</a></li>
+        <li class="hidden md:inline-block mt-2 mr-1 text-gray-200 hover:text-[#15936a] p-2 text-left"><a href="{% url 'contact' %}" >Contact</a></li>
+        <li class="hidden md:inline-block mt-2 mr-1 text-gray-200 hover:text-[#15936a] p-2 text-left"><a href="{% url 'faq' %}">FAQs</a></li>
+        {% if user.is_authenticated %}
+            <li class="hidden md:inline-block mt-2 mr-1 text-gray-200 hover:text-[#15936a] p-2 text-left"><a href="{% url 'images:dashboard' %}">Your Images</a></li>
+            <li class="hidden md:inline-block mt-1.5 text-gray-200 text-lg hover:text-[#15936a] p-2 w-[30%]" onclick="toggleServicesMenu()">
+                <a href="#" class="flex items-center justify-left" onclick="toggleServicesMenu()">
+                    Services
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </a>
+                <ul class="absolute hidden bg-[#1f2537] text-white mt-2 rounded-lg shadow-lg" id="service-dropdown-links">
+                    <li class="p-2 hover:bg-[#15936a] w-full"><a href="{% url 'images:generate_image' %}">Generate Image</a></li>
+                    <li class="p-2 hover:bg-[#15936a]" ><a href="#">Remove background</a></li>
+                    <li class="p-2 hover:bg-[#15936a]" ><a href="#">Enhance image</a></li>
+                </ul>
+            </li>
+            <li class="hidden md:inline-block mt-2 mr-1 text-white hover:text-white-700 p-2 ml-auto"><a href="{% url 'custom_users:logout' %}" class="bg-indigo-600 hover:bg-indigo-700 text-white p-4 rounded-lg mb-2">Logout</a></li>
+        {% else %}
+            <li class="hidden md:inline-block mt-2 mr-1 text-white hover:text-white-700 p-2 ml-auto"><a href="{% url 'custom_users:login' %}" class="bg-indigo-600 hover:bg-indigo-700 text-white p-4 rounded-lg mb-2">Login</a></li>
+        {% endif %}
     </ul>
 </nav>
-<div class="m-3">
+<div>
         {% block content %}
        
         {% endblock %}
@@ -40,9 +92,32 @@
     });
     document.addEventListener("contextmenu", function (event) {
         if (event.target.tagName === "IMG") {
-        event.preventDefault();
+            event.preventDefault();
         }
     });
+
+
+    function toggleMenu() {
+            console.log('clicked');
+            const links = document.querySelectorAll('#drop-down-link');
+            links.forEach(link => {
+                if (link.style.display === 'none') {
+                    link.style.display = 'block';
+                } else {
+                    link.style.display = 'none';
+                }
+            });
+    }
+    function toggleServicesMenu() {
+        const links = document.querySelectorAll('#service-dropdown-links');
+        links.forEach(link => {
+            if (link.style.display === 'none') {
+            link.style.display = 'block';
+            } else {
+            link.style.display = 'none';
+            }
+        });
+    }
 
 </script>
 <script src="{% static 'js/dist_cropper/cropper.js' %}"></script>
