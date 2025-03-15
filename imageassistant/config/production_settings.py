@@ -14,54 +14,22 @@ CSRF_TRUSTED_ORIGINS = [
     "http://ec2-18-207-173-160.compute-1.amazonaws.com"
 ]
 
-INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'django.contrib.sitemaps',
-    "template_partials",
-    'rest_framework',
-    'storages',
-    'django_celery_beat',
-    'images',
-    'api',
-]
-
-default_loaders = [
-    "django.template.loaders.filesystem.Loader",
-    "django.template.loaders.app_directories.Loader",
-]
-cached_loaders = [("django.template.loaders.cached.Loader", default_loaders)]
-partial_loaders = [("template_partials.loader.Loader", cached_loaders)]
-
-TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ["templates"],
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
-            'loaders': partial_loaders,
-        },
-    },
-]
-
-# MIDDLEWARE = [
-#     'django.middleware.security.SecurityMiddleware',
-#     "whitenoise.middleware.WhiteNoiseMiddleware",
-#     'django.contrib.sessions.middleware.SessionMiddleware',
-#     'django.middleware.common.CommonMiddleware',
-#     'django.middleware.csrf.CsrfViewMiddleware',
-#     'django.contrib.auth.middleware.AuthenticationMiddleware',
-#     'django.contrib.messages.middleware.MessageMiddleware',
-#     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+# INSTALLED_APPS = [
+#     'django.contrib.admin',
+#     'django.contrib.auth',
+#     'django.contrib.contenttypes',
+#     'django.contrib.sessions',
+#     'django.contrib.messages',
+#     'django.contrib.staticfiles',
+#     'django.contrib.sitemaps',
+#     "template_partials",
+#     'rest_framework',
+#     'storages',
+#     'corsheaders',
+#     'django_celery_beat',
+#     'images',
+#     'api',
+#     'users'
 # ]
 
 
