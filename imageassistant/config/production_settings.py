@@ -23,7 +23,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sitemaps',
     "template_partials",
-    'django_components',
     'rest_framework',
     'storages',
     'django_celery_beat',
