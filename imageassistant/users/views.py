@@ -27,7 +27,11 @@ def signup(request):
                 request, 'users/signup.html#signup-form', {'form': form},
                 status=400
             )
-    return render(request, 'users/signup.html', {'form': CustomUserForm()})
+    return render(request, 'users/signup.html', {
+        'form': CustomUserForm(),
+        'GOOGLE_LOGIN_REDIRECT_URI': settings.GOOGLE_LOGIN_REDIRECT_URI,
+        'google_client_id': settings.GOOGLE_CLIENT_ID
+    })
 
 
 def login(request):
@@ -52,9 +56,7 @@ def login(request):
                 request, 'users/login.html#login-form', {'form': form}, status=400
             )
     return render(request, 'users/login.html', {
-        'form': LoginForm(),
-        'GOOGLE_LOGIN_REDIRECT_URI': settings.GOOGLE_LOGIN_REDIRECT_URI,
-        'google_client_id': settings.GOOGLE_CLIENT_ID
+        'form': LoginForm()
     })
 
 

@@ -29,23 +29,6 @@
             {% partial login-form %}
         </div>
         <a href="{% url 'custom_users:signup' %}" class="text-indigo-600 hover:text-indigo-700 block mt-2">Don't have an account? Sign up</a>
-        <div id="g_id_onload"
-            data-client_id="{{ google_client_id }}"
-            data-login_uri="{{GOOGLE_LOGIN_REDIRECT_URI}}"
-            data-context="signin"
-            data-ux_mode="redirect"
-            data-auto_prompt="false">
-        </div>
-        <div class="g_id_signin mt-2"
-            data-type="standard"
-            data-size="large"
-            data-theme="outline"
-            data-text="sign_in_with"
-            data-shape="rectangular"
-            data-logo_alignment="left">
-        </div>
     </div>
 </div>
-<script src="https://accounts.google.com/gsi/client" async></script>
-<script>console.log("Redirect URI: {{ GOOGLE_LOGIN_REDIRECT_URI }}");</script>
 {% endblock %}

@@ -76,7 +76,25 @@
         <div id="signup-form-container">
             {% partial signup-form %}
         </div>
+        <hr class="my-6">
+        <p class="text-center">Or proceed with </p>
+        <div id="g_id_onload"
+            data-client_id="{{ google_client_id }}"
+            data-login_uri="{{GOOGLE_LOGIN_REDIRECT_URI}}"
+            data-context="signin"
+            data-ux_mode="redirect"
+            data-auto_prompt="false">
+        </div>
+        <div class="g_id_signin mt-2"
+            data-type="standard"
+            data-size="large"
+            data-theme="outline"
+            data-text="sign_in_with"
+            data-shape="rectangular"
+            data-logo_alignment="left">
+        </div>
     </div>
 </div>
+<script src="https://accounts.google.com/gsi/client" async></script>
 
 {% endblock %}
