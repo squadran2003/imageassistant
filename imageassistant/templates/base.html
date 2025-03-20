@@ -28,6 +28,18 @@
         <li class="hidden mt-2 mr-1 text-gray-200 text-lg hover:text-[#15936a] p-2" id="drop-down-link"><a href="/" >Home</a></li>
         <li class="hidden mt-2 mr-1 text-gray-200 text-lg hover:text-[#15936a] p-2" id="drop-down-link"><a href="{% url 'contact' %}" >Contact</a></li>
         <li class="hidden mt-2 mr-1 text-gray-200 text-lg hover:text-[#15936a] p-2" id="drop-down-link"><a href="{% url 'faq' %}">FAQs</a></li>
+        <li class="hidden mt-2 mr-1 text-gray-200 p-2" id="drop-down-link">
+            <form action="#" method="GET" class="flex items-center">
+                <input type="text" name="q" placeholder="Search images..." 
+                       class="px-3 py-2 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-[#2D3748] text-white text-sm w-36 sm:w-48" 
+                       aria-label="Search images">
+                <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 px-3 py-2 rounded-r-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </button>
+            </form>
+        </li>
         {% if user.is_authenticated %}
             <li class="hidden mt-2 mr-1 text-gray-200 text-lg hover:text-[#15936a] p-2" id="drop-down-link"><a href="{% url 'images:dashboard' %}">Your Images</a></li>
             <li class="hidden mt-2 mr-1 text-gray-200 text-lg hover:text-[#d2deff] p-2" id="drop-down-link" onclick="toggleServicesMenu()">
@@ -67,8 +79,14 @@
                     <li class="p-2 hover:bg-[#15936a]" ><a href="#">Enhance image</a></li> -->
                 </ul>
             </li>
+            {% if index_page %}
+                {% include 'searchbox.html' %}
+            {% endif %}
             <li class="hidden md:inline-block mt-2 mr-1 text-white hover:text-white-700 p-2 ml-auto"><a href="{% url 'custom_users:logout' %}" class="bg-indigo-600 hover:bg-indigo-700 text-white p-4 rounded-lg mb-2">Logout</a></li>
         {% else %}
+            {% if index_page %}
+                {% include 'searchbox.html' %}
+            {% endif %}
             <li class="hidden md:inline-block mt-2 mr-1 text-white hover:text-white-700 p-2 ml-auto"><a href="{% url 'custom_users:login' %}" class="bg-indigo-600 hover:bg-indigo-700 text-white p-4 rounded-lg mb-2">Login</a></li>
         {% endif %}
     </ul>

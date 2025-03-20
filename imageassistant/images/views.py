@@ -388,3 +388,11 @@ def generate_image(request):
 @login_required(login_url='custom_users:login')
 def dashboard(request):
     return render(request, 'images/dashboard.html', {'images': Image.objects.filter(user=request.user).order_by('-created')})
+
+
+def search(request):
+    query = request.GET.get('q')
+    images = Image.objects.filter(prompt__icontains=query)
+    if not images:
+        return render(request, 'index.html#no-images', {'images': images})
+    return render(request, 'index.html#searched-images', {'images': images})

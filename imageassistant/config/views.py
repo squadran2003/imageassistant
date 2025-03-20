@@ -26,7 +26,7 @@ class StaticViewSitemap(Sitemap):
 
 def base(request):
     return render(
-        request, 'index.html'
+        request, 'index.html',{'index_page': True}
     )
 
 
