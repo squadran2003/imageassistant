@@ -37,11 +37,9 @@ def signup(request):
 def login(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
-        print(form.data)
         user = authenticate(
             request, email=form.data['email'], password=form.data['password']
         )
-        print(user)
         if user is not None:
             auth_login(request, user)
             return render(request, 'users/login.html#login-form', {
