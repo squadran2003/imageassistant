@@ -49,7 +49,11 @@
 {% partialdef searched-images %}
     {% for image in images %}
         <div class="m-2">
-            <img src="{{ image.image.url }}" alt="{{ image.alt }}" class="object-scale-down border-solid border-solid border-4 border-gray-300"/>
+            {% if image.alternate_url %}
+                <img src="{{ image.alternate_url }}" alt="{{ image.alt }}" class="object-scale-down border-solid border-solid border-4 border-gray-300"/>
+            {% else %}
+                <img src="{{ image.image.url }}" alt="{{ image.alt }}" class="object-scale-down border-solid border-solid border-4 border-gray-300"/>
+            {% endif %}
             <h6 class="text-sm text-[1rem] m-2 ">Prompt: {{ image.prompt }}</h6>
             {% if image.alternate_url %}
                 <a href="{{ image.alternate_url }}" download="{{ image.alternate_url }}" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 p-4">Download</a>
