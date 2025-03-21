@@ -3,7 +3,7 @@
 {% else %}
 <li class="hidden md:inline-block mr-1 text-gray-200 p-2 ml-auto" id="drop-down-link">
 {% endif %}
-    <form hx-get="{% url 'images:search' %}" hx-target="#main-content" hx-swap="outerHTML" class="flex items-center">
+    <form hx-get="{% url 'images:search' %}" hx-target="#main-content" hx-swap="innerHTML" class="flex items-center">
         <input type="text" name="q" placeholder="Search for images..." 
                class="px-3 py-2 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-[#2D3748] text-white text-sm w-36 sm:w-48" 
                aria-label="Search images">

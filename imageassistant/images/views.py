@@ -18,6 +18,7 @@ from .tasks import (
 )
 import stripe
 from sentry_sdk import capture_message
+from django.db.models import Q
 
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -392,9 +393,20 @@ def dashboard(request):
 
 def search(request):
     query = request.GET.get('q')
-    images = Image.objects.filter(prompt__icontains=query)
+    search_terms = query.split()
+    q_objects = [Q(prompt__icontains=term) for term in search_terms]
+
+    # Combine with OR logic
+    combined_q = Q()
+    for q in q_objects:
+        combined_q |= q
+
+    images = Image.objects.filter(combined_q)
     if not images:
         return render(request, 'index.html#images', {
             'no_search_images': True
         })
-    return render(request, 'index.html#searched-images', {'images': images, 'no_search_images': False})
+    return render(request, 'index.html#searched-images', {
+            'images': images, 'no_search_images': False
+        }
+    )
