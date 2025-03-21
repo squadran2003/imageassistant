@@ -393,7 +393,7 @@ def dashboard(request):
 
 def search(request):
     query = request.GET.get('q')
-    search_terms = query.split()
+    search_terms = query.split(" ")
     q_objects = [Q(prompt__icontains=term) for term in search_terms]
 
     # Combine with OR logic
