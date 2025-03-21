@@ -117,10 +117,10 @@
         {% if image.alternate_url %}
         <a href="{{ image.alternate_url }}"
             download="{{ image.image.alternate_url }}"
-            class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg p-4">Download</a>
+            class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg p-4 m-2">Download</a>
         {% else %}
         <a href="{{ image.image.url }}" download="{{ image.image.url }}"
-            class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg p-4">Download</a>
+            class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg p-4 m-2">Download</a>
         {% endif %}
     {% endpartialdef %}
 
