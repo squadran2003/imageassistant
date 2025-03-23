@@ -1,3 +1,4 @@
+
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -9,136 +10,213 @@
     <meta name="author" content="ImageAssistant">
     <meta name="referrer" content="origin">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .gradient-text {
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            background-image: linear-gradient(to right, #6366f1, #8b5cf6, #d946ef);
+        }
+    </style>
 </head>
-<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' class="bg-[#F5F5F5]" >
-{% if messages %}
-    <div class="bg-red-500 text-white p-4 text-center">
-        {% for message in messages %}
-            {{ message }}
-        {% endfor %}
-    </div>
-{% endif %}
-<nav class="bg-[#1E293B] p-2" role="navigation" aria-label="Main navigation">
-    <button class="md:hidden p-4 text-white hover:text-white" aria-label="Open menu" onclick="toggleMenu()">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-    </button>
-    <ul class="flex flex-col items-left justify-left">
-        <li class="hidden mt-2 mr-1 text-gray-200 text-lg hover:text-[#15936a] p-2" id="drop-down-link"><a href="/" >Home</a></li>
-        <li class="hidden mt-2 mr-1 text-gray-200 text-lg hover:text-[#15936a] p-2" id="drop-down-link"><a href="{% url 'contact' %}" >Contact</a></li>
-        <li class="hidden mt-2 mr-1 text-gray-200 text-lg hover:text-[#15936a] p-2" id="drop-down-link"><a href="{% url 'faq' %}">FAQs</a></li>
-        <li class="hidden mt-2 mr-1 text-gray-200 p-2" id="drop-down-link">
-            <form action="#" method="GET" class="flex items-center">
-                <input type="text" name="q" placeholder="Search images..." 
-                       class="px-3 py-2 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-[#2D3748] text-white text-sm w-36 sm:w-48" 
-                       aria-label="Search images">
-                <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 px-3 py-2 rounded-r-lg">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' class="bg-[#F5F5F5] min-h-screen flex flex-col">
+    <!-- Notification Banner -->
+    {% if messages %}
+        <div class="bg-indigo-600 text-white p-3 shadow-md transition-all" id="message-banner">
+            <div class="max-w-7xl mx-auto flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                    </svg>
+                    <div>
+                        {% for message in messages %}
+                            {{ message }}
+                        {% endfor %}
+                    </div>
+                </div>
+                <button onclick="document.getElementById('message-banner').style.display='none'" class="focus:outline-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
                     </svg>
                 </button>
-            </form>
-        </li>
-        {% if user.is_authenticated %}
-            <li class="hidden mt-2 mr-1 text-gray-200 text-lg hover:text-[#15936a] p-2" id="drop-down-link"><a href="{% url 'images:dashboard' %}">Your Images</a></li>
-            <li class="hidden mt-2 mr-1 text-gray-200 text-lg hover:text-[#d2deff] p-2" id="drop-down-link" onclick="toggleServicesMenu()">
-                <a href="#" class="flex items-center">
-                    Services
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                </a>
-                <ul class="absolute hidden bg-[#1f2537] text-white mt-2 rounded-lg shadow-lg" id="service-dropdown-links">
-                    <li class="p-2 hover:bg-[#612785] w-full"><a href="{% url 'images:generate_image' %}">Generate Image</a></li>
-                    <!-- <li class="p-2 hover:bg-[#612785]" ><a href="#">Remove background</a></li>
-                    <li class="p-2 hover:bg-[#612785]" ><a href="#">Enhance image</a></li> -->
-                </ul>
-            </li>
-            <li class="hidden mt-2 text-white hover:text-white-700 p-2" id="drop-down-link"><a href="{% url 'custom_users:logout' %}" class="bg-indigo-600 hover:bg-indigo-700 text-white p-4 rounded-lg mb-2">Logout</a></li>
-        {% else %}
-            <li class="hidden mt-2 mr-1 text-white hover:text-white-700 p-2" id="drop-down-link"><a href="{% url 'custom_users:login' %}" class="bg-indigo-600 hover:bg-indigo-700 text-white p-4 rounded-lg mb-2">Login</a></li>
-        {% endif %}
-    </ul>
-    <ul class="list-none flex items-left justify-start">
-        <li class="hidden md:inline-block mt-2 mr-1 text-gray-200 hover:text-[#15936a] p-2 text-left"><a href="/" >Home</a></li>
-        <li class="hidden md:inline-block mt-2 mr-1 text-gray-200 hover:text-[#15936a] p-2 text-left"><a href="{% url 'contact' %}" >Contact</a></li>
-        <li class="hidden md:inline-block mt-2 mr-1 text-gray-200 hover:text-[#15936a] p-2 text-left"><a href="{% url 'faq' %}">FAQs</a></li>
-        {% if user.is_authenticated %}
-            <li class="hidden md:inline-block mt-2 mr-1 text-gray-200 hover:text-[#15936a] p-2 text-left"><a href="{% url 'images:dashboard' %}">Your Images</a></li>
-            <li class="hidden md:inline-block mt-1.5 text-gray-200 text-lg hover:text-[#15936a] p-2 w-[30%]" onclick="toggleServicesMenu()">
-                <a href="#" class="flex items-center justify-left" onclick="toggleServicesMenu()">
-                    Services
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                </a>
-                <ul class="absolute hidden bg-[#1f2537] text-white mt-2 rounded-lg shadow-lg" id="service-dropdown-links">
-                    <li class="p-2 hover:bg-[#15936a] w-full"><a href="{% url 'images:generate_image' %}">Generate Image</a></li>
-                    <!-- <li class="p-2 hover:bg-[#15936a]" ><a href="#">Remove background</a></li>
-                    <li class="p-2 hover:bg-[#15936a]" ><a href="#">Enhance image</a></li> -->
-                </ul>
-            </li>
-            {% if index_page %}
-                {% include 'searchbox.html' %}
-            {% endif %}
-            <li class="hidden md:inline-block mt-2 mr-1 text-white hover:text-white-700 p-2 ml-auto"><a href="{% url 'custom_users:logout' %}" class="bg-indigo-600 hover:bg-indigo-700 text-white p-4 rounded-lg mb-2">Logout</a></li>
-        {% else %}
-            {% if index_page %}
-                {% include 'searchbox.html' %}
-            {% endif %}
-            <li class="hidden md:inline-block mt-2 mr-1 text-white hover:text-white-700 p-2 ml-auto"><a href="{% url 'custom_users:login' %}" class="bg-indigo-600 hover:bg-indigo-700 text-white p-4 rounded-lg mb-2">Login</a></li>
-        {% endif %}
-    </ul>
-</nav>
-<div>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Navigation -->
+    <nav class="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <!-- Logo & Brand -->
+                <div class="flex items-center">
+                    <a href="/" class="flex-shrink-0 flex items-center">
+                        <span class="text-xl font-bold gradient-text">ImageAssistant.io</span>
+                    </a>
+                </div>
+                
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex md:items-center md:space-x-6">
+                    <a href="/" class="text-gray-700 hover:text-indigo-600 px-3 py-2 text-sm font-medium transition-colors duration-200">Home</a>
+                    
+                    <a href="{% url 'contact' %}" class="text-gray-700 hover:text-indigo-600 px-3 py-2 text-sm font-medium transition-colors duration-200">Contact</a>
+                    
+                    <a href="{% url 'faq' %}" class="text-gray-700 hover:text-indigo-600 px-3 py-2 text-sm font-medium transition-colors duration-200">FAQs</a>
+                    
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'images:dashboard' %}" class="text-gray-700 hover:text-indigo-600 px-3 py-2 text-sm font-medium transition-colors duration-200">Your Images</a>
+                        
+                        <div class="relative" x-data="{ open: false }">
+                            <button @click="open = !open" class="text-gray-700 hover:text-indigo-600 px-3 py-2 text-sm font-medium transition-colors duration-200 flex items-center" onclick="toggleServicesMenu()">
+                                Services
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                            
+                            <div id="service-dropdown-links" class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 hidden">
+                                <div class="py-1">
+                                    <a href="{% url 'images:generate_image' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600">Generate Image</a>
+                                    <!-- <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600">Remove background</a>
+                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600">Enhance image</a> -->
+                                </div>
+                            </div>
+                        </div>
+                        
+                        {% if index_page %}
+                            {% include 'searchbox.html' %}
+                        {% endif %}
+                        
+                        <a href="{% url 'custom_users:logout' %}" class="ml-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200">
+                            Logout
+                        </a>
+                    {% else %}
+                        {% if index_page %}
+                            {% include 'searchbox.html' %}
+                        {% endif %}
+                        
+                        <a href="{% url 'custom_users:login' %}" class="ml-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200">
+                            Login
+                        </a>
+                    {% endif %}
+                </div>
+                
+                <!-- Mobile menu button -->
+                <div class="flex items-center md:hidden">
+                    <button type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-indigo-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500" aria-expanded="false" onclick="toggleMobileMenu()">
+                        <span class="sr-only">Open main menu</span>
+                        <svg id="menu-icon" class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                        <svg id="close-icon" class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile menu, show/hide based on menu state -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-200">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="/" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50">Home</a>
+                
+                <a href="{% url 'contact' %}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50">Contact</a>
+                
+                <a href="{% url 'faq' %}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50">FAQs</a>
+                
+                {% if user.is_authenticated %}
+                    <a href="{% url 'images:dashboard' %}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50">Your Images</a>
+                    
+                    <div class="relative">
+                        <button onclick="toggleMobileServicesMenu()" class="w-full flex justify-between items-center px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50">
+                            Services
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        
+                        <div id="mobile-services-menu" class="hidden px-4 py-2 bg-gray-50">
+                            <a href="{% url 'images:generate_image' %}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-indigo-600">Generate Image</a>
+                            <!-- <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-indigo-600">Remove background</a>
+                            <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-indigo-600">Enhance image</a> -->
+                        </div>
+                    </div>
+                    
+                    {% if index_page %}
+                        <div class="px-3 py-2">
+                            {% include 'searchbox.html' %}
+                        </div>
+                    {% endif %}
+                    
+                    <a href="{% url 'custom_users:logout' %}" class="block w-full text-center px-3 py-2 mt-2 rounded-md text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700">Logout</a>
+                {% else %}
+                    {% if index_page %}
+                        <div class="px-3 py-2">
+                            {% include 'searchbox.html' %}
+                        </div>
+                    {% endif %}
+                    
+                    <a href="{% url 'custom_users:login' %}" class="block w-full text-center px-3 py-2 mt-2 rounded-md text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700">Login</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow">
         {% block content %}
-       
         {% endblock %}
-</div>
-{% block footer %}
-{% endblock %}
+    </main>
+            
+            {% block footer %}
+            {% endblock %}
 
-<script src="{% static 'js/htmx.min.js' %}"></script>
-<script>
-    htmx.on("htmx:beforeSwap", (e) => {
-        // Allow 422 and 400 responses to swap
-        // We treat these as form validation errors
-        if (e.detail.xhr.status === 422 || e.detail.xhr.status === 400) {
-            e.detail.shouldSwap = true;
-            e.detail.isError = false;
-        }
-    });
-    document.addEventListener("contextmenu", function (event) {
-        if (event.target.tagName === "IMG") {
-            event.preventDefault();
-        }
-    });
-
-
-    function toggleMenu() {
-            console.log('clicked');
-            const links = document.querySelectorAll('#drop-down-link');
-            links.forEach(link => {
-                if (link.style.display === 'none') {
-                    link.style.display = 'block';
-                } else {
-                    link.style.display = 'none';
-                }
-            });
-    }
-    function toggleServicesMenu() {
-        const links = document.querySelectorAll('#service-dropdown-links');
-        links.forEach(link => {
-            if (link.style.display === 'none') {
-            link.style.display = 'block';
-            } else {
-            link.style.display = 'none';
+    <script src="{% static 'js/htmx.min.js' %}"></script>
+    <script>
+        htmx.on("htmx:beforeSwap", (e) => {
+            // Allow 422 and 400 responses to swap
+            // We treat these as form validation errors
+            if (e.detail.xhr.status === 422 || e.detail.xhr.status === 400) {
+                e.detail.shouldSwap = true;
+                e.detail.isError = false;
             }
         });
-    }
+        document.addEventListener("contextmenu", function (event) {
+            if (event.target.tagName === "IMG") {
+                event.preventDefault();
+            }
+        });
 
-</script>
-<script src="{% static 'js/dist_cropper/cropper.js' %}"></script>
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            const menuIcon = document.getElementById('menu-icon');
+            const closeIcon = document.getElementById('close-icon');
+            
+            if (mobileMenu.classList.contains('hidden')) {
+                mobileMenu.classList.remove('hidden');
+                menuIcon.classList.add('hidden');
+                closeIcon.classList.remove('hidden');
+            } else {
+                mobileMenu.classList.add('hidden');
+                menuIcon.classList.remove('hidden');
+                closeIcon.classList.add('hidden');
+            }
+        }
+
+        function toggleServicesMenu() {
+            const dropdownMenu = document.getElementById('service-dropdown-links');
+            dropdownMenu.classList.toggle('hidden');
+        }
+        
+        function toggleMobileServicesMenu() {
+            const servicesMenu = document.getElementById('mobile-services-menu');
+            servicesMenu.classList.toggle('hidden');
+        }
+    </script>
+    <script src="{% static 'js/dist_cropper/cropper.js' %}"></script>
 </body>
 </html>

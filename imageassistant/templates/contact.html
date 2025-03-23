@@ -2,58 +2,167 @@
 {% load partials %}
 {% load static %}
 {% partialdef message-sent %}
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+<div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-md shadow-sm mb-6 animate-fade-in" role="alert">
+    <div class="flex items-center">
+        <svg class="h-5 w-5 mr-2 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+        </svg>
+        <div>
             <strong class="font-bold">Success!</strong>
-            <span class="block sm:inline"> Message sent.</span>
+            <span class="block sm:inline"> Your message has been sent. We'll get back to you soon.</span>
         </div>
-{% endpartialdef %}
-{% partialdef message-error %}
-        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-            <strong class="font-bold">Error!</strong>
-            <span class="block sm:inline"> Message not sent.</span>
-        </div>
-{% endpartialdef %}
-{% partialdef content %}
-<div id="content" class="grid-cols-12 gp-5 h-[calc(100vh-130px)]">
-    <div id="message">
-        {% for message in messages %}
-            {% if message.tags == 'success' %}
-                {% partial message-sent %}
-            {% elif message.tags == 'error' %}
-                {% partial message-error %}
-            {% endif %}
-        {% endfor %}
     </div>
-    {% csrf_token %}
-    <form class="rounded px-8 pt-6 pb-8 mb-4 mt-1" hx-post="{% url 'contact' %}" hx-target="#message" hx-swap="outerHTML">
-        {% for field in form %}
-            {% if field.name == 'confirm_your_a_human' %}
-                <label class="md:w-2/3 block font-bold">
-                    <span class="text-[1rem]">{{ field.label_tag }}</span> {{ field }}
-                </label>
-            {% elif field.name == 'bot_field' %}
-                    {{ field }}
-            {% else %}
-                {{ field.label_tag }} {{ field }}
-            {%endif%}
-            {% if field.errors %}
-                <div class="text-red-700 px-4 py-3 rounded relative bg-[#c9aab6] text-sm">{{field.errors}}</div>
-            {% endif %}
-        {% endfor %}
-        <button type="submit" class="mt-2 bg-indigo-600 hover:bg-indigo-700 text-white p-4 rounded-lg">Send</button>
-    </form>
 </div>
 {% endpartialdef %}
 
+{% partialdef message-error %}
+<div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-md shadow-sm mb-6 animate-fade-in" role="alert">
+    <div class="flex items-center">
+        <svg class="h-5 w-5 mr-2 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+        </svg>
+        <div>
+            <strong class="font-bold">Error!</strong>
+            <span class="block sm:inline"> Message could not be sent. Please try again.</span>
+        </div>
+    </div>
+</div>
+{% endpartialdef %}
+
+{% partialdef content %}
+<div class="max-w-3xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">Contact Us</h1>
+        <p class="mt-2 text-lg text-gray-600">Have a question or feedback? We'd love to hear from you.</p>
+    </div>
+    
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <div id="message" class="px-6 pt-6">
+            {% for message in messages %}
+                {% if message.tags == 'success' %}
+                    {% partial message-sent %}
+                {% elif message.tags == 'error' %}
+                    {% partial message-error %}
+                {% endif %}
+            {% endfor %}
+        </div>
+        
+        <div class="px-6 pb-6">
+            {% csrf_token %}
+            <form class="space-y-4" hx-post="{% url 'contact' %}" hx-target="#message" hx-swap="outerHTML">
+                {% for field in form %}
+                    <div class="mb-4">
+                        {% if field.name == 'confirm_your_a_human' %}
+                            <label class="block text-gray-700 font-medium mb-2">
+                                <span class="text-base">{{ field.label_tag }}</span>
+                                <div class="mt-1">{{ field }}</div>
+                            </label>
+                        {% elif field.name == 'bot_field' %}
+                            {{ field }}
+                        {% else %}
+                            <label class="block text-gray-700 font-medium mb-2">
+                                {{ field.label_tag }}
+                                <div class="mt-1">
+                                    {{ field }}
+                                </div>
+                            </label>
+                        {% endif %}
+                        
+                        {% if field.errors %}
+                            <div class="mt-1 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md p-2">
+                                {{ field.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                
+                <div class="mt-6">
+                    <button type="submit" class="w-full md:w-auto inline-flex justify-center items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+                        </svg>
+                        Send Message
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-xl font-semibold text-gray-900 mb-3">Contact Information</h2>
+            <div class="space-y-3 text-gray-600">
+                <p class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-indigo-500" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M2.94 6.412A2 2 0 002 8.108V16a2 2 0 002 2h12a2 2 0 002-2V8.108a2 2 0 00-.94-1.696l-6-3.75a2 2 0 00-2.12 0l-6 3.75zm2.615 2.423a1 1 0 10-1.11 1.664l5 3.333a1 1 0 001.11 0l5-3.333a1 1 0 00-1.11-1.664L10 11.798 5.555 8.835z" clip-rule="evenodd" />
+                    </svg>
+                    support@imageassistant.io
+                </p>
+                <!-- <p class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-indigo-500" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                    </svg>
+                    Startup Hub, Digital Avenue
+                </p> -->
+            </div>
+        </div>
+        
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-xl font-semibold text-gray-900 mb-3">Support Hours</h2>
+            <div class="space-y-3 text-gray-600">
+                <p class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-indigo-500" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+                    </svg>
+                    Monday-Friday: 9:00 AM - 5:00 PM
+                </p>
+                <p class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-indigo-500" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                    </svg>
+                    We'll respond to your message within 24 hours during business days.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endpartialdef %}
 
 {% block content %}
     {% partial content %}
 {% endblock %}
-{% block footer %}
-<div class="grid grid-cols-12">
-    <footer class="col-span-12 text-center p-2">
-        © {% now "Y" %} Image Assistant. All rights reserved.
-    </footer>
 
-</div>
+{% block footer %}
+     <!-- Footer -->
+     <footer class="bg-white border-t border-gray-200 mt-8">
+        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+            <div class="md:flex md:items-center md:justify-between">
+                <div class="flex justify-center md:justify-start space-x-6">
+                    <a href="/" class="text-gray-600 hover:text-indigo-600">
+                        <span class="sr-only">Home</span>
+                        <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M12 2L2 12h3v8h6v-6h2v6h6v-8h3L12 2z"></path>
+                        </svg>
+                    </a>
+                    <a href="#" class="text-gray-600 hover:text-indigo-600">
+                        <span class="sr-only">Twitter</span>
+                        <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723 10.059 10.059 0 01-3.13 1.188 4.92 4.92 0 00-8.392 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.882 4.882 0 00-.671 2.479c0 1.71.87 3.213 2.188 4.096a4.976 4.976 0 01-2.228-.616v.06c0 2.386 1.693 4.375 3.946 4.827a4.96 4.96 0 01-2.212.085 4.921 4.921 0 004.604 3.417 9.86 9.86 0 01-6.115 2.107c-.39 0-.782-.023-1.17-.067a13.91 13.91 0 007.55 2.213c9.053 0 14-7.496 14-13.986 0-.21 0-.42-.015-.63A9.85 9.85 0 0024 4.59z"></path>
+                        </svg>
+                    </a>
+                    <a href="#" class="text-gray-600 hover:text-indigo-600">
+                        <span class="sr-only">Instagram</span>
+                        <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z" clip-rule="evenodd"></path>
+                        </svg>
+                    </a>
+                </div>
+                <div class="mt-8 md:mt-0">
+                    <p class="text-center text-sm text-gray-500 md:text-right">
+                        &copy; {% now "Y" %} ImageAssistant.io. All rights reserved.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
 {% endblock %}
