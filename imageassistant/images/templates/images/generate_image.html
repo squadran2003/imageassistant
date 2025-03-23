@@ -3,179 +3,240 @@
 {% load static %}
 
 {% partialdef prompt-form %}
-{% if download_limit_exceeded and not shown %}
-{% partial download-count-error %}
-{% endif %}
-{% if trigger %}
-    <form hx-post="{{post_url}}" hx-target={{target}} hx-trigger={{trigger}}
-        hx-swap="outerHTML" id="prompt-form"
-        class="px-8 pt-6 pb-8 mb-4 mt-1">
+<div class="bg-white rounded-lg shadow-md p-6">
+    <h2 class="text-xl font-semibold text-gray-900 mb-4">Create Your AI Image</h2>
+    
+    {% if download_limit_exceeded and not shown %}
+        {% partial download-count-error %}
+    {% endif %}
+    
+    {% if trigger %}
+        <form hx-post="{{post_url}}" hx-target={{target}} hx-trigger={{trigger}}
+            hx-swap="outerHTML" id="prompt-form"
+            class="space-y-4">
     {% else %}
-    <form hx-post="{{post_url}}" hx-target={{target}} hx-swap="outerHTML"
-        id="prompt-form"
-        class="px-8 pt-6 pb-8 mb-4 mt-1">
-        {% endif %}
-        {% csrf_token %}
-        {% for field in form %}
-        {% if field.name == 'confirm_your_a_human' %}
-        <label class="md:w-2/3 block font-bold">
-            <span class="text-[1rem]">{{ field.label_tag }}</span> {{ field }}
-        </label>
-        {% elif field.name == 'aspect_ratio' %}
-        <label
-            class="block uppercase tracking-wide text-xs font-bold mb-2"
-            for="grid-state">
-            {{ field.label_tag }}
-        </label>
-        {{ field }}
-        {% else %}
-        {{ field }}
-        {% endif %}
-        {% if field.errors %}
-        <div
-            class="text-red-700 px-4 py-3 rounded relative bg-[#c9aab6] text-sm">{{field.errors}}</div>
-        {% endif %}
-        {% endfor %}
-        <div>
-            <button type="submit"
-                onclick="htmx.trigger('#prompt-form', 'submit')"
-                class="mt-2 bg-indigo-600 hover:bg-indigo-700 text-white p-4 rounded-sm"
-                id="prompt-button">
-                Submit
-            </button>
-        </div>
-    </form>
+        <form hx-post="{{post_url}}" hx-target={{target}} hx-swap="outerHTML"
+            id="prompt-form"
+            class="space-y-4">
+    {% endif %}
+            {% csrf_token %}
+            
+            {% for field in form %}
+                <div class="mb-4">
+                    {% if field.name == 'confirm_your_a_human' %}
+                        <label class="block text-gray-700 font-medium mb-2">
+                            <span class="text-base">{{ field.label_tag }}</span>
+                            <div class="mt-1">{{ field }}</div>
+                        </label>
+                    {% elif field.name == 'aspect_ratio' %}
+                        <label class="block text-gray-700 text-sm font-medium mb-2" for="grid-state">
+                            {{ field.label_tag }}
+                        </label>
+                        <div class="relative">
+                            {{ field }}
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+                                </svg>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="w-full">
+                            {{ field }}
+                        </div>
+                    {% endif %}
+                    
+                    {% if field.errors %}
+                        <div class="mt-1 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md p-2">
+                            {{field.errors}}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            
+            <div>
+                <button type="submit"
+                    onclick="htmx.trigger('#prompt-form', 'submit')"
+                    class="w-full md:w-auto inline-flex justify-center items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
+                    id="prompt-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M4 2a2 2 0 00-2 2v11a3 3 0 106 0V4a2 2 0 00-2-2H4zm1 14a1 1 0 100-2 1 1 0 000 2zm5-1.757l4.9-4.9a2 2 0 000-2.828L13.485 5.1a2 2 0 00-2.828 0L10 5.757v8.486zM16 18H9.071l6-6H16a2 2 0 012 2v2a2 2 0 01-2 2z" clip-rule="evenodd" />
+                    </svg>
+                    Generate Image
+                </button>
+            </div>
+        </form>
+</div>
 {% endpartialdef %}
 
 {% partialdef stripe-checkout-form %}
+<div class="bg-white rounded-lg shadow-md p-6">
+    <h2 class="text-xl font-semibold text-gray-900 mb-4">Complete Your Purchase</h2>
     <input type="hidden" id="stripe_public_key" value="{{ stripe_public_key }}">
-    <div class="row">
-        <div class="col s12">
+    <div class="space-y-4">
+        <div>
             <input type="hidden" id="service_id" value="{{ service_id }}">
             <input type="hidden" id="image_id" value="{{ image_id }}">
             {% csrf_token %}
-            <div id="checkout">
+            <div id="checkout" class="mt-4 border border-gray-200 rounded-lg">
                 <!-- Checkout will insert the payment form here -->
             </div>
             <script src="https://js.stripe.com/v3/" onload="initializeStripe()"></script>
             <script>
                 function initializeStripe() {
-                        const stripePublicKey = document.querySelector("#stripe_public_key").value;
-                        const stripe = Stripe(stripePublicKey);
-                        const token = document.querySelector('[name="csrfmiddlewaretoken"]').value;
+                    const stripePublicKey = document.querySelector("#stripe_public_key").value;
+                    const stripe = Stripe(stripePublicKey);
+                    const token = document.querySelector('[name="csrfmiddlewaretoken"]').value;
 
-                        const service_id = document.querySelector("#service_id").value;
-                        const image_id = document.querySelector("#image_id").value;
-                        initialize();
-    
-                        // Create a Checkout Session using redirectToCheckout
-                        async function initialize() {
-                            const fetchClientSecret = async () => {
-                                const response = await fetch(`/images/create/checkout/session/${service_id}/${image_id}/`, {
-                                    method: "POST",
-                                    headers: {
-                                        "Content-Type": "application/json",
-                                        "X-CSRFToken": token,
-                                    },
-                                });
-                                const { clientSecret } = await response.json();
-                                return clientSecret;
-                            };
-    
-                            const checkout = await stripe.initEmbeddedCheckout({
-                                fetchClientSecret,
+                    const service_id = document.querySelector("#service_id").value;
+                    const image_id = document.querySelector("#image_id").value;
+                    initialize();
+
+                    // Create a Checkout Session using redirectToCheckout
+                    async function initialize() {
+                        const fetchClientSecret = async () => {
+                            const response = await fetch(`/images/create/checkout/session/${service_id}/${image_id}/`, {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                    "X-CSRFToken": token,
+                                },
                             });
+                            const { clientSecret } = await response.json();
+                            return clientSecret;
+                        };
 
-                            // Mount Checkout
-                            checkout.mount('#checkout');
-                        }
+                        const checkout = await stripe.initEmbeddedCheckout({
+                            fetchClientSecret,
+                        });
+
+                        // Mount Checkout
+                        checkout.mount('#checkout');
+                    }
                 }
             </script>
         </div>
     </div>
+</div>
 {% endpartialdef %}
 
 {% partialdef img-svg %}
-    <div class="w-full h-full flex items-center justify-center">
+<div class="bg-white rounded-lg shadow-md p-6 h-96 flex items-center justify-center">
+    <div class="text-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+        <p class="mt-4 text-gray-600">Enter a prompt and click Generate to create your image</p>
     </div>
+</div>
 {% endpartialdef %}
 
-    {% partialdef img-svg-poll %}
-    <div class="mt-5 w-full h-full flex items-center justify-center text-center"
-        hx-get="{{poll_url}}" hx-trigger="load delay:3s" hx-swap="innerHTML"
-        hx-target="#content">
-        <svg class="animate-spin ml-auto mr-auto w-12 h-12 mb-[20%]"
-            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10"
-                stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-        </svg>
-    </div>
-    {% endpartialdef %}
-    {% partialdef donwload-button %}
-        {% if image.alternate_url %}
-        <a href="{{ image.alternate_url }}"
-            download="{{ image.image.alternate_url }}"
-            class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg p-4 m-2">Download</a>
-        {% else %}
-        <a href="{{ image.image.url }}" download="{{ image.image.url }}"
-            class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg p-4 m-2">Download</a>
-        {% endif %}
-    {% endpartialdef %}
+{% partialdef img-svg-poll %}
+<div class="bg-white rounded-lg shadow-md p-6 h-96 flex flex-col items-center justify-center"
+    hx-get="{{poll_url}}" hx-trigger="load delay:3s" hx-swap="innerHTML"
+    hx-target="#content">
+    <svg class="animate-spin h-16 w-16 text-indigo-600 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+    </svg>
+    <p class="text-gray-600 text-center">Creating your image...</p>
+    <p class="text-sm text-gray-500 mt-2">This may take a few moments</p>
+</div>
+{% endpartialdef %}
 
-    {% partialdef img-processed %}
-    <div id="image-container">
-        <div class="mb-5">
-            {% if free %}
+{% partialdef donwload-button %}
+{% if image.alternate_url %}
+<a href="{{ image.alternate_url }}" download="{{ image.image.alternate_url }}"
+    class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+    </svg>
+    Download Image
+</a>
+{% else %}
+<a href="{{ image.image.url }}" download="{{ image.image.url }}"
+    class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+    </svg>
+    Download Image
+</a>
+{% endif %}
+{% endpartialdef %}
+
+{% partialdef img-processed %}
+<div id="image-container" class="bg-white rounded-lg shadow-md p-6">
+    <div class="mb-6 flex justify-center">
+        {% if free %}
+            {% partial donwload-button %}
+        {% else %}
+            {% if payment_made %}
                 {% partial donwload-button %}
             {% else %}
-                {% if payment_made %}
-                    {% partial donwload-button %}
-                {% else %}
-                    <a href="#"
-                    hx-get="{% url 'images:build_checkout_session' service_id image.id %}"
-                    hx-target="#image-container" hx-swap="innerHTML"
-                    hx-trigger="click"
-                    class="text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-md text-sm px-5 py-2.5 dark:bg-purple-600 dark:hover:bg-purple-700 focus:outline-none dark:focus:ring-blue-800">Download:
-                    <span class="text-bold">Price {{cost}}$</span></a>
-                {% endif %}
+                <a href="#"
+                hx-get="{% url 'images:build_checkout_session' service_id image.id %}"
+                hx-target="#image-container" hx-swap="innerHTML"
+                hx-trigger="click"
+                class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors duration-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                    Download for {{cost}}$
+                </a>
             {% endif %}
-        </div>
-        <div class="w-full h-full flex items-center justify-center m-2">
+        {% endif %}
+    </div>
+    <div class="w-full flex items-center justify-center">
+        <div class="relative rounded-lg overflow-hidden shadow-lg border border-gray-200">
             {% if image.alternate_url %}
-            <img src="{{ image.alternate_url }}" class="w-full h-full" />
+            <img src="{{ image.alternate_url }}" class="max-w-full h-auto" alt="Generated image" />
             {% else %}
-            <img src="{{ image.image.url }}" class="w-full h-full" />
+            <img src="{{ image.image.url }}" class="max-w-full h-auto" alt="Generated image" />
             {% endif %}
+            <div class="absolute top-0 right-0 mt-2 mr-2">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium bg-indigo-100 text-indigo-800">
+                    AI Generated
+                </span>
+            </div>
         </div>
     </div>
-    {% endpartialdef %}
+</div>
+{% endpartialdef %}
 
-    {% partialdef content %}
-    <div id="content" class="grid grid-cols-1 gp-5 mt-4">
+{% partialdef content %}
+<div class="max-w-4xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+    <h1 class="text-2xl font-bold text-gray-900 mb-6">Create AI-Generated Image</h1>
+    
+    <div id="content" class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
         <div>
             {% csrf_token %}
             {% partial prompt-form %}
         </div>
-        <div id="image-container" class="cm-5">
+        <div id="image-container">
             {% partial img-svg %}
         </div>
     </div>
+</div>
+{% endpartialdef %}
 
-    {% endpartialdef %}
-
-    {% partialdef download-count-error %}
-    <div
-        class="mt-2 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
-        role="alert">
-        <strong class="font-bold">Download Limit Exceeded!</strong>
-        <span class="block sm:inline">You have exceeded the maximum number of
-            downloads allowed, you can only download 2 images in a 24 hr period.
-            Come back later</span>
+{% partialdef download-count-error %}
+<div class="mb-4 bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-md shadow-sm" role="alert">
+    <div class="flex">
+        <div class="flex-shrink-0">
+            <svg class="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+            </svg>
+        </div>
+        <div class="ml-3">
+            <h3 class="text-sm font-medium text-red-700">Download Limit Exceeded!</h3>
+            <div class="mt-1 text-sm text-red-700">
+                You have exceeded the maximum number of downloads allowed, you can only download 2 images in a 24 hr period. Come back later.
+            </div>
+        </div>
     </div>
-    {% endpartialdef %}
+</div>
+{% endpartialdef %}
 
-    {% block content %}
-    {% partial content %}
-    {% endblock %}
+{% block content %}
+{% partial content %}
+{% endblock %}
