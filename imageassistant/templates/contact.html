@@ -1,55 +1,20 @@
 {% extends 'base.html' %}
 {% load partials %}
 {% load static %}
-{% partialdef message-sent %}
-<div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-md shadow-sm mb-6 animate-fade-in" role="alert">
-    <div class="flex items-center">
-        <svg class="h-5 w-5 mr-2 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-        </svg>
-        <div>
-            <strong class="font-bold">Success!</strong>
-            <span class="block sm:inline"> Your message has been sent. We'll get back to you soon.</span>
-        </div>
-    </div>
-</div>
-{% endpartialdef %}
 
-{% partialdef message-error %}
-<div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-md shadow-sm mb-6 animate-fade-in" role="alert">
-    <div class="flex items-center">
-        <svg class="h-5 w-5 mr-2 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
-        </svg>
-        <div>
-            <strong class="font-bold">Error!</strong>
-            <span class="block sm:inline"> Message could not be sent. Please try again.</span>
-        </div>
-    </div>
-</div>
-{% endpartialdef %}
-
-{% partialdef content %}
-<div class="max-w-3xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-    <div class="text-center mb-8">
-        <h1 class="text-3xl font-bold text-gray-900">Contact Us</h1>
-        <p class="mt-2 text-lg text-gray-600">Have a question or feedback? We'd love to hear from you.</p>
-    </div>
-    
-    <div class="bg-white rounded-lg shadow-md overflow-hidden">
-        <div id="message" class="px-6 pt-6">
-            {% for message in messages %}
-                {% if message.tags == 'success' %}
-                    {% partial message-sent %}
-                {% elif message.tags == 'error' %}
-                    {% partial message-error %}
-                {% endif %}
-            {% endfor %}
+{% partialdef contact-content %}
+        <div class="p-2">
+            {% if success %}
+                {% partial message-sent %}
+            {% endif %}
+            {% if error %}
+                {% partial message-error %}
+            {% endif %}
         </div>
         
         <div class="px-6 pb-6">
-            {% csrf_token %}
-            <form class="space-y-4" hx-post="{% url 'contact' %}" hx-target="#message" hx-swap="outerHTML">
+            <form class="space-y-4" hx-post="{% url 'contact' %}" hx-target="#form-container" hx-swap="innerHTML">
+                {% csrf_token %}
                 {% for field in form %}
                     <div class="mb-4">
                         {% if field.name == 'confirm_your_a_human' %}
@@ -86,6 +51,45 @@
                 </div>
             </form>
         </div>
+{% endpartialdef %}
+
+{% partialdef message-sent %}
+<div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-md shadow-sm mb-6 animate-fade-in" role="alert">
+    <div class="flex items-center">
+        <svg class="h-5 w-5 mr-2 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+        </svg>
+        <div>
+            <strong class="font-bold">Success!</strong>
+            <span class="block sm:inline"> Your message has been sent. We'll get back to you soon.</span>
+        </div>
+    </div>
+</div>
+{% endpartialdef %}
+
+{% partialdef message-error %}
+<div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-md shadow-sm mb-6 animate-fade-in" role="alert">
+    <div class="flex items-center">
+        <svg class="h-5 w-5 mr-2 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+        </svg>
+        <div>
+            <strong class="font-bold">Error!</strong>
+            <span class="block sm:inline"> Message could not be sent. Please try again.</span>
+        </div>
+    </div>
+</div>
+{% endpartialdef %}
+
+{% partialdef content %}
+<div class="max-w-3xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">Contact Us</h1>
+        <p class="mt-2 text-lg text-gray-600">Have a question or feedback? We'd love to hear from you.</p>
+    </div>
+    
+    <div class="bg-white rounded-lg shadow-md overflow-hidden" id="form-container">
+        {% partial contact-content %}
     </div>
     
     <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8">

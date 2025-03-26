@@ -65,20 +65,23 @@ def contact(request):
                           to=recipient_list,
                           from_email=from_email,
                           connection=connection).send()
-            messages.success(request, 'Message sent!')
+            
+            # reset form and add success message
+            form = ContactForm()
             form.fields['email'].widget.attrs['class'] = 'shadow appearance-none border rounded mt-2 min-h-20 mb-2 p-2 w-full text-white focus:outline-none focus:shadow-outline'
             form.fields['message'].widget.attrs['class'] = 'shadow appearance-none border rounded mt-2 min-h-20 mb-2 p-2 w-full text-white focus:outline-none focus:shadow-outline'
-            return render(request, 'contact.html#content', {
+            return render(request, 'contact.html#contact-content', {
                 'form': form,
+                'success': True,
             })
         else:
-            messages.error(request, 'There was an error with your message.')
             if 'message' in form.errors:
-                form.fields['message'].widget.attrs['class'] = 'shadow appearance-none border rounded mt-2 min-h-20 mb-2 p-2 w-full text-white focus:outline-none focus:shadow-outline required:border-red-500'
+                form.fields['message'].widget.attrs['class'] = 'shadow appearance-none border rounded mt-2 min-h-20 mb-2 p-2 w-full text-black focus:outline-none focus:shadow-outline required:border-red-500'
             if 'email' in form.errors:
-                form.fields['email'].widget.attrs['class'] = 'shadow appearance-none border rounded mt-2 min-h-20 mb-2 p-2 w-full text-white focus:outline-none focus:shadow-outline required:border-red-500'
-            return render(request, 'contact.html#content', {
+                form.fields['email'].widget.attrs['class'] = 'shadow appearance-none border rounded mt-2 min-h-20 mb-2 p-2 w-full text-black focus:outline-none focus:shadow-outline required:border-red-500'
+            return render(request, 'contact.html#contact-content', {
                 'form': form,
+                'error': True,
             })
 
     return render(request, 'contact.html', {
