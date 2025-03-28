@@ -1,11 +1,10 @@
-name: Django CI
+name: Build and Test
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ $default-branch ]
   pull_request:
-    branches: [ "main" ]
-
+    branches: [ $default-branch ]
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -48,7 +47,7 @@ jobs:
         DB_HOST: localhost
         DB_PORT: 5432
         DJANGO_SETTINGS_MODULE: config.settings
-        SECRET_KEY: "test"
+        SECRET_KEY: ${{ secrets.SECRET_KEY }}
         REDIS_URL: "redis://localhost:6379/1"
       run: |
         cd ./imageassistant
