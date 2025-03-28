@@ -35,6 +35,9 @@ jobs:
                   exit 1
                 fi
                 cd /home/ubuntu/imageassistant/
+
+                echo 'Pulling latest changes from GitHub...'
+                git pull
                 
                 echo 'Stopping existing containers...'
                 sudo docker-compose -f docker-compose-prod.yaml down
