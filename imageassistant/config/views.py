@@ -65,11 +65,11 @@ def contact(request):
                           to=recipient_list,
                           from_email=from_email,
                           connection=connection).send()
-            
+
             # reset form and add success message
             form = ContactForm()
-            form.fields['email'].widget.attrs['class'] = 'shadow appearance-none border rounded mt-2 min-h-20 mb-2 p-2 w-full text-white focus:outline-none focus:shadow-outline'
-            form.fields['message'].widget.attrs['class'] = 'shadow appearance-none border rounded mt-2 min-h-20 mb-2 p-2 w-full text-white focus:outline-none focus:shadow-outline'
+            form.fields['email'].widget.attrs['class'] = 'shadow appearance-none border rounded mt-2 min-h-20 mb-2 p-2 w-full text-black focus:outline-none focus:shadow-outline'
+            form.fields['message'].widget.attrs['class'] = 'shadow appearance-none border rounded mt-2 min-h-20 mb-2 p-2 w-full text-black focus:outline-none focus:shadow-outline'
             return render(request, 'contact.html#contact-content', {
                 'form': form,
                 'success': True,
@@ -81,7 +81,6 @@ def contact(request):
                 form.fields['email'].widget.attrs['class'] = 'shadow appearance-none border rounded mt-2 min-h-20 mb-2 p-2 w-full text-black focus:outline-none focus:shadow-outline required:border-red-500'
             return render(request, 'contact.html#contact-content', {
                 'form': form,
-                'error': True,
             })
 
     return render(request, 'contact.html', {
