@@ -37,7 +37,7 @@ jobs:
                 cd /home/ubuntu/imageassistant/
 
                 echo 'Pulling latest changes from GitHub...'
-                git pull
+                sudo git pull
 
                 export TAG=$(date +%Y%m%d%H%M%S)
                 echo \"Using image tag: \$TAG\"
