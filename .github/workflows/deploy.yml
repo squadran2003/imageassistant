@@ -25,4 +25,27 @@ jobs:
 
       - name: SSH into EC2 and deploy
         run: |
-          ssh -i ~/.ssh/id_rsa ubuntu@"${{ secrets.SERVER_ADDRESS }}" "echo 'Successfully logged in!' && exit"
+            ssh -i ~/.ssh/id_rsa ubuntu@"${{ secrets.SERVER_ADDRESS }}" "
+                echo 'Starting deployment on server...'
+                cd /home/ubuntu/imageassistant
+                
+                echo 'Stopping existing containers...'
+                sudo docker-compose -f docker-compose-prod.yaml down
+                
+                echo 'Building and starting containers...'
+                sudo docker-compose -f docker-compose-prod.yaml up --build -d
+                
+                echo 'Checking container status...'
+                sudo docker ps
+                
+                echo 'Checking container logs (last 20 lines of each)...'
+                for container in \$(sudo docker-compose -f docker-compose-prod.yaml ps -q); do
+                echo '===== Container \$(sudo docker inspect --format=\"{{.Name}}\" \$container) ====='
+                sudo docker logs --tail=20 \$container
+                done
+                
+                echo 'Checking for any container restarts or failures...'
+                sudo docker ps -a --format '{{.Names}}\t{{.Status}}' | grep -i 'Restart'
+                
+                echo 'Deployment complete!'
+        "

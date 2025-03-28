@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load partials %}
-
+{% block  title %}Login:ImageAssistant.io – Free AI Image Generator & Enhancer | Powered by Stability AI{% endblock %}
 {% partialdef login-form %}
 {% if redirect %}
     <meta http-equiv="refresh" content="0;url={% url 'dashboard' %}">
