@@ -19,9 +19,9 @@ jobs:
         ports:
           - 5432:5432
         env:
-          POSTGRES_DB:  ${{ production.POSTGRES_DB }}
-          POSTGRES_USER: ${{ production.POSTGRES_USER }}
-          POSTGRES_PASSWORD: ${{ production.POSTGRES_PASSWORD }}
+          POSTGRES_DB:  ${{ secrets.POSTGRES_DB }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
       redis:
         image: redis
         ports:
@@ -42,9 +42,9 @@ jobs:
         poetry config virtualenvs.create false && poetry install  --no-interaction --no-ansi --no-root
     - name: Run migrations and tests
       env:
-        DB_NAME: ${{ production.POSTGRES_DB }}
-        DB_USER: ${{production.POSTGRES_USER }}
-        DB_PASSWORD: ${{ production.POSTGRES_PASSWORD }}
+        DB_NAME: ${{ secrets.POSTGRES_DB }}
+        DB_USER: ${{ secrets.POSTGRES_USER }}
+        DB_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
         DB_HOST: localhost
         DB_PORT: 5432
         DJANGO_SETTINGS_MODULE: config.settings
