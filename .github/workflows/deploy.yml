@@ -45,7 +45,7 @@ jobs:
                 # Initialize on your main server
                 sudo docker swarm init || true
                 
-                sudo docker stack deploy -c docker-compose-prod.yaml --with-registry-auth imageassistant
+                sudo docker stack deploy -c docker-compose-prod.yaml --with-registry-auth --prune imageassistant
                 
                 echo 'Checking container status...'
                 sudo docker ps
