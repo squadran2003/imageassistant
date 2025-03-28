@@ -27,6 +27,13 @@ jobs:
         run: |
             ssh -i ~/.ssh/id_rsa ubuntu@"${{ secrets.SERVER_ADDRESS }}"
                 echo 'Starting deployment on server...'
+
+                # Check if directory exists
+                if [ ! -d /home/ubuntu/imageassistant ]; then
+                  echo 'ERROR: Directory /home/ubuntu/imageassistant does not exist!'
+                  ls -la /home/ubuntu/
+                  exit 1
+                fi
                 cd /home/ubuntu/imageassistant/
                 
                 echo 'Stopping existing containers...'
