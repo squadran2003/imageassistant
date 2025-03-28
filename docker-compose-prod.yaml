@@ -3,6 +3,7 @@ version: '3.8'
 services:
   nginx:
     build: ./nginx
+    image: ${REGISTRY_URL:-localhost}/imageassistant-nginx:${TAG:-latest}
     ports:
       - 443:443
       - 80:80
@@ -14,6 +15,14 @@ services:
       # change to your static path
       - static:/home/ubuntu/app/imageassistant/imageassistant/static/
       - /etc/letsencrypt:/etc/letsencrypt
+    deploy:
+      update_config:
+        order: start-first
+        failure_action: rollback
+        delay: 10s
+      restart_policy:
+        condition: any
+        delay: 5s
   redis-imageassistant:
     image: redis:alpine
     ports:
@@ -27,13 +36,15 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
-    update_config:
+    image: ${REGISTRY_URL:-localhost}/imageassistant-django:${TAG:-latest}
+    deploy:
+      update_config:
         order: start-first
         failure_action: rollback
         delay: 10s
-    restart_policy:
-      condition: any
-      delay: 5s
+      restart_policy:
+        condition: any
+        delay: 5s
     environment:
       # set to your production settings file
       - DJANGO_SETTINGS_MODULE=config.production_settings
@@ -56,6 +67,7 @@ services:
     build:
       context: .
       dockerfile: ./celery/Dockerfile
+    image: ${REGISTRY_URL:-localhost}/imageassistant-celery:${TAG:-latest}
     environment:
       # set to your production settings file
       - DJANGO_SETTINGS_MODULE=config.production_settings
@@ -68,6 +80,12 @@ services:
       - redis-imageassistant
     networks:
       - imageassistant-network
+    deploy:
+      update_config:
+        order: start-first
+        failure_action: rollback
+      restart_policy:
+        condition: any
 networks:
   imageassistant-network:
     driver: bridge
