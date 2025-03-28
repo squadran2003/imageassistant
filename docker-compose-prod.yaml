@@ -27,6 +27,13 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
+    update_config:
+        order: start-first
+        failure_action: rollback
+        delay: 10s
+    restart_policy:
+      condition: any
+      delay: 5s
     environment:
       # set to your production settings file
       - DJANGO_SETTINGS_MODULE=config.production_settings
