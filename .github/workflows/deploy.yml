@@ -43,12 +43,12 @@ jobs:
                 echo \"Using image tag: \$TAG\"
 
                 echo 'Building fresh images...'
-                sudo docker-compose -f docker-compose-prod.yaml --build
+                sudo docker-compose -f docker-compose-prod.yaml build
 
                 # Initialize on your main server
                 sudo docker swarm init || true
                 
-                sudo docker stack deploy -c docker-compose-prod.yaml --with-registry-auth --prune imageassistant
+                sudo TAG=\$TAG docker stack deploy -c docker-compose-prod.yaml --with-registry-auth --prune imageassistant
                 
                 echo 'Checking container status...'
                 sudo docker ps
