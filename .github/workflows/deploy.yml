@@ -47,6 +47,11 @@ jobs:
 
                 # Initialize on your main server
                 sudo docker swarm init || true
+
+                # Remove the stack first to ensure clean deployment
+                sudo docker stack rm imageassistant || true
+                echo 'Waiting for stack to be removed...'
+                sleep 10
                 
                 sudo TAG=\$TAG docker stack deploy -c docker-compose-prod.yaml --with-registry-auth --prune imageassistant
                 
