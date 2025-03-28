@@ -38,12 +38,11 @@ jobs:
 
                 echo 'Pulling latest changes from GitHub...'
                 git pull
+
+                # Initialize on your main server
+                sudo docker swarm init || true
                 
-                echo 'Stopping existing containers...'
-                sudo docker-compose -f docker-compose-prod.yaml down
-                
-                echo 'Building and starting containers...'
-                sudo docker-compose -f docker-compose-prod.yaml up --build -d
+                sudo docker stack deploy -c docker-compose-prod.yaml --with-registry-auth imageassistant
                 
                 echo 'Checking container status...'
                 sudo docker ps
