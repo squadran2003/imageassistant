@@ -25,7 +25,7 @@ jobs:
 
       - name: SSH into EC2 and deploy
         run: |
-            ssh -i ~/.ssh/id_rsa ubuntu@"${{ secrets.SERVER_ADDRESS }}" "
+            ssh -i ~/.ssh/id_rsa ubuntu@"${{ secrets.SERVER_ADDRESS }}"
                 echo 'Starting deployment on server...'
                 cd /home/ubuntu/imageassistant
                 
@@ -48,4 +48,3 @@ jobs:
                 sudo docker ps -a --format '{{.Names}}\t{{.Status}}' | grep -i 'Restart'
                 
                 echo 'Deployment complete!'
-        "
