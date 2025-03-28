@@ -27,7 +27,7 @@ jobs:
         run: |
             ssh -i ~/.ssh/id_rsa ubuntu@"${{ secrets.SERVER_ADDRESS }}"
                 echo 'Starting deployment on server...'
-                cd /home/ubuntu/imageassistant
+                cd /home/ubuntu/imageassistant/
                 
                 echo 'Stopping existing containers...'
                 sudo docker-compose -f docker-compose-prod.yaml down
