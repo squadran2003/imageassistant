@@ -39,6 +39,9 @@ jobs:
                 echo 'Pulling latest changes from GitHub...'
                 git pull
 
+                echo 'Building fresh images...'
+                sudo docker-compose -f docker-compose-prod.yaml build
+
                 # Initialize on your main server
                 sudo docker swarm init || true
                 
