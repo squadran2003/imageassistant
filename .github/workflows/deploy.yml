@@ -43,7 +43,7 @@ jobs:
                 echo \"Using image tag: \$TAG\"
 
                 echo 'Building fresh images...'
-                sudo docker-compose -f docker-compose-prod.yaml build
+                sudo docker-compose -f docker-compose-prod.yaml --build
 
                 # Initialize on your main server
                 sudo docker swarm init || true
