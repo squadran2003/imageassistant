@@ -28,7 +28,6 @@ services:
     networks:
       - imageassistant-network
   django:
-    restart: always
     build:
       context: ./
       dockerfile: Dockerfile
@@ -53,7 +52,6 @@ services:
       - imageassistant-network
     depends_on:
       - redis-imageassistant
-      - celery-imageassistant
   celery-imageassistant:
     build:
       context: .
