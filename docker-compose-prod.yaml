@@ -3,7 +3,8 @@ version: '3.8'
 services:
   nginx:
     build: ./nginx
-    image: ${REGISTRY_URL:-localhost}/imageassistant-nginx:${TAG:-latest}
+    image: ${REGISTRY_URL:-localhost}/imageassistant_nginx_1:${TAG:-latest}
+    name: imageassistant_nginx_1
     ports:
       - 443:443
       - 80:80
@@ -21,6 +22,7 @@ services:
         condition: any
   redis-imageassistant:
     image: redis:alpine
+    name: imageassistant_redis_1
     ports:
       - 6379:6379
     volumes:
@@ -29,10 +31,11 @@ services:
       - imageassistant-network
   django:
     restart: always
+    name: imageassistant_django_1
     build:
       context: ./
       dockerfile: Dockerfile
-    image: ${REGISTRY_URL:-localhost}/imageassistant-django:${TAG:-latest}
+    image: ${REGISTRY_URL:-localhost}/imageassistant_django_1:${TAG:-latest}
     deploy:
       replicas: 1
       restart_policy:
@@ -56,10 +59,11 @@ services:
       - redis-imageassistant
       - celery-imageassistant
   celery-imageassistant:
+    name: imageassistant_celery_1
     build:
       context: .
       dockerfile: ./celery/Dockerfile
-    image: ${REGISTRY_URL:-localhost}/imageassistant-celery:${TAG:-latest}
+    image: ${REGISTRY_URL:-localhost}/imageassistant_celery_1:${TAG:-latest}
     environment:
       # set to your production settings file
       - DJANGO_SETTINGS_MODULE=config.production_settings
