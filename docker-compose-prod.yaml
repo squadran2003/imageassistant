@@ -11,10 +11,10 @@ services:
       - django
     networks:
       - imageassistant-network
-    # volumes:
-    #   # change to your static path
-    #   - static:/home/ubuntu/app/imageassistant/imageassistant/static/
-    #   - /etc/letsencrypt:/etc/letsencrypt
+    volumes:
+      # change to your static path
+      - static:/home/ubuntu/app/imageassistant/imageassistant/static/
+      - /etc/letsencrypt:/etc/letsencrypt
     deploy:
       replicas: 1
       restart_policy:
@@ -44,8 +44,8 @@ services:
               python manage.py migrate && 
               python manage.py collectstatic --noinput &&
               gunicorn config.wsgi:application --bind 0.0.0.0:8084"
-    # volumes:
-    #   - static:/usr/src/imageassistant/imageassistant/config/static/
+    volumes:
+      - static:/usr/src/imageassistant/imageassistant/config/static/
     ports:
       - 8084:8084
     networks:
