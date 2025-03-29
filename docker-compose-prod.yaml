@@ -63,6 +63,9 @@ services:
       - DJANGO_SETTINGS_MODULE=config.production_settings
     command: >
       sh -c "celery -A config worker --loglevel=info --max-tasks-per-child=1 --concurrency=4"
+    volumes:
+      # change to your base directory
+      - ./:/usr/src/imageassistant/
     depends_on:
       - redis-imageassistant
     
