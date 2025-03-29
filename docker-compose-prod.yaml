@@ -74,6 +74,7 @@ networks:
   imageassistant-network:
     driver: overlay
     attachable: true
+    name: imageassistant_network
 
 volumes:
   static:
