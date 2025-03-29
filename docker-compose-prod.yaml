@@ -34,6 +34,11 @@ services:
     image: ${REGISTRY_URL:-localhost}/imageassistant_django:${TAG:-latest}
     deploy:
       replicas: 1
+      update_config:
+        order: start-first    # Start new container before stopping old one
+        parallelism: 1        # How many containers to update at once
+        delay: 10s            # Wait between updates
+        failure_action: rollback  # Auto-rollback if update fails
       restart_policy:
         condition: any
     environment:

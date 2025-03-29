@@ -56,11 +56,6 @@ jobs:
                 # Initialize on your main server
                 sudo docker swarm init || true
 
-                # Deploy stack with TAG env var properly passed
-                echo 'Removing existing stack (if any)...'
-                sudo docker stack rm imageassistant || true
-                echo 'Waiting for stack to be completely removed...'
-                sleep 15
 
                 # Deploy stack with TAG env var properly passed
                 echo 'Deploying stack with tag \$TAG...'
