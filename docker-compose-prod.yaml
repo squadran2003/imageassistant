@@ -74,7 +74,8 @@ services:
         condition: any
 networks:
   imageassistant-network:
-    driver: bridge
+    driver: overlay
+    attachable: true
 
 volumes:
   static:
