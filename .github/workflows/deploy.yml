@@ -39,20 +39,33 @@ jobs:
                 echo 'Pulling latest changes from GitHub...'
                 sudo git pull
 
+                # Validate docker-compose file
+                echo 'Validating docker-compose file...'
+                sudo docker-compose -f docker-compose-prod.yaml config > /dev/null
+                if [ \$? -ne 0 ]; then
+                  echo 'ERROR: Invalid docker-compose file!'
+                  exit 1
+                fi
+
                 export TAG=$(date +%Y%m%d%H%M%S)
                 echo \"Using image tag: \$TAG\"
 
                 echo 'Building fresh images...'
-                sudo docker-compose -f docker-compose-prod.yaml build --no-cache
+                sudo -E docker-compose -f docker-compose-prod.yaml build --no-cache
 
                 # Initialize on your main server
                 sudo docker swarm init || true
 
+                # Deploy stack with TAG env var properly passed
+                echo 'Deploying stack with tag \$TAG...'
+                sudo -E docker stack deploy -c docker-compose-prod.yaml --with-registry-auth --prune imageassistant
                 
-                sudo TAG=\$TAG docker stack deploy -c docker-compose-prod.yaml --with-registry-auth --prune imageassistant
+                # Check deployment status immediately
+                echo 'Checking stack status...'
+                sudo docker stack ls
                 
-                echo 'Checking container status...'
-                sudo docker ps
+                echo 'Checking services status...'
+                sudo docker service ls
                 
                 echo 'Checking container logs (last 20 lines of each)...'
                 for container in \$(sudo docker-compose -f docker-compose-prod.yaml ps -q); do
