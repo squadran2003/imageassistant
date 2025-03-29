@@ -38,7 +38,7 @@ services:
         condition: any
     environment:
       # set to your production settings file
-      - DJANGO_SETTINGS_MODULE=config.production_settings
+      - DJANGO_SETTINGS_MODULE config.production_settings
     command: >
       sh -c "
               python manage.py migrate && 
@@ -59,7 +59,7 @@ services:
     image: ${REGISTRY_URL:-localhost}/imageassistant_celery:${TAG:-latest}
     environment:
       # set to your production settings file
-      - DJANGO_SETTINGS_MODULE=config.production_settings
+      - DJANGO_SETTINGS_MODULE config.production_settings
     command: >
       sh -c "celery -A config worker --loglevel=info --max-tasks-per-child=1 --concurrency=4"
     depends_on:
