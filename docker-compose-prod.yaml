@@ -66,6 +66,9 @@ services:
       sh -c "celery -A config worker --loglevel=info --max-tasks-per-child=1 --concurrency=4"
     depends_on:
       - redis-imageassistant
+    volumes:
+      # change to your base directory
+      - ./:/usr/src/imageassistant/
     networks:
       - imageassistant-network
     deploy:
