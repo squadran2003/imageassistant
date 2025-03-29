@@ -3,7 +3,7 @@ version: '3.8'
 services:
   nginx:
     build: ./nginx
-    image: ${REGISTRY_URL:-localhost}/imageassistant_nginx:${TAG:-latest}
+    image: ${REGISTRY_URL:-localhost}/imageassistant_nginx:${TAG -latest}
     ports:
       - 443:443
       - 80:80
@@ -31,14 +31,14 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
-    image: ${REGISTRY_URL:-localhost}/imageassistant_django:${TAG:-latest}
+    image: ${REGISTRY_URL:-localhost}/imageassistant_django:${TAG -latest}
     deploy:
       replicas: 1
       restart_policy:
         condition: any
     environment:
       # set to your production settings file
-      - DJANGO_SETTINGS_MODULE config.production_settings
+      - DJANGO_SETTINGS_MODULE=config.production_settings
     command: >
       sh -c "
               python manage.py migrate && 
@@ -56,10 +56,10 @@ services:
     build:
       context: .
       dockerfile: ./celery/Dockerfile
-    image: ${REGISTRY_URL:-localhost}/imageassistant_celery:${TAG:-latest}
+    image: ${REGISTRY_URL:-localhost}/imageassistant_celery:${TAG -latest}
     environment:
       # set to your production settings file
-      - DJANGO_SETTINGS_MODULE config.production_settings
+      - DJANGO_SETTINGS_MODULE=config.production_settings
     command: >
       sh -c "celery -A config worker --loglevel=info --max-tasks-per-child=1 --concurrency=4"
     depends_on:
