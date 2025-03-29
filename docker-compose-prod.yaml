@@ -33,7 +33,7 @@ services:
       dockerfile: Dockerfile
     image: ${REGISTRY_URL:-localhost}/imageassistant_django:${TAG:-latest}
     deploy:
-      replicas: 1
+      replicas: 2
       update_config:
         order: start-first    # Start new container before stopping old one
         parallelism: 1        # How many containers to update at once
