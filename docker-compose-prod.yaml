@@ -49,6 +49,7 @@ services:
       - static:/usr/src/imageassistant/imageassistant/config/static/
     ports:
       - 8084:8084
+    network_mode: "host"
     networks:
       - imageassistant-network
     depends_on:
