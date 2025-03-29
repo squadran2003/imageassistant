@@ -17,13 +17,10 @@ COPY pyproject.toml poetry.lock ./
 
 
 # install open cv for debian
-RUN apt-get update -y || (apt-get clean && apt-get update -y) && \
-    apt-get install -y --no-install-recommends libgl1-mesa-glx && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y libgl1-mesa-glx && apt-get clean
 
 
-RUN pip install "poetry==2.0.0" \
+RUN pip install poetry \
     && pip --version
 
 
