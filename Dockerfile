@@ -23,7 +23,7 @@ RUN apt-get update -y || (apt-get clean && apt-get update -y) && \
     rm -rf /var/lib/apt/lists/*
 
 
-RUN pip install poetry \
+RUN pip install "poetry==2.0.0" \
     && pip --version
 
 
