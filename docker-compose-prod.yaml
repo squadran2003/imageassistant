@@ -7,8 +7,15 @@ services:
     ports:
       - 443:443
       - 80:80
-    depends_on:
-      - django
+    deploy:
+      replicas: 2
+      update_config:
+        order: start-first
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+      restart_policy:
+        condition: any
     networks:
       - imageassistant-network
     volumes:

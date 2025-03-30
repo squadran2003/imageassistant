@@ -3,12 +3,6 @@
 {% load static %}
 
 {% partialdef prompt-form %}
-<div class="bg-white rounded-lg shadow-md p-6">
-    <h2 class="text-xl font-semibold text-gray-900 mb-4">Create Your AI Image</h2>
-    
-    {% if download_limit_exceeded and not shown %}
-        {% partial download-count-error %}
-    {% endif %}
     
     {% if trigger %}
         <form hx-post="{{post_url}}" hx-target={{target}} hx-trigger={{trigger}}
@@ -66,7 +60,6 @@
                 </button>
             </div>
         </form>
-</div>
 {% endpartialdef %}
 
 {% partialdef stripe-checkout-form %}
@@ -208,9 +201,10 @@
     <h1 class="text-2xl font-bold text-gray-900 mb-6">Create AI-Generated Image</h1>
     
     <div id="content" class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-        <div>
-            {% csrf_token %}
-            {% partial prompt-form %}
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Create Your AI Image</h2>
+                {% csrf_token %}
+                {% partial prompt-form %}
         </div>
         <div id="image-container">
             {% partial img-svg %}
