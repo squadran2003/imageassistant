@@ -403,9 +403,11 @@ def search(request):
     images = Image.objects.filter(combined_q)
     if not images:
         return render(request, 'index.html#images', {
-            'no_search_images': True
+            'no_search_images': True,
+            'queried': True, 'query': query
         })
     return render(request, 'index.html#searched-images', {
-            'images': images, 'no_search_images': False
+            'images': images, 'no_search_images': True,
+            'queried': True, 'query': query
         }
     )

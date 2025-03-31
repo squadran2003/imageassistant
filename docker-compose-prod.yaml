@@ -23,7 +23,7 @@ services:
       - static:/home/ubuntu/app/imageassistant/imageassistant/static/
       - /etc/letsencrypt:/etc/letsencrypt
     deploy:
-      replicas: 1
+      replicas: 2
       restart_policy:
         condition: any
   redis-imageassistant:
@@ -63,8 +63,6 @@ services:
       - 8084:8084
     networks:
       - imageassistant-network
-    depends_on:
-      - redis-imageassistant
   celery-imageassistant:
     build:
       context: .
@@ -84,7 +82,7 @@ services:
     networks:
       - imageassistant-network
     deploy:
-      replicas: 1
+      replicas: 2
       restart_policy:
         condition: any
 networks:
