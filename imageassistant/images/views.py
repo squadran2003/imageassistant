@@ -411,3 +411,9 @@ def search(request):
             'queried': True, 'query': query
         }
     )
+
+@login_required(login_url='custom_users:login')
+def remove_image_background(request):
+    return render(request, 'images/remove_background.html', {
+        }
+    )

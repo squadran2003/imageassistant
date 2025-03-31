@@ -14,6 +14,7 @@ urlpatterns = [
     path('create/checkout/session/<int:service_id>/<int:image_id>/<str:prompt>/', views.create_checkout_session, name='create_checkout_session'),
     path('check/checkout/status/', views.session_status, name='stripe_session_status'),
     path('generate/image/', views.generate_image, name='generate_image'),
+    path('remove/image/background/', views.remove_image_background, name='remove_image_background'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('search/', views.search, name='search'),
 ]
