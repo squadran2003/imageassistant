@@ -1,25 +1,23 @@
-# Image Manipulation App
+# AI Image Manipulation App
 
 ## Overview
 
-This web application allows users to perform various image manipulation tasks, such as removing backgrounds and converting images to black and white. Users can upload images and trigger different processing services directly from the homepage.
+This web application allows users to perform various image manipulation tasks, creating images from prompts, removing backgrounds, enhancing images and many more. 
 
 ### Technologies Used
 
 - **Backend**: Django, HTMX, Celery, AWS Lambda
-- **Frontend**: Materialize CSS framework
+- **Frontend**: Tailwind
 - **Database**: PostgreSQL
 - **Task Queue**: Celery
 - **Deployment**: Docker, AWS (for Lambda and S3)
 
 ## Features
 
-- **Image Upload**: Users can easily upload images.
+- **Image Creation**: Users can easily create images from prompts.
 - **Image Processing Options**: 
   - Remove Background
-  - Convert to Black and White
-  - Resize Image
-  - Apply Filters
+  - enhance images
 - **Asynchronous Processing**: Tasks are handled in the background using Celery.
 - **AWS Integration**: Offloads specific image processing tasks to AWS Lambda and stores images in AWS S3.
 - **Responsive UI**: Built using the Materialize CSS framework.
@@ -89,7 +87,6 @@ Contributions are welcome! If you have suggestions or improvements, please feel 
 
 ## License
 
-This project is licensed under the MIT License. See the LICENSE file for details.
+This software is proprietary and confidential
 
-ffmpeg -i input.mp4 -vcodec libx264 -crf 23 output.mp4
 
