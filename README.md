@@ -81,9 +81,6 @@ To run this application, you only need to have **Docker** and **Docker Compose**
    - **Convert to Black and White**: Converts the uploaded image to grayscale.
    - **Resize Image**: Resizes the image based on user input.
 
-## Mentions
-
-This project utilizes the [rembg](https://github.com/danielgatis/rembg) library for background removal, created by **Daniel Gatis**. Special thanks to him for his excellent work on this tool, which significantly enhances the image processing capabilities of this application.
 
 
 ## Contributing
