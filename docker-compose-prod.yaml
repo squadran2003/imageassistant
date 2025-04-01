@@ -62,9 +62,6 @@ services:
       - 8084:8084
     networks:
       - imageassistant-network
-    depends_on:
-      - celery-imageassistant
-      - redis-imageassistant
   celery-imageassistant:
     build:
       context: .
