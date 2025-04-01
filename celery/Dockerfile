@@ -5,10 +5,10 @@ FROM python:3.10-slim-bullseye
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# Copy project files
-COPY . .
+
 # change <botify> to your project name
 WORKDIR /usr/src/imageassistant/
+
 
 
 
@@ -22,5 +22,8 @@ RUN pip install poetry
 
 RUN poetry config virtualenvs.create false && poetry install --only main --no-interaction --no-ansi --no-root
 # set the working directory to where the manage.py file is located
-WORKDIR /usr/src/imageassistant/
+
+# Copy project files
+COPY ./ /usr/src/imageassistant/
+WORKDIR /usr/src/imageassistant/imageassistant/
 
