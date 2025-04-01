@@ -28,9 +28,22 @@ jobs:
             ssh -i ~/.ssh/id_rsa ubuntu@"${{ secrets.SERVER_ADDRESS }}" "
                 echo 'Starting deployment on server...'
 
-                # Basic cleanup before building
-                echo 'Cleaning up Docker resources...'
-                sudo docker image prune -f  # Only removes dangling images
+                # Enhanced cleanup before building
+                echo 'Performing thorough Docker cleanup...'
+
+                # Remove old stopped containers
+                echo 'Removing stopped containers...'
+                sudo docker container prune -f
+
+                # Remove old service tasks 
+                echo 'Cleaning up old service tasks...'
+                for service in $(sudo docker service ls --filter name=imageassistant -q); do
+                  sudo docker service update --force $service
+                done
+
+                # Prune unused images (only those not used by any container)
+                echo 'Removing unused images...'
+                sudo docker image prune -f
 
                 # Check if directory exists
                 if [ ! -d /home/ubuntu/imageassistant ]; then
