@@ -22,10 +22,6 @@ services:
       # change to your static path
       - static:/home/ubuntu/app/imageassistant/imageassistant/static/
       - /etc/letsencrypt:/etc/letsencrypt
-    deploy:
-      replicas: 2
-      restart_policy:
-        condition: any
   redis-imageassistant:
     image: redis:alpine
     ports:
