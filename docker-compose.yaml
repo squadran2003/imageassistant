@@ -13,7 +13,7 @@ services:
     restart: always
     build:
       context: ./
-      dockerfile: Dockerfile
+      dockerfile: ./celery/Dockerfile
       
     user: ${CURRENT_UID}
     environment:

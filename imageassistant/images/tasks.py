@@ -279,3 +279,8 @@ def delete(image_id):
         if os.path.isfile(file.image.path):
             os.remove(file.image.path)
     file.delete()
+
+
+@shared_task
+def ping_task():
+    return "pong"
