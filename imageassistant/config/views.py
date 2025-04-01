@@ -97,3 +97,16 @@ def stripe_checkout(request):
         request, 'stripe/checkout.html',
         {'strip_public_key': settings.STRIPE_PUBLISHED_KEY}
     )
+
+
+def health_check(request):
+    try:
+        # Check if the database is reachable
+        from django.db import connection
+        connection.ensure_connection()
+        # Check if the cache is reachable
+        from django.core.cache import cache
+        from celery import shared_task
+        return HttpResponse("OK")
+    except Exception as e:
+        return HttpResponse(f"Error: {str(e)}", status=500)
