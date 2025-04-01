@@ -413,7 +413,50 @@ def search(request):
     )
 
 @login_required(login_url='custom_users:login')
-def remove_image_background(request):
+def remove_image_background(request, image_id=None):
+    error = False
+    if request.method == 'POST':
+        form = ImageUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            form = form.save(commit=False)
+            form.user = request.user
+            form.save()
+            # process the image
+            remove_background.delay(form.id)
+            poll_url = reverse(
+                'images:remove_image_background_with_id', args=[form.id]
+            )
+            print("poll_url", poll_url)
+            return render(
+                request, 'images/remove_background.html#processing-image',
+                {'poll_url': poll_url}
+            )
+        else:
+            error = True
+            return render(request, 'images/remove_background.html#upload-form', {
+                'form': form, 'error': error,
+                'post_url': reverse('images:remove_image_background'),
+                'target': '#content',
+                'trigger': ''
+            })
+    if image_id:
+        # if an image id is passed, then get the image and process it
+        image = Image.objects.get(pk=image_id)
+        poll_url = reverse(
+                'images:remove_image_background_with_id', args=[image_id]
+            )
+        if image.processed:
+            return render(request, 'images/remove_background.html#processed-image', {
+                'image': image,
+            }, status=200)
+        else:
+            return render(
+                request, 'images/remove_background.html#processing-image',
+                {'poll_url': poll_url}
+            )
     return render(request, 'images/remove_background.html', {
+        'post_url': reverse('images:remove_image_background'),
+        'target': '#content',
+        'trigger': '',
         }
     )
