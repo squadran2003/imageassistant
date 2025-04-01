@@ -71,7 +71,7 @@ services:
       # set to your production settings file
       - DJANGO_SETTINGS_MODULE=config.production_settings
     command: >
-      sh -c "celery -A config worker --loglevel=info --max-tasks-per-child=1"
+      sh -c "celery -A config worker --loglevel=info --max-tasks-per-child=1 --concurrency=2"
     depends_on:
       - redis-imageassistant
     
