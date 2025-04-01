@@ -33,7 +33,7 @@ services:
   django:
     build:
       context: ./
-      dockerfile: Dockerfile
+      dockerfile: ./celery/Dockerfile
     image: ${REGISTRY_URL:-localhost}/imageassistant_django:${TAG:-latest}
     deploy:
       replicas: 2
