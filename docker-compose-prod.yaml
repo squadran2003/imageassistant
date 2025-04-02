@@ -7,15 +7,6 @@ services:
     ports:
       - 443:443
       - 80:80
-    deploy:
-      replicas: 2
-      update_config:
-        order: start-first
-        parallelism: 1
-        delay: 10s
-        failure_action: rollback
-      restart_policy:
-        condition: any
     networks:
       - imageassistant-network
     volumes:
@@ -33,7 +24,7 @@ services:
   django:
     build:
       context: ./
-      dockerfile: ./celery/Dockerfile
+      dockerfile: ./production_docker/Dockerfile
     image: ${REGISTRY_URL:-localhost}/imageassistant_django:${TAG:-latest}
     deploy:
       replicas: 2
@@ -44,12 +35,12 @@ services:
         failure_action: rollback  # Auto-rollback if update fails
       restart_policy:
         condition: any
-    # healthcheck:
-    #   test: ["CMD", "curl", "-f", "http://localhost:8084/health/ || exit 1"]
-    #   interval: 5s
-    #   timeout: 3s
-    #   retries: 5
-    #   start_period: 30s
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8084/health/ || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 100s
     environment:
       # set to your production settings file
       - DJANGO_SETTINGS_MODULE=config.production_settings
@@ -65,7 +56,7 @@ services:
   celery-imageassistant:
     build:
       context: .
-      dockerfile: ./celery/Dockerfile
+      dockerfile: ./production_docker/Dockerfile
     image: ${REGISTRY_URL:-localhost}/imageassistant_celery:${TAG:-latest}
     environment:
       # set to your production settings file
