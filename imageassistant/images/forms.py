@@ -16,7 +16,7 @@ class ImageUploadForm(forms.ModelForm):
         if image.size > 1024 * 1024 * 5:
             raise forms.ValidationError('Image file too large ( > 1mb )')
         endwith = image.name.split('.')[-1]
-        if endwith not in ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG']:
+        if endwith not in ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG', 'webp', 'WEBP']:
             raise forms.ValidationError('Image file type is not supported')
         if len(image.name) > 450:
             raise forms.ValidationError("Image file name too long")

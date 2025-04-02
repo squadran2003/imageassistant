@@ -13,7 +13,7 @@ services:
     restart: always
     build:
       context: ./
-      dockerfile: ./celery/Dockerfile
+      dockerfile: ./Dockerfile
       
     user: ${CURRENT_UID}
     environment:
@@ -38,7 +38,7 @@ services:
   celery-imageassistant:
     build:
       context: .
-      dockerfile: ./celery/Dockerfile
+      dockerfile: ./Dockerfile
     volumes:
       # change to your base directory
       - ./:/usr/src/imageassistant/

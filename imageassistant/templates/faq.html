@@ -53,6 +53,21 @@
                 <p class="text-gray-600">You can download as many as you like. This will likely change to a token system.</p>
             </div>
         </div>
+         <!-- FAQ Item 4 -->
+         <div class="bg-white rounded-lg shadow-sm border border-gray-200" x-data="{ open: false }">
+            <button @click="open = !open" class="w-full px-6 py-4 text-left focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 rounded-lg flex justify-between items-center">
+                <span class="font-medium text-gray-900">Why doesnt the backrgound removal service work?</span>
+                <svg x-show="!open" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                <svg x-show="open" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 12H6" />
+                </svg>
+            </button>
+            <div x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" class="px-6 pb-4 mt-2">
+                <p class="text-gray-600">There are instances when the AI model is unable to remove the background, when this happens we just return the original image</p>
+            </div>
+        </div>
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js" defer></script>

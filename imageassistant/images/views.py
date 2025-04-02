@@ -433,6 +433,7 @@ def remove_image_background(request, image_id=None):
             )
         else:
             error = True
+            print(form.errors)
             return render(request, 'images/remove_background.html#upload-form', {
                 'form': form, 'error': error,
                 'post_url': reverse('images:remove_image_background'),
