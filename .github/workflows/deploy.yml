@@ -67,8 +67,8 @@ jobs:
                 export TAG=$(date +%Y%m%d%H%M%S)
                 echo \"Using image tag: \$TAG\"
 
-                echo 'Building fresh images...'
-                sudo -E docker-compose -f docker-compose-prod.yaml build --no-cache
+                echo 'Building fresh images of django and celery...'
+                sudo -E docker-compose -f docker-compose-prod.yaml build --no-cache django celery-imageassistant
 
                 # Initialize on your main server
                 sudo docker swarm init || true
