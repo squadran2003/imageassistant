@@ -36,7 +36,7 @@ services:
       restart_policy:
         condition: any
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8084/health/ || exit 1"]
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8084/health/')"]
       interval: 5s
       timeout: 3s
       retries: 5
