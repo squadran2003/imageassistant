@@ -54,7 +54,7 @@ jobs:
                 echo \"Using image tag: \$TAG\"
 
                 echo 'Building fresh images of django and celery...'
-                sudo -E docker-compose -f docker-compose-prod.yaml build django celery-imageassistant
+                sudo -E docker-compose -f docker-compose-prod.yaml build
 
                 # Initialize on your main server
                 sudo docker swarm init || true
