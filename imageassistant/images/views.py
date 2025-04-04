@@ -426,20 +426,17 @@ def remove_image_background(request, image_id=None):
             poll_url = reverse(
                 'images:remove_image_background_with_id', args=[form.id]
             )
-            print("poll_url", poll_url)
             return render(
                 request, 'images/remove_background.html#processing-image',
                 {'poll_url': poll_url}
             )
         else:
-            error = True
-            print(form.errors)
             return render(request, 'images/remove_background.html#upload-form', {
                 'form': form, 'error': error,
                 'post_url': reverse('images:remove_image_background'),
                 'target': '#content',
                 'trigger': ''
-            })
+            }, status=400)
     if image_id:
         # if an image id is passed, then get the image and process it
         image = Image.objects.get(pk=image_id)
@@ -447,6 +444,7 @@ def remove_image_background(request, image_id=None):
                 'images:remove_image_background_with_id', args=[image_id]
             )
         if image.processed:
+            print("Image has been processed")
             return render(request, 'images/remove_background.html#processed-image', {
                 'image': image,
             }, status=200)

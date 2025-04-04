@@ -1,11 +1,12 @@
 
-from django.test import TestCase
+from django.test import TestCase, Client
 from django.urls import reverse
-from .views import generate_image
+from django.core.files.uploadedfile import SimpleUploadedFile
 from .models import Image, Service
-from freezegun import freeze_time
-from datetime import datetime
+from images.forms import ImageUploadForm
+from unittest.mock import patch
 from users.models import CustomUser
+
 
 
 class CreateImageViewTests(TestCase):
@@ -65,7 +66,6 @@ class CreateImageViewTests(TestCase):
         data['bot_field'] = ''
         response = self.client.post(self.url, data)
         self.assertEqual(response.status_code, 400)
-    
 
     def test_create_image_success_gets_form_that_fires_on_load(self):
         session = self.client.session
@@ -76,3 +76,143 @@ class CreateImageViewTests(TestCase):
         data['bot_field'] = ''
         response = self.client.post(self.url, data)
         self.assertEqual(response.status_code, 200)
+
+
+class RemoveImageBackgroundViewTest(TestCase):
+    def setUp(self):
+        # Create a test user
+        self.user =CustomUser.objects.create_user(
+            email='testuser@example.com',
+            password='testpassword123',
+            first_name='Test',
+            last_name='User'
+        )
+
+        # Create a test image
+        self.test_image_content = b'GIF87a\x01\x00\x01\x00\x80\x01\x00\x00\x00\x00ccc,\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02D\x01\x00;'
+        self.test_image = SimpleUploadedFile(
+            name='test_image.gif',
+            content=self.test_image_content,
+            content_type='image/gif'
+        )
+
+        # Create processed and unprocessed images in the database
+        self.processed_image = Image.objects.create(
+            user=self.user,
+            image='test_processed.jpg',
+            processed=True
+        )
+
+        self.unprocessed_image = Image.objects.create(
+            user=self.user,
+            image='test_unprocessed.jpg',
+            processed=False
+        )
+
+        # Create the client and URL
+        self.client = Client()
+        self.url = reverse('images:remove_image_background')
+        self.processed_url = reverse('images:remove_image_background_with_id', args=[self.processed_image.id])
+        self.unprocessed_url = reverse('images:remove_image_background_with_id', args=[self.unprocessed_image.id])
+
+    def test_login_required(self):
+        """Test that the view requires login"""
+        response = self.client.get(self.url)
+        self.assertRedirects(
+            response,
+            f"{reverse('custom_users:login')}?next={self.url}"
+        )
+
+    def test_get_request_shows_upload_form(self):
+        """Test that GET request shows the upload form"""
+        self.client.login(email='testuser@example.com', password='testpassword123')
+        response = self.client.get(self.url)
+        
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'images/remove_background.html')
+        self.assertIn('post_url', response.context)
+        self.assertEqual(response.context['post_url'], self.url)
+
+    def test_get_with_processed_image_id(self):
+        """Test that GET with a processed image ID shows the processed image"""
+        self.client.login(email='testuser@example.com', password='testpassword123')
+        response = self.client.get(self.processed_url)
+        # Convert response to string for easier searching
+        response_content = response.content.decode('utf-8')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(str(self.processed_image.id).encode(), response.content)
+        self.assertIn(b'<img', response.content)
+        self.assertRegex(
+            response_content,
+            r'<a[^>]*href="[^"]*"[^>]*download="[^"]*"'
+        )
+
+    def test_get_with_unprocessed_image_id(self):
+        """Test that GET with an unprocessed image ID shows the processing view"""
+        self.client.login(email='testuser@example.com', password='testpassword123')
+        response = self.client.get(self.unprocessed_url)
+        response_content = response.content.decode('utf-8')
+        self.assertEqual(response.status_code, 200)
+        import re
+        self.assertRegex(
+            response_content,
+            r'<div[^>]*hx-get=["\']{0}["\'][^>]*>'.format(re.escape(self.unprocessed_url))
+        )
+
+
+    @patch('images.views.remove_background.delay')
+    def test_post_valid_form(self, mock_task):
+        """Test POST with valid form data"""
+        self.client.login(email='testuser@example.com', password='testpassword123')
+        import tempfile
+        from PIL import Image as PILImage
+        test_image = None
+        with tempfile.NamedTemporaryFile(suffix='.jpg') as img_file:
+            image = PILImage.new('RGB', (100, 100), color='red')
+            image.save(img_file, format='JPEG')
+            img_file.seek(0)
+            test_image = SimpleUploadedFile(
+                    name='test_image.jpg',
+                    content=img_file.read(),
+                    content_type='image/jpeg'
+            )
+
+        # Create form data with an image
+        form = ImageUploadForm(data={'image': test_image})
+        response = self.client.post(self.url, data=form.data)
+        # Check response
+        self.assertEqual(response.status_code, 200)
+        response_content = response.content.decode('utf-8')
+        import re
+
+        # Check for any hx-get attribute pointing to a background removal URL
+        self.assertRegex(
+            response_content,
+            r'<div[^>]*hx-get=["\'][^"\']*remove/image/background/\d+/["\'][^>]*>'
+        )
+
+        # or by filtering on the image name
+        self.assertTrue(Image.objects.exists())
+
+        # Method 1: Get most recent image
+        created_image = Image.objects.latest('created')
+
+        # Method 2: Filter by image filename (alternative)
+        # created_image = Image.objects.filter(image__contains='test_image.jpg').first()
+
+        # Check that the task was called with the new image ID
+        mock_task.assert_called_once_with(created_image.id)
+
+        # Additional check: Verify the exact URL of the new image is in the response
+        new_url = reverse('images:remove_image_background_with_id', args=[created_image.id])
+        self.assertIn(new_url, response_content)
+
+    def test_post_invalid_form(self):
+        """Test POST with invalid form data"""
+        self.client.login(email='testuser@example.com', password='testpassword123')
+
+        # Submit an empty form (should be invalid)
+        response = self.client.post(self.url, data={})
+
+        # Check response
+        self.assertEqual(response.status_code, 400)
