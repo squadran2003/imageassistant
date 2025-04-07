@@ -9,6 +9,7 @@ __pycache__/
 # Distribution / packaging
 .Python
 imageassistant/media/video/
+CACHE/
 build/
 node_modules/
 develop-eggs/

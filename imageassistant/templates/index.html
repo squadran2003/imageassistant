@@ -185,7 +185,7 @@
             <p class="text-xl md:text-1xl font-medium text-white opacity-90 max-w-3xl mx-auto">
                 Platform that helps you generate, enhance, and edit images using AI.
             </p>
-            
+            {% include 'searchbox.html' %}
             {% if not user.is_authenticated %}
                 <div class="mt-8">
                     <a href="{% url 'custom_users:signup' %}" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-full shadow-md text-indigo-700 bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white transition-colors duration-200">

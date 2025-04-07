@@ -27,7 +27,7 @@
 
 {% partialdef signup-form %}
     {% partial signup-success %}
-    <form id="signup-form" hx-post="{% url 'custom_users:signup' %}" hx-target="#signup-form-container" class="space-y-4" hx-swap="innerHTML">
+    <form id="signup-form" hx-post="{% url 'custom_users:signup' %}" hx-target="#signup-form-container" class="space-y-4" hx-swap="innerHTML" hx-boost="true" method="POST">
         {% csrf_token %}
         {% for field in form %}
             <div class="mb-4">

@@ -1,21 +1,16 @@
-{% if user.is_authenticated %}
-<div class="relative" id="drop-down-link">
-{% else %}
-<div class="relative ml-auto" id="drop-down-link">
-{% endif %}
-    <form hx-get="{% url 'images:search' %}" hx-target="#main-content" hx-swap="innerHTML" class="flex items-center">
-        <div class="relative flex items-center">
+<div class="w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mt-2" id="drop-down-link">
+    <form hx-get="{% url 'images:search' %}" hx-target="#main-content" hx-swap="innerHTML" class="flex items-center justify-center" hx-boost="true" method="GET">
+        <div class="relative flex items-center w-full">
             <input type="text" name="q" placeholder="Search for images..." 
-                   class="pl-10 pr-16 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white text-gray-700 text-sm w-64 md:w-80 lg:w-96 transition-all duration-200" 
+                   class="pl-10 pr-16 py-4 rounded-full border-2 border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white text-gray-700 text-base w-full shadow-lg transition-all duration-200 text-left" 
                    aria-label="Search images" required>
-            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div class="absolute inset-y-0 right-0 flex items-center pr-10 pointer-events-none p-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
             </div>
-            <button type="submit" class="absolute right-1 inset-y-1 bg-indigo-600 hover:bg-indigo-700 px-3 py-1 rounded-md transition-colors duration-200">
-                <span class="text-white text-xs font-medium">Search</span>
-            </button>
+            <!-- <button type="submit" class="absolute right-1 inset-y-1.5 bg-indigo-600 hover:bg-indigo-700 px-7 py-5 rounded-full shadow-md transition-colors duration-200">
+            </button> -->
         </div>
     </form>
 </div>

@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sitemaps',
+    'compressor',
     "template_partials",
     'rest_framework',
     'storages',
@@ -151,6 +152,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
+COMPRESS_ROOT = BASE_DIR / 'assets'
+
+COMPRESS_ENABLED = True
+
 STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [
@@ -198,9 +203,9 @@ REST_FRAMEWORK = {
 }
 
 STATICFILES_FINDERS = [
-    # Default finders
-    "django.contrib.staticfiles.finders.FileSystemFinder",
-    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder',
 ]
 CLOUDFRONT_DOMAIN = config('CLOUDFRONT_DOMAIN', os.environ.get('CLOUDFRONT_DOMAIN'))
 
