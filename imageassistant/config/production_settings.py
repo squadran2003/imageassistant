@@ -86,6 +86,10 @@ STATICFILES_LOCATION = 'static'
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3StaticStorage'
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 CLOUDFRONT_DOMAIN = SECRETS['CLOUDFRONT_DOMAIN']
+COMPRESS_URL = f"https://{CLOUDFRONT_DOMAIN}/static/"
+COMPRESS_STORAGE = 'storages.backends.s3boto3.S3StaticStorage'
+COMPRESS_ROOT = BASE_DIR / 'static'
+
 STATIC_HOST = CLOUDFRONT_DOMAIN
 STATIC_URL = "https://"+STATIC_HOST + "/static/"
 MEDIA_URL = "https://"+STATIC_HOST + "/media/"
