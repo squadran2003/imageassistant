@@ -544,6 +544,22 @@ files = [
 djangorestframework = "*"
 
 [[package]]
+name = "django-s3-storage"
+version = "0.14.0"
+description = "Django Amazon S3 file storage."
+optional = false
+python-versions = "*"
+groups = ["main"]
+files = [
+    {file = "django-s3-storage-0.14.0.tar.gz", hash = "sha256:1afdef915a1a5e5d3d46247faa4ee0ec760e5f9ab9e431856117de11a4a9ced5"},
+    {file = "django_s3_storage-0.14.0-py3-none-any.whl", hash = "sha256:8585565db2dc39c5d10977f36003032acbfc81d20117c4be7d9430dbdc60dbbb"},
+]
+
+[package.dependencies]
+boto3 = ">=1.4.4,<2"
+django = ">=3.2"
+
+[[package]]
 name = "django-sekizai"
 version = "4.1.0"
 description = "Django Sekizai"
@@ -1514,4 +1530,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.10"
-content-hash = "10b2036614f091fe68160cbd7dbedad500d1881d0d5de06b2b3ddd5c9a5d2b50"
+content-hash = "7108da07cbae79552ba62fc083b83d355f289571536eaa2c735536385bbd4a8b"

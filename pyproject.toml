@@ -32,6 +32,7 @@ django-compressor = "^4.5.1"
 django-template-partials = "^24.4"
 django-cms = "^4.1.4"
 freezegun = "^1.5.1"
+django-s3-storage = "^0.14.0"
 
 
 
