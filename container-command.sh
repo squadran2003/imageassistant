@@ -13,4 +13,5 @@ docker exec -it $container_name $command
 # ./container-command.sh imageassistant_django_1 "python manage.py startapp customusers"
 # CURRENT_UID=$(id -u):$(id -g) docker-compose up
 # ./container-command.sh imageassistant_django_1 "sh"
+#sudo certbot certonly -d imageassistant.io
 

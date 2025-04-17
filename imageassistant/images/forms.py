@@ -172,12 +172,9 @@ class PromptForm(forms.Form):
 
     def clean_prompt(self):
         prompt = self.cleaned_data.get('prompt', None)
-        if len(prompt) > 350:
-            raise forms.ValidationError('Prompt must be less than 20 characters')
-        if prompt is None or prompt == '':
-            raise forms.ValidationError('Prompt is required')
-        if len(prompt) > 350:
-            raise forms.ValidationError('Prompt must be less than 20 characters')
+        print(len(prompt))
+        if len(prompt) < 10:
+            raise forms.ValidationError('Prompt must be more than 10 characters')
         # check for xss javascript
         if '<script>' in prompt:
             raise forms.ValidationError('Invalid request')

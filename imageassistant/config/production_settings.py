@@ -82,7 +82,6 @@ AWS_S3_OBJECT_PARAMETERS = {
 
 }
 AWS_LOCATION = 'static'
-STATICFILES_STORAGE = 'config.storage_backends.StaticStorage'
 DEFAULT_FILE_STORAGE = 'config.storage_backends.MediaStorage'
 CLOUDFRONT_DOMAIN = SECRETS['CLOUDFRONT_DOMAIN']
 STATIC_HOST = CLOUDFRONT_DOMAIN

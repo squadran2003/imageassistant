@@ -209,7 +209,7 @@ STATICFILES_FINDERS = [
 ]
 CLOUDFRONT_DOMAIN = config('CLOUDFRONT_DOMAIN', os.environ.get('CLOUDFRONT_DOMAIN'))
 
-STATICFILES_STORAGE = "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
 STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY', os.environ.get('STRIPE_SECRET_KEY'))
 DOMAIN = "http://localhost:8084"

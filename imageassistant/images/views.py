@@ -9,6 +9,7 @@ from django.http import JsonResponse
 from images.models import Image, Service
 from images.forms   import ImageUploadForm, ImageResizeForm, CroppingForm, PromptForm as DjangoPromptForm
 from images.forms import PromptForm as DjangoPromptForm
+from django.template.response import TemplateResponse
 from PIL import Image as PILImage
 from datetime import datetime
 from .tasks import (
@@ -161,7 +162,6 @@ def service(request, service_id, image_id):
                 enhance_image.delay(image_id, prompt)
     elif service_id == 7:
         print("Creating image from prompt")
-        print(request.method)
         if request.method == 'POST':
             form = DjangoPromptForm(request.POST)
             if form.is_valid():
@@ -186,19 +186,22 @@ def process_service(request, service_id, image_id):
     file.payment_made = payment_made
     file.save()
     # create_image.html#content'
-    if not file.processed:
-        poll_url = reverse('images:process_service', args=[service_id, image_id])
-        return render(request, 'images/generate_image.html#img-svg-poll', {'poll_url': poll_url, 'image': file})
-    else:
-        print("Image has been processed")
+    if file.processed:
         return render(request, 'images/generate_image.html#img-processed', {
                 'image': file,
                 'service_id': service_id,
                 'cost': service.cost,
                 'free': service.free,
                 'payment_made': file.payment_made
-            }
+            }, status=286
         )
+    else:
+        poll_url = reverse('images:process_service', args=[service_id, image_id])
+        return TemplateResponse(request, 'images/generate_image.html#partial-spinner', {
+            'poll_url': poll_url,
+            'trigger': 'load delay:3s',
+            'spinner_class': 'animate-spin h-16 w-16 text-indigo-600 mt-10 text-center'
+        })
 
 
 # def resize_form_html(request, image_id):
@@ -357,32 +360,34 @@ def generate_image(request):
             image='dummy.png', user=request.user
         )
         if form.is_valid():
-            template = 'images/generate_image.html#prompt-form'
-            redirect_url = reverse('images:service', args=[7, image.id])
+            template = 'images/generate_image.html#content'
             # add in the aspect ratio the user has selected
             image.aspect_ratio = form.cleaned_data['aspect_ratio']
             image.prompt = form.cleaned_data['prompt']
             image.save()
-            return render(
-                request, template, {
-                    'form': form, 'post_url': redirect_url,
-                    'target': '#image-container', 'trigger': 'load'
-                },
-                status=200
-            )
+            prompt = form.cleaned_data['prompt']
+            create_image_from_prompt.delay(image.id, prompt)
+            poll_url = reverse('images:process_service', args=[7, image.id])
+            return TemplateResponse(request, template, {
+                'poll_url': poll_url,
+                'form': form,
+                'trigger': 'every 3s',
+                'spinner_class': 'animate-spin h-16 w-16 text-indigo-600 mt-4 text-center'
+            })
         else:
-            template = 'images/generate_image.html#prompt-form'
+            template = 'images/generate_image.html#content'
             form.fields['prompt'].widget.attrs['class'] = 'shadow appearance-none border rounded mt-2 min-h-20 mb-2 p-2 w-full text-[#1e1a1a] focus:outline-none focus:shadow-outline required:border-red-500'
-            return render(request, template, {'form': form, 'post_url': post_url, 'target':'this', 'trigger': None}, status=400)
+            return render(request, template, {
+                'form': form, 'post_url': post_url,
+                'spinner_class': 'animate-spin h-16 w-16 text-indigo-600 mt-4 htmx-indicator'
+            }, status=400)
     else:
         template = 'images/generate_image.html'
-        return render(
-            request, template,
-            {
-                'form': form, 'post_url': post_url, 'target': 'this', 'trigger': None,
-
-            }, status=200
-        )
+        return TemplateResponse(request, template, {
+            'form': form,
+            'post_url': post_url,
+            'spinner_class': 'animate-spin h-16 w-16 text-indigo-600 mt-4 htmx-indicator'
+        }, status=200)
 
 
 @login_required(login_url='custom_users:login')

@@ -1,0 +1,21 @@
+/* Make Google Sign-In button full width */
+.g_id_signin {
+    width: 100% !important;
+  }
+  
+  .g_id_signin > div,
+  .g_id_signin > div > iframe {
+    width: 100% !important;
+  }
+  
+  /* Customize button style - targets the button inside iframe */
+  /* This will only work with @keyframes trick to inject into iframe */
+  @keyframes injectStyles {
+    from { opacity: 0.9; }
+    to { opacity: 1; }
+  }
+  
+  /* Animation triggers style injection */
+  .g_id_signin {
+    animation: injectStyles 0.1s forwards;
+  }
