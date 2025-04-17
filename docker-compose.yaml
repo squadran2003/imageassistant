@@ -23,6 +23,7 @@ services:
     volumes:
       # change to your base directory
       - ./:/usr/src/imageassistant/
+      - static:/app/static/
     ports:
       - 8084:8084
     env_file:
