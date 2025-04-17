@@ -21,7 +21,7 @@ jobs:
           POSTGRES_DB:  ${{ secrets.POSTGRES_DB }}
           POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-      redis:
+      redis-imageassistant:
         image: redis
         ports:
           - 6379:6379
