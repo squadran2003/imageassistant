@@ -173,8 +173,8 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CELERY_BROKER_URL = "redis://redis-imageassistant:6379/0"
-CELERY_RESULT_BACKEND = "redis://redis-imageassistant:6379/0"
+CELERY_BROKER_URL = config("CELERY_BROKER_URL", "redis://redis-imageassistant:6379/0")
+CELERY_RESULT_BACKEND = config("CELERY_RESULT_BACKEND", "redis://redis-imageassistant:6379/0")
 CELERY_IGNORE_RESULT = True
 CELERY_ACCEPT_CONTENT = ["application/json"]
 CELERY_RESULT_SERIALIZER = "json"
