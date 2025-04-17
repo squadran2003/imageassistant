@@ -39,6 +39,19 @@ jobs:
       run: |
         pip install poetry
         poetry config virtualenvs.create false && poetry install  --no-interaction --no-ansi --no-root
+    - name: Start Celery Worker
+      env:
+        DJANGO_SETTINGS_MODULE: config.settings
+        SECRET_KEY: ${{ secrets.SECRET_KEY }}
+        REDIS_URL: "redis://localhost:6379/1"
+        DB_NAME: ${{ secrets.POSTGRES_DB }}
+        DB_USER: ${{ secrets.POSTGRES_USER }}
+        DB_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+        DB_HOST: localhost
+        DB_PORT: 5432
+      run: |
+        cd ./imageassistant
+        celery -A config worker --loglevel=INFO --detach
     - name: Run migrations and tests
       env:
         DB_NAME: ${{ secrets.POSTGRES_DB }}
