@@ -83,6 +83,7 @@ AWS_S3_OBJECT_PARAMETERS = {
 }
 AWS_LOCATION = 'static'
 DEFAULT_FILE_STORAGE = 'config.storage_backends.MediaStorage'
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 CLOUDFRONT_DOMAIN = SECRETS['CLOUDFRONT_DOMAIN']
 STATIC_HOST = CLOUDFRONT_DOMAIN
 STATIC_URL = "https://"+STATIC_HOST + "/static/"
