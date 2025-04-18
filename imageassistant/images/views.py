@@ -356,8 +356,13 @@ def generate_image(request):
         form = DjangoPromptForm(request.POST)
         # create a new image object where this response will be stored
         # create a dummy image object
-        image = Image.objects.create(
-            image='dummy.png', user=request.user
+        image, _ = Image.objects.get_or_create(
+            image='dummy.png', user=request.user,
+            defaults={
+                'created': datetime.now(),
+                'processed': False,
+            }
+
         )
         if form.is_valid():
             template = 'images/generate_image.html#content'

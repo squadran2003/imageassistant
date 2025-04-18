@@ -207,6 +207,23 @@ class RemoveImageBackgroundViewTest(TestCase):
         new_url = reverse('images:remove_image_background_with_id', args=[created_image.id])
         self.assertIn(new_url, response_content)
 
+    def test_post_invalid_form_if_not_english(self):
+        """Test that non-English prompts are rejected"""
+        self.client.login(email='testuser@example.com', password='testpassword123')
+
+        # Create form data with non-English text
+        non_english_data = {
+            'prompt': 'Кошка дерется с собакой',  # Russian: 'Cat fighting with a dog'
+            'confirm_your_a_human': 'on',
+            'bot_field': ''
+        }
+
+        # Submit the form with non-English prompt
+        response = self.client.post(self.url, data=non_english_data)
+
+        # Check that the response indicates an error
+        self.assertEqual(response.status_code, 400)
+
     def test_post_invalid_form(self):
         """Test POST with invalid form data"""
         self.client.login(email='testuser@example.com', password='testpassword123')

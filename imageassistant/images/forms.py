@@ -178,6 +178,9 @@ class PromptForm(forms.Form):
         # check for xss javascript
         if '<script>' in prompt:
             raise forms.ValidationError('Invalid request')
+        # you can only prompt in english
+        if not prompt.isascii():
+            raise forms.ValidationError('Invalid request! Only english is allowed')
         return prompt
 
     def clean_bot_field(self):
