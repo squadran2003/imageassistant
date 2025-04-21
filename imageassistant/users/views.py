@@ -12,6 +12,13 @@ import requests
 logger = logging.getLogger(__name__)
 
 
+def privacy_policy(request):
+    """
+        Render the privacy policy page
+    """
+    return render(request, 'users/privacy_policy.html')
+
+
 def signup(request):
     if request.method == 'POST':
         form = CustomUserForm(request.POST)
