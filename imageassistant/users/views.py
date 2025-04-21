@@ -79,7 +79,8 @@ def change_password(request):
             return render(
                 request, 'users/change_password.html#password-reset-form', {
                     'form': form,
-                    'target': '#change-password-form-container'
+                    'target': '#change-password-form-container',
+                    'success': False
                 }
             )
     return render(request, 'users/change_password.html', {'form': CustomPasswordResetForm()})
