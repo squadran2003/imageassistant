@@ -69,10 +69,10 @@ def change_password(request):
     if request.method == 'POST':
         form = CustomPasswordResetForm(request.POST)
         if form.is_valid():
-            # form.save(
-            #     domain_override=settings.EMAIL_DOMAIN, from_email="no-reply@imageassistant.io",
-            #     email_template_name="users/password_reset_email.html",
-            # )
+            form.save(
+                domain_override=settings.EMAIL_DOMAIN, from_email="no-reply@imageassistant.io",
+                email_template_name="users/password_reset_email.html",
+            )
             return render(
                 request, 'users/change_password.html#password-reset-form',{
                     'form': CustomPasswordResetForm(),
