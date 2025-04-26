@@ -4,6 +4,10 @@ from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin 
 from django.contrib.auth.models import BaseUserManager
 from django.db import models
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
+from django.conf import settings
+import boto3
 
 
 
@@ -69,3 +73,21 @@ class Credit(models.Model):
 
     def __str__(self):
         return f"{self.user.email} - {self.total}"
+
+
+@receiver(post_delete, sender=CustomUser)
+def delete_user(sender, instance, **kwargs):
+    if not settings.DEBUG:
+        s3 = boto3.client(
+            's3'
+        )
+        images = instance.image_set.all()
+        for image in images:
+            # delete the image from s3
+            try:
+                s3.delete_object(
+                    Bucket=settings.AWS_STORAGE_BUCKET_NAME,
+                    Key=f"media/celery/{image.image.name}"
+                )
+            except Exception as e:
+                print(f"Error deleting image {image.image.name}: {e}")
