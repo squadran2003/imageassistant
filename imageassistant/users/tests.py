@@ -1,5 +1,6 @@
 from django.test import TestCase, Client
 from django.urls import reverse
+from django.core.files.uploadedfile import SimpleUploadedFile
 from .forms import CustomUserForm
 from users.models import CustomUser
 
@@ -48,3 +49,22 @@ class SignupViewTests(TestCase):
     #     }
     #     response = self.client.post(self.url, data)
     #     self.assertEqual(response.status_code, 400)
+
+class TestDeleteUserView(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = CustomUser.objects.create_user(
+            email="test@test.com",
+            password="password123",
+            first_name="Test",
+            last_name="User"
+        )
+        self.client.login(
+            email="test@test.com",
+            password="password123"
+        )
+        self.url = reverse('custom_users:delete', args=[self.user.id])
+
+    def test_view_deletes_user(self):
+        self.client.get(reverse('custom_users:delete', args=[self.user.id]))
+        self.assertEqual(CustomUser.objects.filter(id=self.user.id).count(), 0)

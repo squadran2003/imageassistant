@@ -9,6 +9,9 @@ from django.views.decorators.csrf import csrf_exempt
 from users.models import CustomUser
 import logging
 import requests
+from django.contrib import messages
+from django.views.generic.edit import DeleteView
+from django.contrib.auth import logout as auth_logout
 logger = logging.getLogger(__name__)
 
 
@@ -170,3 +173,26 @@ def google_login(request):
         except Exception as e:
             logger.exception(f"Error in Google login: {str(e)}")
             return redirect('custom_users:login')
+        
+
+class DeleteUserView(DeleteView):
+    """
+        View to handle user deletion
+    """
+    model = CustomUser
+    template_name = 'base.html'
+
+    def get(self, request, *args, **kwargs):
+        """
+            Handle GET request to delete user
+        """
+        user = self.get_object()
+        if user == request.user:
+            # log user out
+            auth_logout(request)
+            user.delete()
+            messages.success(request, "Your account has been deleted successfully. All your data has been removed from our servers.")
+            return redirect('base')
+        else:
+            messages.error(request, "You cannot delete this account.")
+            return redirect('base')
