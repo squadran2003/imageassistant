@@ -1,6 +1,7 @@
 
 {% load static %}
 {% load compress %}
+{% load feature_flags %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -131,7 +132,8 @@
                             <div id="user-dropdown-links" class="absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 hidden">
                                 <div class="py-1">
                                     <!-- Credits Display only if feature flag is on -->
-                                     {% if user.featureflag_set.filter(name="show_credits").exists %}
+                                     {% has_feature_flag user "show_credits" as show_credits %}
+                                     {%if show_credits %}
                                         <div class="px-4 py-2 text-sm text-gray-700 border-b border-gray-100">
                                             <div class="flex items-center">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-indigo-500" viewBox="0 0 20 20" fill="currentColor">
