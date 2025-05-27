@@ -1,8 +1,9 @@
 from django.contrib import admin
-from users.models import CustomUser
+from users.models import CustomUser, Credit
 
 class CustomUserAdmin(admin.ModelAdmin):
     list_display = ('email', 'first_name', 'last_name', 'is_staff')
 
 
 admin.site.register(CustomUser, CustomUserAdmin)
+admin.site.register(Credit)
