@@ -75,6 +75,21 @@ class Credit(models.Model):
         return f"{self.user.email} - {self.total}"
 
 
+class FeatureFlag(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    enabled = models.BooleanField(default=False)
+    users = models.ManyToManyField(CustomUser, blank=True, help_text="Users for whom this flag is enabled. Leave empty for global.")
+
+    def is_active_for(self, user=None):
+        if self.enabled:
+            return True
+        if user and self.users.filter(pk=user.pk).exists():
+            return True
+        return False
+
+    def __str__(self):
+        return self.name
+
 @receiver(post_delete, sender=CustomUser)
 def delete_user(sender, instance, **kwargs):
     if not settings.DEBUG:

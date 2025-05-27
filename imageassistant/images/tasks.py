@@ -1,4 +1,4 @@
-from celery import shared_task
+from celery import shared_task, app
 from images.models import Image
 from PIL import Image as PILImage
 from urllib.request import urlopen
@@ -284,3 +284,14 @@ def delete(image_id):
 @shared_task
 def ping_task():
     return "pong"
+
+
+@shared_task()
+def remove_users():
+    """ removes users who have signed up but not used the site in 3 months"""
+    from users.models import CustomUser
+    three_months_ago = datetime.datetime.now() - datetime.timedelta(days=90)
+    users = CustomUser.objects.filter(date_joined__lt=three_months_ago, is_active=False)
+    for user in users:
+        user.delete()
+    return f"Removed {users.count()} inactive users"
