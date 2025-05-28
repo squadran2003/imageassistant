@@ -156,31 +156,40 @@
 
 {% partialdef img-processed %}
 <div id="image-container" class="{% if image %}bg-white{% else %}bg-[#F5F5F5]{% endif %} rounded-lg shadow-md p-6 min-h-[50vh] flex flex-col justify-between">
-    <div class="mb-6 flex justify-center">
-        {% if free %}
-            {% partial donwload-button %}
-        {% else %}
-            {% if payment_made %}
+    <!-- check if the image.ais_response json blob has data -->
+    {% if image.ai_response %}
+        <div class="p-4 bg-red-50 border border-red-200 rounded-md">
+            <p class="text-red-700"> 
+                Error generating image: {{ image.ai_response|safe }}
+            </p>
+        </div>
+    {% else %}
+        <div class="mb-6 flex justify-center">
+            {% if free %}
                 {% partial donwload-button %}
             {% else %}
-                <!-- ...existing download button code... -->
+                {% if payment_made %}
+                    {% partial donwload-button %}
+                {% else %}
+                    <!-- ...existing download button code... -->
+                {% endif %}
             {% endif %}
-        {% endif %}
-    </div>
-    <div class="w-full flex-grow flex items-center justify-center">
-        <div class="relative rounded-lg overflow-hidden shadow-lg border border-gray-200">
-            {% if image.alternate_url %}
-            <img src="{{ image.alternate_url }}" class="max-w-full h-auto" alt="Generated image" />
-            {% else %}
-            <img src="{{ image.image.url }}" class="max-w-full h-auto" alt="Generated image" />
-            {% endif %}
-            <div class="absolute top-0 right-0 mt-2 mr-2">
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium bg-indigo-100 text-indigo-800">
-                    AI Generated
-                </span>
+        </div>
+        <div class="w-full flex-grow flex items-center justify-center">
+            <div class="relative rounded-lg overflow-hidden shadow-lg border border-gray-200">
+                {% if image.alternate_url %}
+                <img src="{{ image.alternate_url }}" class="max-w-full h-auto" alt="Generated image" />
+                {% else %}
+                <img src="{{ image.image.url }}" class="max-w-full h-auto" alt="Generated image" />
+                {% endif %}
+                <div class="absolute top-0 right-0 mt-2 mr-2">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium bg-indigo-100 text-indigo-800">
+                        AI Generated
+                    </span>
+                </div>
             </div>
         </div>
-    </div>
+    {% endif %}
 </div>
 {% endpartialdef %}
 

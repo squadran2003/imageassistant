@@ -226,6 +226,7 @@ def enhance_image(image_id, prompt=None):
 def create_image_from_prompt(image_id, prompt):
     file = Image.objects.get(pk=image_id)
     file_name = f"{image_id}_prompt.png"
+    print( f"Bearer {settings.STABILITY_AI_KEY}")
     # URL-encode the filename to replace spaces with %20
     response = requests.post(
         f"https://api.stability.ai/v2beta/stable-image/generate/sd3",
