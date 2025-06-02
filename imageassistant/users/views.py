@@ -138,11 +138,6 @@ def google_login(request):
         if not credential:
             logger.error("No credential found in request")
             return redirect('users:login')
-         # check if the user has been banned
-        if BaredUser.objects.filter(user=request.user).exists():
-            messages.error(request, 'Your account has been banned')
-            logger.warning(f"User {request.user.email} attempted to login but is banned.")
-            return redirect('users:login')
         try:
             # Verify the token with Google
             response = requests.get(
@@ -177,6 +172,11 @@ def google_login(request):
                 user.set_unusable_password()
                 user.save()
                 logger.info(f"Created new user with email: {email}")
+            # check if the user has been banned
+            if BaredUser.objects.filter(user=user).exists():
+                messages.error(request, 'Your account has been banned')
+                logger.warning(f"User {user.email} attempted to login but is banned.")
+                return redirect('users:login')
             auth_login(request, user)
             logger.info(f"User {email} logged in via Google")
 
