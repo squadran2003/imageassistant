@@ -22,7 +22,11 @@ class StaticViewSitemap(Sitemap):
         url = reverse(item)
         url = url.replace("http://", "https://")
         return url
-
+    
+def handler500(request, *args, **argv):
+    response = render(request, '500.html', {})
+    response.status_code = 500
+    return response
 
 def base(request):
     return render(

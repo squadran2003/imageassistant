@@ -19,6 +19,7 @@ CSRF_TRUSTED_ORIGINS = [
     "http://ec2-18-207-173-160.compute-1.amazonaws.com",
 ]
 
+HANDLER500 = 'config.views.handler500'
 
 def get_secret():
 
