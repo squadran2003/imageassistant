@@ -127,6 +127,7 @@ aspect_ratio_choices = [
 
 
 class PromptForm(forms.Form):
+
     # this should be a hidden field
     bot_field = forms.CharField(
         required=False, widget=forms.HiddenInput(
@@ -140,9 +141,13 @@ class PromptForm(forms.Form):
                 "rows": 5,
                 "cols": 40,
                 "placeholder": "Tell us more about the image you want to generate",
-                "style": "color:black"
+                "style": "color:black".capitalize(),
             },
-        )
+        ),
+        help_text="""
+            Plese do not provide an inappropriate prompt,
+            we reserve the right to ban you from the platform if you do so.
+            """
     )
     aspect_ratio = forms.CharField(
         required=True,

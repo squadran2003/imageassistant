@@ -6,7 +6,7 @@ from django.contrib.auth.views import PasswordResetConfirmView, PasswordResetCom
 from django.conf import settings
 from django.urls import reverse, reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
-from users.models import CustomUser
+from users.models import CustomUser, BaredUser
 import logging
 import requests
 from django.contrib import messages
@@ -51,6 +51,14 @@ def login(request):
             request, email=form.data['email'], password=form.data['password']
         )
         if user is not None:
+            # check if the user has been banned
+            if BaredUser.objects.filter(user=user).exists():
+                form.add_error("email", 'Your account has been banned, contact us for more information')
+                for field, _ in form.errors.items():
+                    form.fields[field].widget.attrs['class'] += ' border-red-500'
+                return render(
+                    request, 'users/login.html#login-form', {'form': form}, status=400
+                )
             auth_login(request, user)
             return render(request, 'users/login.html#login-form', {
                 'form': LoginForm(), 'target': '#login-container',
@@ -130,7 +138,11 @@ def google_login(request):
         if not credential:
             logger.error("No credential found in request")
             return redirect('users:login')
-
+         # check if the user has been banned
+        if BaredUser.objects.filter(user=request.user).exists():
+            messages.error(request, 'Your account has been banned')
+            logger.warning(f"User {request.user.email} attempted to login but is banned.")
+            return redirect('users:login')
         try:
             # Verify the token with Google
             response = requests.get(

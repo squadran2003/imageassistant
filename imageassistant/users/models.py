@@ -90,6 +90,16 @@ class FeatureFlag(models.Model):
     def __str__(self):
         return self.name
 
+class BaredUser(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='bare_user')
+    first_name = models.CharField(max_length=30, blank=True, null=True)
+    last_name = models.CharField(max_length=30, blank=True, null=True)
+    reason = models.TextField(blank=True, null=True, help_text="Reason for being banned")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.email} - {self.first_name} {self.last_name}"
+
 @receiver(post_delete, sender=CustomUser)
 def delete_user(sender, instance, **kwargs):
     if not settings.DEBUG:
