@@ -1,4 +1,4 @@
-from users.models import CustomUser
+from users.models import CustomUser, Credit
 from django import forms
 from django.contrib.auth.forms import PasswordChangeForm, PasswordResetForm, SetPasswordForm
 import re
@@ -80,3 +80,21 @@ class CustomPasswordResetConfirmForm(SetPasswordForm):
         super(CustomPasswordResetConfirmForm, self).__init__(user, *args, **kwargs)
         for visible_field in self.visible_fields():
             visible_field.field.widget.attrs['class'] = 'mt-1 block text-[#202943]  w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-color focus:border-primary-color sm:text-sm'
+
+class AddCreditForm(forms.Form):
+    amount = forms.IntegerField(
+        min_value=10,
+        widget=forms.NumberInput(attrs={
+            'placeholder': '$ 10',
+            'step': '1',
+            'class':'block w-full p-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
+        })
+    )
+
+    # def clean_amount(self):
+    #     amount = self.cleaned_data['amount']
+    #     if amount <= 0:
+    #         raise forms.ValidationError('Amount must be greater than zero')
+    #     if not isinstance(amount, (int, float)):
+    #         raise forms.ValidationError('Amount must be a number')
+    #     return amount

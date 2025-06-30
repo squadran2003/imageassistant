@@ -67,7 +67,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
 
 class Credit(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='credit')
     total = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
 

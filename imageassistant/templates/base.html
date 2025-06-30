@@ -78,7 +78,6 @@
         {% endfor %}
     </div>
 {% endif %}
-
     <!-- Navigation -->
     <nav class="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -142,9 +141,13 @@
                                                     <path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clip-rule="evenodd" />
                                                 </svg>
                                                 <span class="font-medium">Credits: </span>
-                                                <span class="ml-1 font-semibold {% if user.credits > 10 %}text-green-600{% elif user.credits > 3 %}text-amber-600{% else %}text-red-600{% endif %}">
-                                                    {{ user.credits|default:"0" }}
+
+                                                <span class="ml-1 font-semibold {% if user.credit.total > 100 %}text-green-600{% elif user.credit.total > 30 %}text-amber-600{% else %}text-red-600{% endif %}">
+                                                    {{ user.credit.total|default:"0" }}
                                                 </span>
+                                                <a href="{% url 'custom_users:add-credit' %}" class="ml-2 text-indigo-600 hover:text-indigo-800 text-sm">
+                                                    Buy More
+                                                </a>
                                             </div>
                                         </div>
                                     {% endif %}

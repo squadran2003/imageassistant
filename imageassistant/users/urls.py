@@ -17,4 +17,6 @@ urlpatterns = [
     path('reset/password/confirm/<str:uidb64>/<str:token>/', views.PasswordResetCustomConfirmView.as_view(), name='password-reset-confirm'),
     path('reset/complete/', views.PasswordResetCustomCompleteView.as_view(), name='password-reset-complete'),
     path('google/login/', views.google_login, name='google-login'),
+    path('credits/add/', views.AddCreditView.as_view(), name='add-credit'),
+    path('create-payment-intent/', views.CreatePaymentIntentView.as_view(), name='create-payment-intent'),
 ]
