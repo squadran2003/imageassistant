@@ -32,27 +32,27 @@ class SignupViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(CustomUser.objects.filter(email=data['email']).exists())
 
-    # def test_signup_post_invalid_when_password_dont_match(self):
-    #     data = {
-    #         'first_name': 'Test',
-    #         'last_name': 'User',
-    #         'password1': 'password123',
-    #         'password2': 'password12',
-    #         'email': 'testuser@example.com'
-    #     }
-    #     response = self.client.post(self.url, data)
-    #     self.assertEqual(response.status_code, 400)
+    def test_signup_post_invalid_when_password_dont_match(self):
+        data = {
+            'first_name': 'Test',
+            'last_name': 'User',
+            'password1': 'password123',
+            'password2': 'password12',
+            'email': 'testuser@example.com'
+        }
+        response = self.client.post(self.url, data)
+        self.assertEqual(response.status_code, 400)
 
-    # def test_signup_post_invalid_when_email_not_valid(self):
-    #     data = {
-    #         'first_name': 'Test',
-    #         'last_name': 'User',
-    #         'password1': 'password123',
-    #         'password2': 'password123',
-    #         'email': 'testuserexample.com'
-    #     }
-    #     response = self.client.post(self.url, data)
-    #     self.assertEqual(response.status_code, 400)
+    def test_signup_post_invalid_when_email_not_valid(self):
+        data = {
+            'first_name': 'Test',
+            'last_name': 'User',
+            'password1': 'password123',
+            'password2': 'password123',
+            'email': 'testuserexample.com'
+        }
+        response = self.client.post(self.url, data)
+        self.assertEqual(response.status_code, 400)
 
 class TestDeleteUserView(TestCase):
     def setUp(self):
@@ -97,8 +97,7 @@ class TestAddCreditView(TestCase):
         self.assertIsInstance(response.context['form'], AddCreditForm)
         self.assertEqual(response.context['user'], self.user)
 
-    @patch('users.views.send_email_task.delay')
-    def test_add_credit_creates_new_credit_record(self,  mock_email_task):
+    def test_add_credit_creates_new_credit_record(self):
         """Test adding credit creates new Credit record if none exists"""
         data = {'amount': 10.00}
         response = self.client.post(self.url, data)
@@ -115,14 +114,6 @@ class TestAddCreditView(TestCase):
         messages = list(get_messages(response.wsgi_request))
         self.assertEqual(len(messages), 1)
         self.assertIn(f"${expected_amount} credit added successfully", str(messages[0]))
-        # Check email task was called
-        mock_email_task.assert_called_once_with(
-            user_id=self.user.id,
-            amount=10.0,
-            credits_received=500,
-            payment_intent_id=None,
-            payment_intent_created=None
-        )
 
     # def test_add_credit_updates_existing_credit_record(self):
     #     """Test adding credit updates existing Credit record"""

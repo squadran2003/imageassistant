@@ -18,7 +18,6 @@ from users.forms import (
     CustomUserForm, LoginForm, CustomPasswordResetForm, CustomPasswordResetConfirmForm,
     AddCreditForm
 )
-from users.tasks import send_email_task
 import stripe
 import logging
 import requests
@@ -237,7 +236,6 @@ class AddCreditView(FormView):
         amount = form.cleaned_data['amount']
         payment_intent_id = self.request.GET.get('payment_intent_id')
         payment_intent_created = self.request.GET.get('payment_intent_created')
-        print( payment_intent_id)
         # Add credit to user's account
         # credits purchased
         print("Trying to set credits")
@@ -248,13 +246,6 @@ class AddCreditView(FormView):
             credit.save()
         
         messages.success(self.request, f"${total_credits} credit added successfully.")
-        send_email_task.delay(
-            user_id=user.id,
-            amount=form.cleaned_data['amount'],
-            credits_received=total_credits,
-            payment_intent_id=payment_intent_id,
-            payment_intent_created=payment_intent_created
-        )
         return super().form_valid(form)
 
 
@@ -265,80 +256,6 @@ class AddCreditView(FormView):
         context['credit_multiplier'] = settings.CREDIT_SETTINGS
         return context
     
-    # def post(self, request, *args, **kwargs):
-    #     # Check if this is a payment success callback
-    #     payment_intent_id = request.POST.get('payment_intent_id')
-    #     payment_status = request.POST.get('payment_status')
-        
-    #     if payment_intent_id and payment_status == 'succeeded':
-    #         return self.handle_payment_success(request, payment_intent_id)
-        
-    #     return super().post(request, *args, **kwargs)
-
-    # def handle_payment_success(self, request, payment_intent_id):
-    #     try:
-    #         # Verify payment with Stripe
-    #         payment_intent = stripe.PaymentIntent.retrieve(payment_intent_id)
-            
-    #         if payment_intent.status == 'succeeded':
-    #             user = request.user
-    #             amount = float(payment_intent.metadata.get('credit_amount', 0))
-                
-    #             # Add credits to user account
-    #             credit_amount = int(settings.CREDIT_SETTINGS * amount)
-    #             credit, created = Credit.objects.get_or_create(
-    #                 user=user, 
-    #                 defaults={'total': credit_amount}
-    #             )
-    #             if not created:
-    #                 credit.total += credit_amount
-    #                 credit.save()
-                
-    #             # Send receipt email
-    #             self.send_receipt_email(user, amount, credit_amount, payment_intent)
-                
-    #             messages.success(request, f"${amount} credit added successfully! You received {credit_amount} credits.")
-    #             return JsonResponse({'success': True, 'redirect_url': str(self.success_url)})
-    #         else:
-    #             return JsonResponse({'success': False, 'error': 'Payment verification failed'}, status=400)
-                
-    #     except stripe.error.StripeError as e:
-    #         logger.error(f"Stripe error: {str(e)}")
-    #         return JsonResponse({'success': False, 'error': 'Payment verification failed'}, status=400)
-
-    # def send_receipt_email(self, user, amount, credits_received, payment_intent):
-    #     """Send receipt email to user"""
-    #     try:
-    #         # Prepare email context
-    #         context = {
-    #             'user': user,
-    #             'amount': amount,
-    #             'credits_received': credits_received,
-    #             'transaction_id': payment_intent.id,
-    #             'transaction_date': datetime.fromtimestamp(payment_intent.created),
-    #             'payment_method': self.get_payment_method_info(payment_intent),
-    #             'company_name': 'ImageAssistant.io',
-    #             'support_email': 'support@imageassistant.io',
-    #         }
-            
-    #         # Render email templates
-    #         html_message = render_to_string('users/emails/receipt.html', context)
-    #         plain_message = strip_tags(html_message)
-            
-    #         # Send email
-    #         send_mail(
-    #             subject=f'Receipt for your ImageAssistant.io credit purchase - ${amount}',
-    #             message=plain_message,
-    #             from_email=settings.DEFAULT_FROM_EMAIL,
-    #             recipient_list=[user.email],
-    #             html_message=html_message,
-    #             fail_silently=False,
-    #         )
-            
-    #         logger.info(f"Receipt email sent to {user.email} for transaction {payment_intent.id}")
-            
-    #     except Exception as e:
-    #         logger.error(f"Failed to send receipt email: {str(e)}")
 
 
 
@@ -359,6 +276,7 @@ class CreatePaymentIntentView(View):
             intent = stripe.PaymentIntent.create(
                 amount=amount_cents,
                 currency='usd',
+                receipt_email=request.user.email,
                 metadata={
                     'user_id': request.user.id,
                     'credit_amount': amount,
