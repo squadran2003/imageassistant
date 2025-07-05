@@ -18,6 +18,7 @@ from users.forms import (
     CustomUserForm, LoginForm, CustomPasswordResetForm, CustomPasswordResetConfirmForm,
     AddCreditForm
 )
+from images.tasks import send_credit_purchase_email
 import stripe
 import logging
 import requests
@@ -229,11 +230,8 @@ class AddCreditView(FormView):
         """
         user = self.request.user
         amount = form.cleaned_data['amount']
-        payment_intent_id = self.request.GET.get('payment_intent_id')
-        payment_intent_created = self.request.GET.get('payment_intent_created')
         # Add credit to user's account
         # credits purchased
-        print("Trying to set credits")
         total_credits = int(settings.CREDIT_SETTINGS * amount)
         credit, created = Credit.objects.get_or_create(user=user, defaults={'total':total_credits})
         if not created:
@@ -241,8 +239,10 @@ class AddCreditView(FormView):
             credit.save()
         
         messages.success(self.request, f"${total_credits} credit added successfully.")
+        send_credit_purchase_email.delay(
+            user.email, amount
+        )
         return super().form_valid(form)
-
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
