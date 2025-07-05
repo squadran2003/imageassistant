@@ -17,7 +17,7 @@ ALLOWED_HOSTS = [
 CSRF_TRUSTED_ORIGINS = [
     'https://imageassistant.io',
     "http://ec2-18-207-173-160.compute-1.amazonaws.com",
-    "https://consent.cookiebot.com",
+    "https://consent.cookiebot.com/uc.js",
 ]
 
 HANDLER500 = 'config.views.handler500'
