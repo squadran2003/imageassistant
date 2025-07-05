@@ -298,10 +298,10 @@ def remove_users():
     return f"Removed {users.count()} inactive users"
 
 @shared_task()
-def send_credit_purchase_email(user, amount):
+def send_credit_purchase_email(user_email, amount):
     from django.core.mail import send_mail
     subject = "Credit Purchase Confirmation"
-    message = f"The {user.username},\n\nhas successfully purchased {amount}.\nyou need to buy from stability AI!"
+    message = f"The {user_email},\n\nhas successfully purchased {amount}.\nyou need to buy from stability AI!"
     send_mail(
         subject,
         message,
