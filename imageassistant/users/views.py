@@ -240,7 +240,7 @@ class AddCreditView(FormView):
         
         messages.success(self.request, f"${total_credits} credit added successfully.")
         send_credit_purchase_email.delay(
-            user.email, amount
+            user, amount
         )
         return super().form_valid(form)
 
