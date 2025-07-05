@@ -1,0 +1,237 @@
+{% extends 'base.html' %}
+{% load partials %}
+{% block  title %}Terms and conditions:ImageAssistant.io – Free AI Image Generator & Enhancer | Powered by Stability AI{% endblock %}
+{%block content %}
+ <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-900 mb-4">Terms and Conditions</h1>
+            <p class="text-lg text-gray-600">Last updated: {{ current_date|default:"July 5, 2025" }}</p>
+            <div class="w-24 h-1 bg-blue-600 mx-auto mt-4"></div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="bg-white rounded-lg shadow-xl p-8 space-y-8">
+            
+            <!-- Introduction -->
+            <section>
+                <h2 class="text-2xl font-semibold text-gray-900 mb-4 border-b-2 border-blue-100 pb-2">1. Introduction</h2>
+                <p class="text-gray-700 leading-relaxed">
+                    Welcome to ImageAssistant.io ("we," "our," or "us"). These Terms and Conditions ("Terms") govern your use of our AI-powered image generation and enhancement services. By accessing or using ImageAssistant.io, you agree to be bound by these Terms.
+                </p>
+            </section>
+
+            <!-- Service Description -->
+            <section>
+                <h2 class="text-2xl font-semibold text-gray-900 mb-4 border-b-2 border-blue-100 pb-2">2. Service Description</h2>
+                <p class="text-gray-700 leading-relaxed mb-4">
+                    ImageAssistant.io provides AI-powered image generation and enhancement services, including but not limited to:
+                </p>
+                <ul class="list-disc list-inside text-gray-700 space-y-2 ml-4">
+                    <li>Text-to-image generation using Stability AI technology</li>
+                    <li>Image enhancement and upscaling</li>
+                    <li>Image editing and manipulation tools</li>
+                    <li>Related AI-powered image processing services</li>
+                </ul>
+            </section>
+
+            <!-- User Responsibilities -->
+            <section>
+                <h2 class="text-2xl font-semibold text-gray-900 mb-4 border-b-2 border-blue-100 pb-2">3. User Responsibilities</h2>
+                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4">
+                    <p class="text-yellow-800 font-medium">You agree to use our services responsibly and in compliance with all applicable laws.</p>
+                </div>
+                <p class="text-gray-700 leading-relaxed mb-4">Prohibited uses include:</p>
+                <ul class="list-disc list-inside text-gray-700 space-y-2 ml-4">
+                    <li>Generating harmful, illegal, or offensive content</li>
+                    <li>Creating images that violate copyright or intellectual property rights</li>
+                    <li>Generating content that depicts minors inappropriately</li>
+                    <li>Creating misleading or fraudulent content</li>
+                    <li>Attempting to reverse-engineer or compromise our services</li>
+                </ul>
+            </section>
+
+            <!-- Intellectual Property -->
+            <section>
+                <h2 class="text-2xl font-semibold text-gray-900 mb-4 border-b-2 border-blue-100 pb-2">4. Intellectual Property</h2>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-blue-50 p-4 rounded-lg">
+                        <h3 class="font-semibold text-blue-900 mb-2">Your Content</h3>
+                        <p class="text-blue-800 text-sm">You retain ownership of images you generate using our service, subject to these Terms.</p>
+                    </div>
+                    <div class="bg-purple-50 p-4 rounded-lg">
+                        <h3 class="font-semibold text-purple-900 mb-2">Our Service</h3>
+                        <p class="text-purple-800 text-sm">ImageAssistant.io and its underlying technology remain our intellectual property.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Privacy and Data -->
+            <section>
+                <h2 class="text-2xl font-semibold text-gray-900 mb-4 border-b-2 border-blue-100 pb-2">5. Privacy and Data Handling</h2>
+                <p class="text-gray-700 leading-relaxed mb-4">
+                    We are committed to protecting your privacy. Our data handling practices include:
+                </p>
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div class="text-center p-4 bg-green-50 rounded-lg">
+                        <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="font-semibold text-green-900">Secure Storage</h3>
+                        <p class="text-green-800 text-sm">Your data is encrypted and securely stored</p>
+                    </div>
+                    <div class="text-center p-4 bg-blue-50 rounded-lg">
+                        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="font-semibold text-blue-900">Limited Retention</h3>
+                        <p class="text-blue-800 text-sm">Images are stored only as needed for service delivery</p>
+                    </div>
+                    <div class="text-center p-4 bg-purple-50 rounded-lg">
+                        <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                            <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="font-semibold text-purple-900">Your Control</h3>
+                        <p class="text-purple-800 text-sm">You can request deletion of your data</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Service Availability -->
+            <section>
+                <h2 class="text-2xl font-semibold text-gray-900 mb-4 border-b-2 border-blue-100 pb-2">6. Service Availability</h2>
+                <div class="bg-orange-50 border border-orange-200 rounded-lg p-4">
+                    <p class="text-orange-800">
+                        <strong>Service Disclaimer:</strong> We strive to maintain high availability but cannot guarantee uninterrupted service. We reserve the right to modify, suspend, or discontinue services with reasonable notice.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Limitation of Liability -->
+            <section>
+                <h2 class="text-2xl font-semibold text-gray-900 mb-4 border-b-2 border-blue-100 pb-2">7. Limitation of Liability</h2>
+                <p class="text-gray-700 leading-relaxed">
+                    ImageAssistant.io is provided "as is" without warranties. We are not liable for any indirect, incidental, or consequential damages arising from your use of our services. Our total liability is limited to the amount you paid for our services in the preceding 12 months.
+                </p>
+            </section>
+
+            <!-- Termination -->
+            <section>
+                <h2 class="text-2xl font-semibold text-gray-900 mb-4 border-b-2 border-blue-100 pb-2">8. Termination</h2>
+                <p class="text-gray-700 leading-relaxed">
+                    We may terminate or suspend your access to ImageAssistant.io at any time for violations of these Terms or for any other reason at our discretion. You may discontinue using our services at any time.
+                </p>
+            </section>
+
+            <!-- Changes to Terms -->
+            <section>
+                <h2 class="text-2xl font-semibold text-gray-900 mb-4 border-b-2 border-blue-100 pb-2">9. Changes to Terms</h2>
+                <p class="text-gray-700 leading-relaxed">
+                    We reserve the right to modify these Terms at any time. We will notify users of significant changes via email or through our website. Continued use of our services after changes constitutes acceptance of the updated Terms.
+                </p>
+            </section>
+            <!-- Account Deletion for Inactivity -->
+            <section>
+                <h2 class="text-2xl font-semibold text-gray-900 mb-4 border-b-2 border-blue-100 pb-2">10. Account Deletion for Inactivity</h2>
+                <div class="bg-red-50 border-l-4 border-red-400 p-4 mb-4">
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 text-red-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                        </svg>
+                        <p class="text-red-800 font-medium">Important: Account Inactivity Policy</p>
+                    </div>
+                </div>
+                <p class="text-gray-700 leading-relaxed mb-4">
+                    To maintain system performance and data security, we have implemented an automatic account deletion policy for inactive users:
+                </p>
+                <div class="bg-gray-50 rounded-lg p-4 mb-4">
+                    <ul class="list-disc list-inside text-gray-700 space-y-2">
+                        <li><strong>90-Day Inactivity Period:</strong> If you do not log in to your ImageAssistant.io account for 90 consecutive days (3 months), your account will be automatically marked for deletion.</li>
+                        <li><strong>Data Removal:</strong> Upon deletion, all account data, generated images, and associated information will be permanently removed from our servers.</li>
+                        <li><strong>Reactivation:</strong> Logging in during the 90-day period resets the inactivity timer.</li>
+                    </ul>
+                </div>
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <p class="text-blue-800">
+                        <strong>Note:</strong> This policy helps us maintain optimal service performance and protects user privacy by ensuring inactive data is not retained indefinitely.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Account Deletion and Credit Loss -->
+            <section>
+                <h2 class="text-2xl font-semibold text-gray-900 mb-4 border-b-2 border-blue-100 pb-2">11. Account Deletion and Credit Loss</h2>
+                <div class="bg-amber-50 border-l-4 border-amber-400 p-4 mb-4">
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 text-amber-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                        </svg>
+                        <p class="text-amber-800 font-medium">Warning: Credit Loss Upon Account Deletion</p>
+                    </div>
+                </div>
+                <p class="text-gray-700 leading-relaxed mb-4">
+                    Important information regarding account deletion and credit balances:
+                </p>
+                <div class="grid md:grid-cols-2 gap-6 mb-4">
+                    <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                        <h3 class="font-semibold text-red-900 mb-2 flex items-center">
+                            <svg class="w-5 h-5 mr-2 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                            </svg>
+                            Manual Account Deletion
+                        </h3>
+                        <p class="text-red-800 text-sm">If you voluntarily delete your account, all remaining credits will be permanently lost and cannot be recovered or refunded.</p>
+                    </div>
+                    <div class="bg-orange-50 border border-orange-200 rounded-lg p-4">
+                        <h3 class="font-semibold text-orange-900 mb-2 flex items-center">
+                            <svg class="w-5 h-5 mr-2 text-orange-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                            </svg>
+                            Automatic Deletion
+                        </h3>
+                        <p class="text-orange-800 text-sm">If your account is automatically deleted due to inactivity, any unused credits will also be permanently lost.</p>
+                    </div>
+                </div>
+                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                    <h3 class="font-semibold text-yellow-900 mb-2">Before Deleting Your Account:</h3>
+                    <ul class="list-disc list-inside text-yellow-800 text-sm space-y-1">
+                        <li>Use any remaining credits for image generation</li>
+                        <li>Download any images you wish to keep</li>
+                        <li>Understand that credits have no cash value and cannot be transferred</li>
+                        <li>Consider the permanence of this action</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Contact Information -->
+            <section class="bg-gray-50 rounded-lg p-6">
+                <h2 class="text-2xl font-semibold text-gray-900 mb-4">10. Contact Us</h2>
+                <p class="text-gray-700 leading-relaxed mb-4">
+                    If you have questions about these Terms and Conditions, please contact us by logging in to your account and using the contact form.
+            </section>
+
+            <!-- Acceptance -->
+            <section class="text-center border-t-2 border-gray-200 pt-6">
+                <p class="text-gray-600 italic">
+                    By using ImageAssistant.io, you acknowledge that you have read, understood, and agree to be bound by these Terms and Conditions.
+                </p>
+                <div class="mt-4">
+                    <a href="{% url 'base' %}" class="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition duration-200">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                        </svg>
+                        Back to ImageAssistant
+                    </a>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+{% endblock %}

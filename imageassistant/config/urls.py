@@ -22,7 +22,7 @@ from django.views.generic import TemplateView
 from django.http import HttpResponse
 from config.views import (
     base, faq, stripe_success_return, upload_content, StaticViewSitemap,
-    contact, health_check
+    contact, health_check, privacy_policy, terms_and_conditions
 )
 from django.contrib.sitemaps.views import sitemap
 
@@ -47,6 +47,8 @@ urlpatterns = [
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
     path('robots.txt', TemplateView.as_view(template_name="robots.txt", content_type='text/plain')),
     path('health/', health_check, name='health_check'),
+    path('privacy-policy/', privacy_policy, name='privacy-policy'),
+    path('terms-conditions/', terms_and_conditions, name='terms-conditions'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

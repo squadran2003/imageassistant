@@ -25,11 +25,6 @@ import json
 logger = logging.getLogger(__name__)
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
-def privacy_policy(request):
-    """
-        Render the privacy policy page
-    """
-    return render(request, 'users/privacy_policy.html')
 
 
 def signup(request):

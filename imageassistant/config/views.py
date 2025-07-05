@@ -159,3 +159,17 @@ def health_check(request):
             
     except Exception as e:
         return HttpResponse(f"Error: {str(e)}", status=500)
+    
+
+def privacy_policy(request):
+    """
+        Render the privacy policy page
+    """
+    return render(request, 'privacy_policy.html')
+
+
+def terms_and_conditions(request):
+    """
+        Render the terms of service page
+    """
+    return render(request, 'terms_and_conditions.html')

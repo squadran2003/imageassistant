@@ -387,5 +387,16 @@
             dropdownMenu.classList.toggle('hidden');
         }
     </script>
+    {% if not DEBUG %}
+        <script 
+            id="Cookiebot" 
+            src="https://consent.cookiebot.com/uc.js" 
+            data-cbid="11732581-a178-4e6b-9335-33476724c1ae" 
+            data-blockingmode="auto" 
+            type="text/javascript"
+            integrity="sha384-[HASH]"
+            crossorigin="anonymous">
+        </script>
+    {% endif %}
 </body>
 </html>
