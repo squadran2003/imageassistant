@@ -6,11 +6,12 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.conf import settings
 from django.http import JsonResponse
+from django.template.response import TemplateResponse
+from django import forms
 from images.models import Image, Service
 from images.forms   import ImageUploadForm, ImageResizeForm, CroppingForm, PromptForm as DjangoPromptForm
 from images.forms import PromptForm as DjangoPromptForm
-from django.template.response import TemplateResponse
-from PIL import Image as PILImage
+from users.models import FeatureFlag, Credit
 from datetime import datetime
 from .tasks import (
     create_greyscale, remove_background,
@@ -365,6 +366,15 @@ def generate_image(request):
 
         )
         if form.is_valid():
+            if request.user.featureflag_set.filter(name='show_credits').exists() and request.user.credit.total < 1:
+                # if the user has no credits, then redirect to the stripe checkout page
+                template = 'images/generate_image.html#content'
+                form.fields['prompt'].widget.attrs['class'] = 'shadow appearance-none border rounded mt-2 min-h-20 mb-2 p-2 w-full text-[#1e1a1a] focus:outline-none focus:shadow-outline required:border-red-500'
+                form.add_error(None, "You have no credits left. Please purchase more credits to generate images.")
+                return render(request, template, {
+                    'form': form, 'post_url': post_url,
+                    'spinner_class': 'animate-spin h-16 w-16 text-indigo-600 mt-4 htmx-indicator'
+                }, status=400)
             template = 'images/generate_image.html#content'
             # add in the aspect ratio the user has selected
             image.aspect_ratio = form.cleaned_data['aspect_ratio']

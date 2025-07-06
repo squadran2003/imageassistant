@@ -3,6 +3,7 @@ from django.test import TestCase, Client
 from django.urls import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
 from .models import Image, Service
+from users.models import FeatureFlag, Credit
 from images.forms import ImageUploadForm
 from unittest.mock import patch
 from users.models import CustomUser
@@ -75,6 +76,44 @@ class CreateImageViewTests(TestCase):
         data['confirm_your_a_human'] = 'on'
         data['bot_field'] = ''
         response = self.client.post(self.url, data)
+        self.assertEqual(response.status_code, 200)
+    
+    def test_post_invalid_form_if_no_credits(self):
+        """Test that the form is invalid if the user has no credits"""
+        Credit.objects.create(user=self.user, total=0)
+        self.user.featureflag_set.create(name='show_credits', enabled=True)
+        self.client.login(email='testuser@example.com', password='testpassword123')
+
+        # Create form data with non-English text
+        data = {
+            'prompt': 'Cat fighting with a dog',  # Russian: 'Cat fighting with a dog'
+            'confirm_your_a_human': 'on',
+            'bot_field': ''
+        }
+
+        # Submit the form with non-English prompt
+        response = self.client.post(self.url, data=data)
+
+        # Check that the response indicates an error
+        self.assertEqual(response.status_code, 400)
+
+    def test_post_valid_form_when_user_has_credits(self):
+        """Test that form is valid if the user has credits"""
+        Credit.objects.create(user=self.user, total=10)
+        self.user.featureflag_set.create(name='show_credits', enabled=True)
+        self.client.login(email='testuser@example.com', password='testpassword123')
+
+        # Create form data with non-English text
+        data = {
+            'prompt': 'Cat fighting with a dog',
+            'confirm_your_a_human': 'on',
+            'bot_field': ''
+        }
+
+        # Submit the form with non-English prompt
+        response = self.client.post(self.url, data=data)
+
+        # Check that the response indicates an error
         self.assertEqual(response.status_code, 200)
 
 
@@ -223,6 +262,8 @@ class RemoveImageBackgroundViewTest(TestCase):
 
         # Check that the response indicates an error
         self.assertEqual(response.status_code, 400)
+    
+
 
     def test_post_invalid_form(self):
         """Test POST with invalid form data"""
