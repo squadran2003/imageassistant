@@ -197,7 +197,7 @@ def process_service(request, service_id, image_id):
                 'image': file,
                 'service_id': service_id,
                 'cost': service.tokens,
-                'free': None,
+                'free': True,
                 'payment_made': None
             }, status=286
         )
