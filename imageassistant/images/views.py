@@ -15,7 +15,7 @@ from users.models import FeatureFlag, Credit
 from datetime import datetime
 from .tasks import (
     create_greyscale, remove_background,
-    resize_image, create_thumbnail, crop_image,
+    create_thumbnail, create_image_outline_task,
     enhance_image, create_image_from_prompt
 )
 import stripe
@@ -182,23 +182,36 @@ def service(request, service_id, image_id):
 def process_service(request, service_id, image_id):
     file = Image.objects.get(pk=image_id)
     service = Service.objects.get(code=service_id)
-    payment_made = request.GET.get('payment_made', False)
-    payment_made = True if payment_made == 'true' else False
-    file.payment_made = payment_made
     file.save()
     # create_image.html#content'
     if file.processed:
-        return render(request, 'images/generate_image.html#img-processed', {
+        template_name = ''
+        match service_id:
+            case 7:
+                template_name = 'images/generate_image.html#img-processed'
+            case 2:
+                template_name = 'images/remove_background.html#processed-image'
+            case 8:
+                template_name = 'images/create_image_outline.html#processed-image'
+        return render(request, template_name, {
                 'image': file,
                 'service_id': service_id,
-                'cost': service.cost,
-                'free': service.free,
-                'payment_made': file.payment_made
+                'cost': service.tokens,
+                'free': None,
+                'payment_made': None
             }, status=286
         )
     else:
+        template_name = ''
+        match service_id:
+            case 7:
+                template_name = 'images/generate_image.html#partial-spinner'
+            case 2:
+                template_name = 'images/remove_background.html#processing-image'
+            case 8:
+                template_name = 'images/create_image_outline.html#processing-image'
         poll_url = reverse('images:process_service', args=[service_id, image_id])
-        return TemplateResponse(request, 'images/generate_image.html#partial-spinner', {
+        return TemplateResponse(request, template_name, {
             'poll_url': poll_url,
             'trigger': 'load delay:3s',
             'spinner_class': 'animate-spin h-16 w-16 text-indigo-600 mt-10 text-center'
@@ -433,23 +446,33 @@ def search(request):
     )
 
 @login_required(login_url='custom_users:login')
-def remove_image_background(request, image_id=None):
+def remove_image_background(request):
     error = False
+    form = ImageUploadForm()
     if request.method == 'POST':
         form = ImageUploadForm(request.POST, request.FILES)
         if form.is_valid():
+            if request.user.featureflag_set.filter(name='show_credits').exists() and request.user.credit.total < 1:
+                # if the user has no credits, then redirect to the stripe checkout page
+                template = 'images/generate_image.html#content'
+                form.fields['prompt'].widget.attrs['class'] = 'shadow appearance-none border rounded mt-2 min-h-20 mb-2 p-2 w-full text-[#1e1a1a] focus:outline-none focus:shadow-outline required:border-red-500'
+                form.add_error("prompt", "You have no credits left. Please purchase more credits to generate images.")
+                return render(request, template, {
+                    'form': form, 'post_url': reverse('images:remove_image_background'),
+                    'spinner_class': 'animate-spin h-16 w-16 text-indigo-600 mt-4 htmx-indicator'
+                }, status=400)
             form = form.save(commit=False)
             form.user = request.user
             form.save()
             # process the image
             remove_background.delay(form.id)
-            poll_url = reverse(
-                'images:remove_image_background_with_id', args=[form.id]
-            )
-            return render(
-                request, 'images/remove_background.html#processing-image',
-                {'poll_url': poll_url}
-            )
+            poll_url = reverse('images:process_service', args=[2,form.id])
+            template = 'images/remove_background.html#processing-image'
+            return TemplateResponse(request, template, {
+                'poll_url': poll_url,
+                'form': form,
+                'trigger': 'every 3s',
+            })
         else:
             return render(request, 'images/remove_background.html#upload-form', {
                 'form': form, 'error': error,
@@ -457,25 +480,59 @@ def remove_image_background(request, image_id=None):
                 'target': '#content',
                 'trigger': ''
             }, status=400)
-    if image_id:
-        # if an image id is passed, then get the image and process it
-        image = Image.objects.get(pk=image_id)
-        poll_url = reverse(
-                'images:remove_image_background_with_id', args=[image_id]
-            )
-        if image.processed:
-            print("Image has been processed")
-            return render(request, 'images/remove_background.html#processed-image', {
-                'image': image,
-            }, status=200)
+    else:
+        template = 'images/remove_background.html'
+        return TemplateResponse(request, template, {
+            'form': form,
+            'target': '#content',
+            'trigger': '',
+            'post_url': reverse('images:remove_image_background'),
+            'spinner_class': 'animate-spin h-16 w-16 text-indigo-600 mt-4 htmx-indicator'
+        }, status=200)
+
+
+@login_required(login_url='custom_users:login')
+def create_image_outline(request):
+    error = False
+    form = ImageUploadForm()
+    if request.method == 'POST':
+        form = ImageUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            if request.user.featureflag_set.filter(name='show_credits').exists() and request.user.credit.total < 1:
+                # if the user has no credits, then redirect to the stripe checkout page
+                template = 'images/generate_image.html#content'
+                form.fields['prompt'].widget.attrs['class'] = 'shadow appearance-none border rounded mt-2 min-h-20 mb-2 p-2 w-full text-[#1e1a1a] focus:outline-none focus:shadow-outline required:border-red-500'
+                form.add_error("prompt", "You have no credits left. Please purchase more credits to generate images.")
+                return render(request, template, {
+                    'form': form, 'post_url': reverse('images:remove_image_background'),
+                    'spinner_class': 'animate-spin h-16 w-16 text-indigo-600 mt-4 htmx-indicator'
+                }, status=400)
+            form = form.save(commit=False)
+            form.user = request.user
+            form.save()
+            # process the image
+            print(create_image_outline)
+            create_image_outline_task.delay(form.id)
+            poll_url = reverse('images:process_service', args=[8,form.id])
+            template = 'images/create_image_outline.html#processing-image'
+            return TemplateResponse(request, template, {
+                'poll_url': poll_url,
+                'form': form,
+                'trigger': 'every 3s',
+            })
         else:
-            return render(
-                request, 'images/remove_background.html#processing-image',
-                {'poll_url': poll_url}
-            )
-    return render(request, 'images/remove_background.html', {
-        'post_url': reverse('images:remove_image_background'),
-        'target': '#content',
-        'trigger': '',
-        }
-    )
+            return render(request, 'images/create_image_outline.html#upload-form', {
+                'form': form, 'error': error,
+                'post_url': reverse('images:remove_image_background'),
+                'target': '#content',
+                'trigger': ''
+            }, status=400)
+    else:
+        template = 'images/create_image_outline.html'
+        return TemplateResponse(request, template, {
+            'form': form,
+            'target': '#content',
+            'trigger': '',
+            'post_url': reverse('images:create_image_outline'),
+            'spinner_class': 'animate-spin h-16 w-16 text-indigo-600 mt-4 htmx-indicator'
+        }, status=200)

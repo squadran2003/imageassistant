@@ -1,20 +1,19 @@
-from celery import shared_task, app
-from images.models import Image
+from celery import shared_task
 from PIL import Image as PILImage
-from urllib.request import urlopen
-from io import BytesIO
 from django.core.files.base import ContentFile
-import boto3
 from django.conf import settings
 import os
 from urllib.request import urlopen
+from urllib.request import urlopen
+from images.models import Image, Service
+from io import BytesIO
 import cv2
 import numpy as np
 import urllib
 import urllib.parse
 import requests
 import datetime
-
+import boto3
 
 
 @shared_task
@@ -50,6 +49,8 @@ def create_greyscale(image_id):
 def remove_background(image_id):
     s3 = boto3.client('s3')
     file = Image.objects.get(pk=image_id)
+    user = file.user
+    service = Service.objects.get(code=2)
     if not settings.DEBUG:
         img = PILImage.open(urlopen(file.image.url))
     else:
@@ -84,6 +85,10 @@ def remove_background(image_id):
             file.image.save(file.image.name, img_content)
             file.processed = True
             file.save()
+         # only implement if the feature flag is enabled
+        if user.featureflag_set.filter(name='show_credits').exists():
+            user.credit.total -= service.tokens
+            user.credit.save()
     else:
         print(response.status_code)
         print(response.headers.get("finish-reason"))
@@ -145,30 +150,72 @@ def create_thumbnail(image_id):
 
 
 @shared_task
-def crop_image(image_id, x, y, width, height):
+def create_image_outline_task(image_id):
     s3 = boto3.client('s3')
     file = Image.objects.get(pk=image_id)
+    user = file.user
+    file_name = f"{image_id}_outline.png"
+    service = Service.objects.get(code=8)
+    if not service:
+        # catch the error in sentry
+        raise Exception("Service not found for code 8 (create Outline)")
     if not settings.DEBUG:
         img = PILImage.open(urlopen(file.image.url))
     else:
         img = PILImage.open(file.image.path)
-    img_io = BytesIO()
-    print(x, y, width, height)
-    img_cropped = img.crop((max(x, 0), max(y, 0), min(width+x, file.image.width), min(height+y, file.image.height)))
-    img_cropped.save(img_io, format='png', quality=100)
-    img_content = ContentFile(img_io.getvalue())
-    if not settings.DEBUG:
-        # in prod saving the image to s3 and later updating the image field via lambda
-        s3.put_object(
-            Bucket=settings.AWS_STORAGE_BUCKET_NAME,
-            Key=f"media/celery/{image_id}_{file.image.name}",
-            Body=img_io.getvalue()
-        )
-    else:
-        # in dev using celery to process the image
-        file.image.save(file.image.name, img_content)
+    try:
+        # use cv2 to create an outline of the image
+        img_cv = cv2.cvtColor(np.array(img), cv2.COLOR_RGB2BGR)
+        gray = cv2.cvtColor(img_cv, cv2.COLOR_BGR2GRAY)
+
+        # Apply Gaussian blur to reduce noise
+        blurred = cv2.GaussianBlur(gray, (3, 3), 0)
+
+        # Use Canny edge detection for thinner, cleaner lines
+        edges = cv2.Canny(blurred, 50, 150)
+
+        # Optional: Apply morphological operations to clean up lines
+        kernel = np.ones((2, 2), np.uint8)
+        edges = cv2.morphologyEx(edges, cv2.MORPH_CLOSE, kernel)
+
+        # Create a white background (255 = white)
+        white_background = np.full_like(edges, 255, dtype=np.uint8)
+        
+        # Set edge pixels to black (0 = black)
+        white_background[edges > 0] = 0
+
+        # Convert to PIL image
+        edges_pil = PILImage.fromarray(white_background)
+        img_io = BytesIO()
+        edges_pil.save(img_io, format='png', quality=100)
+        img_content = ContentFile(img_io.getvalue())
+    
+        
+        if not settings.DEBUG:
+            # in prod saving the image to s3 and later updating the image field via lambda
+            s3.put_object(
+                Bucket=settings.AWS_STORAGE_BUCKET_NAME,
+                Key=f"media/celery/{image_id}_{file.image.name}",
+                Body=img_io.getvalue()
+            )
+        else:
+            # in dev using celery to process the image
+            file.image.save(file.image.name, img_content)
+            file.processed = True
+            file.save()
+        # only implement if the feature flag is enabled
+        if user.featureflag_set.filter(name='show_credits').exists():
+            user.credit.total -= service.tokens
+            user.credit.save()
+    except Exception as e:
+        file.image.name = file_name
+        file.ai_response = {
+            "error": str(e),
+            "date": str(datetime.datetime.now())
+        }
         file.processed = True
         file.save()
+
 
 
 @shared_task
@@ -226,7 +273,11 @@ def enhance_image(image_id, prompt=None):
 def create_image_from_prompt(image_id, prompt):
     file = Image.objects.get(pk=image_id)
     file_name = f"{image_id}_prompt.png"
-    print( f"Bearer {settings.STABILITY_AI_KEY}")
+    service = Service.objects.get(code=7)  # Generate Image service
+    if not service:
+        # catch the error in sentry
+        raise Exception("Service not found for code 7 (Generate Image)")
+    user = file.user
     # URL-encode the filename to replace spaces with %20
     response = requests.post(
         f"https://api.stability.ai/v2beta/stable-image/generate/sd3",
@@ -259,6 +310,10 @@ def create_image_from_prompt(image_id, prompt):
             file.image.save(file_name, img_content)
             file.processed = True
             file.save()
+        # only implement if the feature flag is enabled
+        if user.featureflag_set.filter(name='show_credits').exists():
+            user.credit.total -= service.tokens
+            user.credit.save()
     else:
         file.image.name = file_name
         file.ai_response = response.json()
@@ -286,16 +341,6 @@ def delete(image_id):
 def ping_task():
     return "pong"
 
-
-@shared_task()
-def remove_users():
-    """ removes users who have signed up but not used the site in 3 months"""
-    from users.models import CustomUser
-    three_months_ago = datetime.datetime.now() - datetime.timedelta(days=90)
-    users = CustomUser.objects.filter(date_joined__lt=three_months_ago, is_active=False)
-    for user in users:
-        user.delete()
-    return f"Removed {users.count()} inactive users"
 
 @shared_task()
 def send_credit_purchase_email(user_email, amount):

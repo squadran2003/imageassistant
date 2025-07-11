@@ -2,7 +2,7 @@
 {% load partials %}
 {% load static %}
 
-{% block title %}Remove Background - ImageAssistant.io{% endblock %}
+{% block title %}Create outline - ImageAssistant.io{% endblock %}
 
 {% partialdef upload-form %}
 <form method="post" enctype="multipart/form-data" class="w-full" hx-post="{{post_url}}" hx-target="{{target}}" hx-swap="innerHTML" hx-trigger="{{trigger}}" id="upload-form">
@@ -43,7 +43,7 @@
     <!-- Submit Button -->
     <div class="flex justify-center">
         <button onclick="htmx.trigger('#upload-form', 'submit')" type="button" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
-            Remove Background
+            Create Outline
         </button>
     </div>
 </form>
@@ -105,7 +105,7 @@
 {% endpartialdef %}
 
 {% partialdef processing-image %}
-    <div class="flex justify-center mb-4 mt-4" hx-get="{{poll_url}}" hx-target="#content" hx-swap="this" hx-trigger="{{trigger}}">
+    <div class="flex justify-center mb-4 mt-4" hx-get="{{poll_url}}" hx-target="#content" hx-swap="this" hx-trigger="load delay:5s">
         <svg class="w-16 h-16 text-blue-600" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <!-- Outer circle -->
             <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" stroke-opacity="0.2" fill="none" />
@@ -132,8 +132,8 @@
 {% block content %}
 <div class="container mx-auto px-4 py-8 max-w-4xl" id="content">
     <div class="text-center mb-8">
-        <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-2">Remove Background</h1>
-        <p class="text-gray-600 text-lg">Upload an image and we'll remove the background for you.</p>
+        <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-2">Create Image Outline</h1>
+        <p class="text-gray-600 text-lg">Upload an image and we'll create an outline for you.</p>
     </div>
     {% partial upload-form %}
     

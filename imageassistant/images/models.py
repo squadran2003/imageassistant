@@ -57,7 +57,7 @@ class Service(models.Model):
     description = models.TextField(blank=True, null=True)
     stripe_price_id = models.CharField(max_length=255, blank=True, null=True)
     free = models.BooleanField(default=True)
-    cost = models.IntegerField(default=0)
+    tokens = models.IntegerField(default=0)
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
