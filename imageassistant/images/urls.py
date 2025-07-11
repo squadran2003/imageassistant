@@ -18,4 +18,5 @@ urlpatterns = [
     path('create/image/outline/', views.create_image_outline, name='create_image_outline'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('search/', views.search, name='search'),
+    path('pricing/', views.pricing, name='pricing'),
 ]

@@ -13,10 +13,10 @@ from django.views.generic.edit import DeleteView
 from django.views.generic import FormView
 from django.contrib.auth import logout as auth_logout
 from django.http import JsonResponse
-from users.models import CustomUser, BaredUser, Credit
+from users.models import CustomUser, BaredUser, Credit, FeatureFlag
 from users.forms import (
     CustomUserForm, LoginForm, CustomPasswordResetForm, CustomPasswordResetConfirmForm,
-    AddCreditForm
+    AddCreditForm, Credit
 )
 from images.tasks import send_credit_purchase_email
 import stripe
@@ -32,7 +32,9 @@ def signup(request):
     if request.method == 'POST':
         form = CustomUserForm(request.POST)
         if form.is_valid():
-            form.save()
+            user = form.save()#
+            Credit.objects.create(user=user, total=100)  # Give initial credits
+            FeatureFlag.objects.get_or_create(name='show_credits')[0].users.add(user)
             return render(
                 request, 'users/signup.html#signup-success', {'success': True}
             )
@@ -176,6 +178,8 @@ def google_login(request):
                     password=None
                 )
                 user.set_unusable_password()
+                Credit.objects.create(user=user, total=100)  # Give initial credits
+                FeatureFlag.objects.get_or_create(name='show_credits')[0].users.add(user)
                 user.save()
                 logger.info(f"Created new user with email: {email}")
             # check if the user has been banned

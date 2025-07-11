@@ -536,3 +536,8 @@ def create_image_outline(request):
             'post_url': reverse('images:create_image_outline'),
             'spinner_class': 'animate-spin h-16 w-16 text-indigo-600 mt-4 htmx-indicator'
         }, status=200)
+    
+def pricing(request):
+    return render(request, 'images/prices.html', {
+        'services': Service.objects.all().order_by('code'),
+    })
