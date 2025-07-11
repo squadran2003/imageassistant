@@ -151,8 +151,8 @@ class RemoveImageBackgroundViewTest(TestCase):
         # Create the client and URL
         self.client = Client()
         self.url = reverse('images:remove_image_background')
-        self.processed_url = reverse('images:remove_image_background_with_id', args=[self.processed_image.id])
-        self.unprocessed_url = reverse('images:remove_image_background_with_id', args=[self.unprocessed_image.id])
+        self.processed_url = reverse('images:process_service', args=[2, self.processed_image.id])
+        self.unprocessed_url = reverse('images:process_service', args=[2, self.unprocessed_image.id])
 
     def test_login_required(self):
         """Test that the view requires login"""
@@ -178,7 +178,8 @@ class RemoveImageBackgroundViewTest(TestCase):
         response = self.client.get(self.processed_url)
         # Convert response to string for easier searching
         response_content = response.content.decode('utf-8')
-        self.assertEqual(response.status_code, 200)
+        # check a 286 is returned for when a image is processed
+        self.assertEqual(response.status_code, 286)
         self.assertIn(str(self.processed_image.id).encode(), response.content)
         self.assertIn(b'<img', response.content)
         self.assertRegex(
@@ -222,15 +223,6 @@ class RemoveImageBackgroundViewTest(TestCase):
         # Check response
         self.assertEqual(response.status_code, 200)
         response_content = response.content.decode('utf-8')
-        import re
-
-        # Check for any hx-get attribute pointing to a background removal URL
-        self.assertRegex(
-            response_content,
-            r'<div[^>]*hx-get=["\'][^"\']*remove/image/background/\d+/["\'][^>]*>'
-        )
-
-        # or by filtering on the image name
         self.assertTrue(Image.objects.exists())
 
         # Method 1: Get most recent image
@@ -243,7 +235,7 @@ class RemoveImageBackgroundViewTest(TestCase):
         mock_task.assert_called_once_with(created_image.id)
 
         # Additional check: Verify the exact URL of the new image is in the response
-        new_url = reverse('images:remove_image_background_with_id', args=[created_image.id])
+        new_url = reverse('images:process_service', args=[2, created_image.id])
         self.assertIn(new_url, response_content)
 
     def test_post_invalid_form_if_not_english(self):

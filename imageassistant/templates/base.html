@@ -111,8 +111,8 @@
                                 <div class="py-1">
                                     <a href="{% url 'images:generate_image' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600">Generate Image</a>
                                     <a href="{% url 'images:remove_image_background' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600">Remove Background</a>
-                                        <!-- <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600">Remove background</a>
-                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600">Enhance image</a> -->
+                                    <a href="{% url 'images:create_image_outline' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600">Create Image Outline</a>
+                                    <!-- <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600">Enhance image</a> -->
                                 </div>
                             </div>
                         </div>
@@ -386,6 +386,36 @@
             const dropdownMenu = document.getElementById('user-dropdown-links');
             dropdownMenu.classList.toggle('hidden');
         }
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function(event) {
+            // Close services dropdown
+            const servicesDropdown = document.getElementById('service-dropdown-links');
+            const servicesButton = event.target.closest('button[onclick="toggleServicesMenu()"]');
+            if (!servicesButton && !servicesDropdown.contains(event.target)) {
+                servicesDropdown.classList.add('hidden');
+            }
+            
+            // Close user dropdown
+            const userDropdown = document.getElementById('user-dropdown-links');
+            const userButton = event.target.closest('button[onclick="toggleUserMenu()"]');
+            if (!userButton && !userDropdown.contains(event.target)) {
+                userDropdown.classList.add('hidden');
+            }
+            
+            // Close mobile user dropdown
+            const mobileUserDropdown = document.getElementById('mobile-user-dropdown');
+            const mobileUserButton = event.target.closest('button[onclick="toggleMobileUserMenu()"]');
+            if (mobileUserDropdown && !mobileUserButton && !mobileUserDropdown.contains(event.target)) {
+                mobileUserDropdown.classList.add('hidden');
+            }
+            
+            // Close mobile services dropdown
+            const mobileServicesDropdown = document.getElementById('mobile-services-menu');
+            const mobileServicesButton = event.target.closest('button[onclick="toggleMobileServicesMenu()"]');
+            if (mobileServicesDropdown && !mobileServicesButton && !mobileServicesDropdown.contains(event.target)) {
+                mobileServicesDropdown.classList.add('hidden');
+            }
+        });
     </script>
     {% if not DEBUG %}
         <script 
