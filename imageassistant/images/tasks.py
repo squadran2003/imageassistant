@@ -354,3 +354,72 @@ def send_credit_purchase_email(user_email, amount):
         [settings.DEFAULT_TO_EMAIL],
         fail_silently=False,
     )
+
+
+@shared_task
+def create_avatar(image_id):
+    s3 = boto3.client('s3')
+    file = Image.objects.get(pk=image_id)
+    user = file.user
+    service = Service.objects.get(code=9)  # Avatar Creation service
+    if not service:
+        raise Exception("Service not found for code 9 (Avatar Creation)")
+    
+    if not settings.DEBUG:
+        img = PILImage.open(urlopen(file.image.url))
+    else:
+        img = PILImage.open(file.image.path)
+    
+    img_io = BytesIO()
+    img.save(img_io, format='png', quality=100)
+    
+    # Use Stability AI's image-to-image generation for avatar creation
+    response = requests.post(
+        "https://api.stability.ai/v2beta/stable-image/control/style",
+        headers={
+            "authorization": f"Bearer {settings.STABILITY_AI_KEY}",
+            "accept": "image/*"
+        },
+        files={"image": img_io.getvalue()},
+        data={
+            "prompt": "Professional avatar portrait, stylized digital art, clean background, high quality, professional headshot style",
+            "strength": 0.5,  # Keep some similarity to original
+            "output_format": "png",
+            "aspect_ratio": "1:1"
+        },
+    )
+    
+    if response.status_code == 200:
+        img_io = BytesIO()
+        img_io.write(response.content)
+        img_content = ContentFile(img_io.getvalue())
+        
+        if not settings.DEBUG:
+            # in prod saving the image to s3 and later updating the image field via lambda
+            s3.put_object(
+                Bucket=settings.AWS_STORAGE_BUCKET_NAME,
+                Key=f"media/celery/{image_id}_{file.image.name}",
+                Body=img_io.getvalue()
+            )
+        else:
+            # in dev using celery to process the image
+            file.image.save(file.image.name, img_content)
+            file.processed = True
+            file.save()
+            
+        # only implement if the feature flag is enabled
+        if user.featureflag_set.filter(name='show_credits').exists():
+            user.credit.total -= service.tokens
+            user.credit.save()
+    else:
+        file.ai_response = {
+            "error": f"Avatar creation failed with status {response.status_code}",
+            "response": response.text,
+            "date": str(datetime.datetime.now())
+        }
+        file.processed = True
+        file.save()
+        raise Exception(f"Avatar creation failed: {response.text}")
+    
+    file.processed = True
+    file.save()

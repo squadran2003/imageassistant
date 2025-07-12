@@ -16,6 +16,7 @@ urlpatterns = [
     path('generate/image/', views.generate_image, name='generate_image'),
     path('remove/image/background/', views.remove_image_background, name='remove_image_background'),
     path('create/image/outline/', views.create_image_outline, name='create_image_outline'),
+    path('create/avatar/', views.create_avatar_view, name='create_avatar'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('search/', views.search, name='search'),
     path('pricing/', views.pricing, name='pricing'),

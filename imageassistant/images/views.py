@@ -16,7 +16,7 @@ from datetime import datetime
 from .tasks import (
     create_greyscale, remove_background,
     create_thumbnail, create_image_outline_task,
-    enhance_image, create_image_from_prompt
+    enhance_image, create_image_from_prompt, create_avatar
 )
 import stripe
 from sentry_sdk import capture_message
@@ -168,6 +168,9 @@ def service(request, service_id, image_id):
             if form.is_valid():
                 prompt = form.cleaned_data['prompt']
                 create_image_from_prompt.delay(image_id, prompt)
+    elif service_id == 9:
+        print("Creating avatar")
+        create_avatar.delay(image_id)
     poll_url = reverse(
         'images:process_service', args=[
             service_id,
@@ -193,6 +196,8 @@ def process_service(request, service_id, image_id):
                 template_name = 'images/remove_background.html#processed-image'
             case 8:
                 template_name = 'images/create_image_outline.html#processed-image'
+            case 9:
+                template_name = 'images/create_avatar.html#processed-image'
         return render(request, template_name, {
                 'image': file,
                 'service_id': service_id,
@@ -210,6 +215,8 @@ def process_service(request, service_id, image_id):
                 template_name = 'images/remove_background.html#processing-image'
             case 8:
                 template_name = 'images/create_image_outline.html#processing-image'
+            case 9:
+                template_name = 'images/create_avatar.html#processing-image'
         poll_url = reverse('images:process_service', args=[service_id, image_id])
         return TemplateResponse(request, template_name, {
             'poll_url': poll_url,
@@ -541,3 +548,50 @@ def pricing(request):
     return render(request, 'images/prices.html', {
         'services': Service.objects.all().order_by('code'),
     })
+
+
+@login_required(login_url='custom_users:login')
+def create_avatar_view(request):
+    error = False
+    form = ImageUploadForm()
+    if request.method == 'POST':
+        form = ImageUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            if request.user.featureflag_set.filter(name='show_credits').exists() and request.user.credit.total < 5:
+                # Avatar creation costs 5 tokens - check if user has enough credits
+                template = 'images/create_avatar.html#upload-form'
+                form.add_error("image", "You need at least 5 credits to create an avatar. Please purchase more credits.")
+                return render(request, template, {
+                    'form': form, 'error': error,
+                    'post_url': reverse('images:create_avatar'),
+                    'target': '#content',
+                    'trigger': ''
+                }, status=400)
+            form = form.save(commit=False)
+            form.user = request.user
+            form.save()
+            # process the image
+            create_avatar.delay(form.id)
+            poll_url = reverse('images:process_service', args=[9, form.id])
+            template = 'images/create_avatar.html#processing-image'
+            return TemplateResponse(request, template, {
+                'poll_url': poll_url,
+                'form': form,
+                'trigger': 'every 3s',
+            })
+        else:
+            return render(request, 'images/create_avatar.html#upload-form', {
+                'form': form, 'error': error,
+                'post_url': reverse('images:create_avatar'),
+                'target': '#content',
+                'trigger': ''
+            }, status=400)
+    else:
+        template = 'images/create_avatar.html'
+        return TemplateResponse(request, template, {
+            'form': form,
+            'target': '#content',
+            'trigger': '',
+            'post_url': reverse('images:create_avatar'),
+            'spinner_class': 'animate-spin h-16 w-16 text-purple-600 mt-4 htmx-indicator'
+        }, status=200)

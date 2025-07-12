@@ -266,3 +266,405 @@ class RemoveImageBackgroundViewTest(TestCase):
 
         # Check response
         self.assertEqual(response.status_code, 400)
+
+
+class AvatarCreationViewTest(TestCase):
+    def setUp(self):
+        # Create a test user
+        self.user = CustomUser.objects.create_user(
+            email='testuser@example.com',
+            password='testpassword123',
+            first_name='Test',
+            last_name='User'
+        )
+
+        # Create avatar creation service
+        self.avatar_service = Service.objects.create(
+            name='Avatar Creation',
+            code=9,
+            description='Transform your photo into a stylized AI avatar',
+            free=False,
+            tokens=5
+        )
+
+        # Create test image
+        self.test_image_content = b'GIF87a\x01\x00\x01\x00\x80\x01\x00\x00\x00\x00ccc,\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02D\x01\x00;'
+        self.test_image = SimpleUploadedFile(
+            name='test_image.gif',
+            content=self.test_image_content,
+            content_type='image/gif'
+        )
+
+        # Create processed and unprocessed avatar images in the database
+        self.processed_avatar = Image.objects.create(
+            user=self.user,
+            image='test_avatar_processed.jpg',
+            processed=True
+        )
+
+        self.unprocessed_avatar = Image.objects.create(
+            user=self.user,
+            image='test_avatar_unprocessed.jpg',
+            processed=False
+        )
+
+        # Create the client and URLs
+        self.client = Client()
+        self.url = reverse('images:create_avatar')
+        self.processed_url = reverse('images:process_service', args=[9, self.processed_avatar.id])
+        self.unprocessed_url = reverse('images:process_service', args=[9, self.unprocessed_avatar.id])
+
+    def test_login_required(self):
+        """Test that the avatar creation view requires login"""
+        response = self.client.get(self.url)
+        self.assertRedirects(
+            response,
+            f"{reverse('custom_users:login')}?next={self.url}"
+        )
+
+    def test_get_request_shows_upload_form(self):
+        """Test that GET request shows the avatar upload form"""
+        self.client.login(email='testuser@example.com', password='testpassword123')
+        response = self.client.get(self.url)
+        
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'images/create_avatar.html')
+        self.assertIn('post_url', response.context)
+        self.assertEqual(response.context['post_url'], self.url)
+
+    def test_get_with_processed_avatar_id(self):
+        """Test that GET with a processed avatar ID shows the processed avatar"""
+        self.client.login(email='testuser@example.com', password='testpassword123')
+        response = self.client.get(self.processed_url)
+        response_content = response.content.decode('utf-8')
+        
+        # Check a 286 is returned for when an avatar is processed
+        self.assertEqual(response.status_code, 286)
+        self.assertIn(str(self.processed_avatar.id).encode(), response.content)
+        self.assertIn(b'<img', response.content)
+        self.assertRegex(
+            response_content,
+            r'<a[^>]*href="[^"]*"[^>]*download="[^"]*"'
+        )
+
+    def test_get_with_unprocessed_avatar_id(self):
+        """Test that GET with an unprocessed avatar ID shows the processing view"""
+        self.client.login(email='testuser@example.com', password='testpassword123')
+        response = self.client.get(self.unprocessed_url)
+        response_content = response.content.decode('utf-8')
+        
+        self.assertEqual(response.status_code, 200)
+        import re
+        self.assertRegex(
+            response_content,
+            r'<div[^>]*hx-get=["\']{0}["\'][^>]*>'.format(re.escape(self.unprocessed_url))
+        )
+
+    @patch('images.views.create_avatar.delay')
+    def test_post_valid_form_with_sufficient_credits(self, mock_task):
+        """Test POST with valid form data and sufficient credits"""
+        # Create user with sufficient credits
+        Credit.objects.create(user=self.user, total=10)
+        self.user.featureflag_set.create(name='show_credits', enabled=True)
+        self.client.login(email='testuser@example.com', password='testpassword123')
+        
+        import tempfile
+        from PIL import Image as PILImage
+        
+        with tempfile.NamedTemporaryFile(suffix='.jpg') as img_file:
+            image = PILImage.new('RGB', (100, 100), color='red')
+            image.save(img_file, format='JPEG')
+            img_file.seek(0)
+            test_image = SimpleUploadedFile(
+                name='test_avatar.jpg',
+                content=img_file.read(),
+                content_type='image/jpeg'
+            )
+
+        # Create form data with an image
+        form_data = {'image': test_image}
+        response = self.client.post(self.url, data=form_data)
+        
+        # Check response
+        self.assertEqual(response.status_code, 200)
+        response_content = response.content.decode('utf-8')
+        self.assertTrue(Image.objects.exists())
+
+        # Get the most recent image
+        created_avatar = Image.objects.latest('created')
+
+        # Check that the task was called with the new avatar ID
+        mock_task.assert_called_once_with(created_avatar.id)
+
+        # Verify the processing URL is in the response
+        new_url = reverse('images:process_service', args=[9, created_avatar.id])
+        self.assertIn(new_url, response_content)
+
+    def test_post_insufficient_credits(self):
+        """Test POST with insufficient credits (less than 5)"""
+        # Create user with insufficient credits
+        Credit.objects.create(user=self.user, total=3)
+        self.user.featureflag_set.create(name='show_credits', enabled=True)
+        self.client.login(email='testuser@example.com', password='testpassword123')
+
+        import tempfile
+        from PIL import Image as PILImage
+        
+        with tempfile.NamedTemporaryFile(suffix='.jpg') as img_file:
+            image = PILImage.new('RGB', (100, 100), color='red')
+            image.save(img_file, format='JPEG')
+            img_file.seek(0)
+            test_image = SimpleUploadedFile(
+                name='test_avatar.jpg',
+                content=img_file.read(),
+                content_type='image/jpeg'
+            )
+
+        # Create form data with an image
+        form_data = {'image': test_image}
+        response = self.client.post(self.url, data=form_data)
+
+        # Check that the response indicates an error
+        self.assertEqual(response.status_code, 400)
+        response_content = response.content.decode('utf-8')
+        self.assertIn('You need at least 5 credits', response_content)
+
+    def test_post_without_credits_feature_flag(self):
+        """Test POST when user doesn't have credits feature flag enabled"""
+        self.client.login(email='testuser@example.com', password='testpassword123')
+        
+        import tempfile
+        from PIL import Image as PILImage
+        
+        with tempfile.NamedTemporaryFile(suffix='.jpg') as img_file:
+            image = PILImage.new('RGB', (100, 100), color='red')
+            image.save(img_file, format='JPEG')
+            img_file.seek(0)
+            test_image = SimpleUploadedFile(
+                name='test_avatar.jpg',
+                content=img_file.read(),
+                content_type='image/jpeg'
+            )
+
+        # Create form data with an image
+        form_data = {'image': test_image}
+        response = self.client.post(self.url, data=form_data)
+        
+        # Should succeed since credit check is bypassed
+        self.assertEqual(response.status_code, 200)
+
+    def test_post_invalid_form(self):
+        """Test POST with invalid form data (no image)"""
+        self.client.login(email='testuser@example.com', password='testpassword123')
+
+        # Submit an empty form (should be invalid)
+        response = self.client.post(self.url, data={})
+
+        # Check response
+        self.assertEqual(response.status_code, 400)
+
+    def test_avatar_service_exists(self):
+        """Test that the avatar creation service exists with correct configuration"""
+        service = Service.objects.get(code=9)
+        self.assertEqual(service.name, 'Avatar Creation')
+        self.assertEqual(service.tokens, 5)
+        self.assertFalse(service.free)
+
+
+class AvatarCreationTaskTest(TestCase):
+    def setUp(self):
+        # Create a test user
+        self.user = CustomUser.objects.create_user(
+            email='testuser@example.com',
+            password='testpassword123',
+            first_name='Test',
+            last_name='User'
+        )
+
+        # Create avatar creation service
+        self.avatar_service = Service.objects.create(
+            name='Avatar Creation',
+            code=9,
+            description='Transform your photo into a stylized AI avatar',
+            free=False,
+            tokens=5
+        )
+
+        # Create test image
+        self.test_image = Image.objects.create(
+            user=self.user,
+            image='test_avatar.jpg',
+            processed=False
+        )
+
+    @patch('images.tasks.requests.post')
+    @patch('images.tasks.PILImage.open')
+    def test_create_avatar_task_success(self, mock_pil_open, mock_requests_post):
+        """Test successful avatar creation task"""
+        from images.tasks import create_avatar
+        from unittest.mock import Mock
+        
+        # Mock PIL Image
+        mock_image = Mock()
+        mock_pil_open.return_value = mock_image
+        
+        # Mock successful API response
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_response.content = b'fake_avatar_image_data'
+        mock_requests_post.return_value = mock_response
+
+        # Execute the task
+        create_avatar(self.test_image.id)
+
+        # Verify API was called with correct parameters
+        mock_requests_post.assert_called_once()
+        call_args = mock_requests_post.call_args
+        
+        self.assertEqual(call_args[0][0], "https://api.stability.ai/v2beta/stable-image/control/style")
+        self.assertIn('authorization', call_args[1]['headers'])
+        self.assertIn('Professional avatar portrait', call_args[1]['data']['prompt'])
+        self.assertEqual(call_args[1]['data']['strength'], 0.5)
+
+        # Verify image was processed
+        self.test_image.refresh_from_db()
+        self.assertTrue(self.test_image.processed)
+
+    @patch('images.tasks.requests.post')
+    @patch('images.tasks.PILImage.open')
+    def test_create_avatar_task_api_failure(self, mock_pil_open, mock_requests_post):
+        """Test avatar creation task when API fails"""
+        from images.tasks import create_avatar
+        from unittest.mock import Mock
+        
+        # Mock PIL Image
+        mock_image = Mock()
+        mock_pil_open.return_value = mock_image
+        
+        # Mock failed API response
+        mock_response = Mock()
+        mock_response.status_code = 500
+        mock_response.text = 'Internal Server Error'
+        mock_requests_post.return_value = mock_response
+
+        # Execute the task and expect exception
+        with self.assertRaises(Exception) as context:
+            create_avatar(self.test_image.id)
+
+        self.assertIn('Avatar creation failed', str(context.exception))
+
+        # Verify image was still marked as processed (with error)
+        self.test_image.refresh_from_db()
+        self.assertTrue(self.test_image.processed)
+        self.assertIsNotNone(self.test_image.ai_response)
+        self.assertIn('error', self.test_image.ai_response)
+
+    @patch('images.tasks.requests.post')
+    @patch('images.tasks.PILImage.open')
+    def test_create_avatar_task_with_credits(self, mock_pil_open, mock_requests_post):
+        """Test that avatar creation deducts credits correctly"""
+        from images.tasks import create_avatar
+        from unittest.mock import Mock
+        
+        # Create user with credits and feature flag
+        Credit.objects.create(user=self.user, total=10)
+        self.user.featureflag_set.create(name='show_credits', enabled=True)
+        
+        # Mock PIL Image
+        mock_image = Mock()
+        mock_pil_open.return_value = mock_image
+        
+        # Mock successful API response
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_response.content = b'fake_avatar_image_data'
+        mock_requests_post.return_value = mock_response
+
+        # Execute the task
+        create_avatar(self.test_image.id)
+
+        # Verify credits were deducted
+        self.user.credit.refresh_from_db()
+        self.assertEqual(self.user.credit.total, 5)  # 10 - 5 = 5
+
+
+class AvatarServiceIntegrationTest(TestCase):
+    def setUp(self):
+        # Create a test user
+        self.user = CustomUser.objects.create_user(
+            email='testuser@example.com',
+            password='testpassword123',
+            first_name='Test',
+            last_name='User'
+        )
+
+        # Create avatar creation service
+        self.avatar_service = Service.objects.create(
+            name='Avatar Creation',
+            code=9,
+            description='Transform your photo into a stylized AI avatar',
+            free=False,
+            tokens=5
+        )
+
+        # Create test image
+        self.test_image = Image.objects.create(
+            user=self.user,
+            image='test_avatar.jpg',
+            processed=False
+        )
+
+        self.client = Client()
+
+    @patch('images.views.create_avatar.delay')
+    def test_service_view_avatar_creation(self, mock_task):
+        """Test that service view correctly handles avatar creation"""
+        self.client.login(email='testuser@example.com', password='testpassword123')
+        
+        url = reverse('images:service', args=[9, self.test_image.id])
+        response = self.client.get(url)
+
+        # Check that the task was called
+        mock_task.assert_called_once_with(self.test_image.id)
+        
+        # Check response status
+        self.assertEqual(response.status_code, 200)
+
+    def test_process_service_view_processed_avatar(self):
+        """Test process_service view with processed avatar"""
+        self.client.login(email='testuser@example.com', password='testpassword123')
+        
+        # Mark image as processed
+        self.test_image.processed = True
+        self.test_image.save()
+        
+        url = reverse('images:process_service', args=[9, self.test_image.id])
+        response = self.client.get(url)
+
+        # Check that it uses the avatar template
+        self.assertEqual(response.status_code, 286)
+        response_content = response.content.decode('utf-8')
+        self.assertIn('processed-image', response_content)
+
+    def test_process_service_view_unprocessed_avatar(self):
+        """Test process_service view with unprocessed avatar"""
+        self.client.login(email='testuser@example.com', password='testpassword123')
+        
+        url = reverse('images:process_service', args=[9, self.test_image.id])
+        response = self.client.get(url)
+
+        # Check that it shows processing template
+        self.assertEqual(response.status_code, 200)
+        response_content = response.content.decode('utf-8')
+        self.assertIn('processing-image', response_content)
+
+    def test_avatar_url_routing(self):
+        """Test that avatar creation URL is properly routed"""
+        url = reverse('images:create_avatar')
+        self.assertEqual(url, '/create/avatar/')
+
+    def test_avatar_choice_in_services(self):
+        """Test that Avatar Creation is available in service choices"""
+        from images.models import services
+        service_names = [choice[0] for choice in services]
+        self.assertIn('Avatar Creation', service_names)

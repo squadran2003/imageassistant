@@ -48,6 +48,7 @@ services = (
     ('Enhancement', 'Enhancement'),
     ('Cropping', 'Cropping'),
     ('GenerateImage', 'GenerateImage'),
+    ('Avatar Creation', 'Avatar Creation'),
 )
 
 
