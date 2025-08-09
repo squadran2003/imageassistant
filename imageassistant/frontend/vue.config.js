@@ -4,7 +4,8 @@ const path = require('path')
 module.exports = defineConfig({
   transpileDependencies: true,
   outputDir: 'dist',
-  publicPath: '/static/',
+  publicPath: process.env.VUE_APP_STATIC_URL || '/',
+
 
   chainWebpack: config => {
     config
