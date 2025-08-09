@@ -262,7 +262,7 @@ export default {
       return filename;
     },
     downloadImage() {
-      const url = this.image.alternate_url || this.image.url;
+      const url = this.image.alternate_url ? this.image.alternate_url : this.image.url;
       const filename = this.getImageFilename(url);
       
       fetch(url)
