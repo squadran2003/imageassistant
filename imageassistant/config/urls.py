@@ -45,7 +45,7 @@ urlpatterns = [
     path('health/', health_check, name='health_check'),
     # Catch-all pattern for Vue.js SPA routes - must be last
     # This will catch any URL that doesn't match above patterns  
-    re_path(r'^(?!api/|admin/?|static/|media/|sitemap\.xml|robots\.txt|health/).*$', base, name='spa_catchall'),
+    re_path(r'^(?!api/|admin/?).*$', base, name='spa_catchall'),
 ]
 
 if settings.DEBUG:
