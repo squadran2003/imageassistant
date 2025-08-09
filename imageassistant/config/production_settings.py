@@ -20,7 +20,7 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "http://imageassistant.io"
+    "https://imageassistant.io"
 ]
 
 
