@@ -4,7 +4,7 @@ FROM node:18-slim AS frontend-builder
 # Build frontend
 WORKDIR /usr/src/app/frontend
 COPY ./imageassistant/frontend/package*.json ./
-RUN npm ci --only=production
+RUN npm ci 
 COPY ./imageassistant/frontend/ ./
 RUN npm run build
 
