@@ -68,42 +68,38 @@ class CustomTokenObtainView(TokenObtainPairView):
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        # Additional input validation
-        email = (request.data.get('email') or '').strip()
-        password = request.data.get('password', '')
+        # # Additional input validation
+        # email = (request.data.get('email') or '').strip()
+        # password = request.data.get('password', '')
         
-        if not email or not password:
-            return Response(
-                {"detail": "Email and password are required."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        # if not email or not password:
+        #     return Response(
+        #         {"detail": "Email and password are required."},
+        #         status=status.HTTP_400_BAD_REQUEST
+        #     )
         
-        # Basic email format validation
-        import re
-        email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-        if not re.match(email_pattern, email):
-            return Response(
-                {"detail": "Invalid email format."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        # # Basic email format validation
+        # import re
+        # email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        # if not re.match(email_pattern, email):
+        #     return Response(
+        #         {"detail": "Invalid email format."},
+        #         status=status.HTTP_400_BAD_REQUEST
+        #     )
         
-        # Check for banned users
-        print(email)
-        try:
-            from users.models import BaredUser, CustomUser
-            user = CustomUser.objects.get(email=email)
-            if BaredUser.objects.filter(user=user).exists():
-                return Response(
-                    {"detail": "Account is suspended."},
-                    status=status.HTTP_403_FORBIDDEN
-                )
-        except CustomUser.DoesNotExist:
-            pass  # User doesn't exist, let parent handle authentication failure
+        # # Check for banned users
+        # print(email)
+        # try:
+        #     from users.models import BaredUser, CustomUser
+        #     user = CustomUser.objects.get(email=email)
+        #     if BaredUser.objects.filter(user=user).exists():
+        #         return Response(
+        #             {"detail": "Account is suspended."},
+        #             status=status.HTTP_403_FORBIDDEN
+        #         )
+        # except CustomUser.DoesNotExist:
+        #     pass  # User doesn't exist, let parent handle authentication failure
 
-        # Ensure all request data values are strings for parent class
-        if hasattr(request, 'data') and request.data:
-            request.data = {k: str(v) if v is not None else '' for k, v in request.data.items()}
-        
         return super().post(request, *args, **kwargs)
     
 
