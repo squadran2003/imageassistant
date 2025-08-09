@@ -7,7 +7,7 @@ COPY ./imageassistant/frontend/package*.json ./
 ENV NODE_ENV production
 RUN npm ci 
 COPY ./imageassistant/frontend/ ./
-RUN npm run build
+RUN npm run build:vue
 
 # Main Python application
 FROM python:3.10-slim-bullseye
