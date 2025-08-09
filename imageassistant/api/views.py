@@ -100,6 +100,10 @@ class CustomTokenObtainView(TokenObtainPairView):
         except CustomUser.DoesNotExist:
             pass  # User doesn't exist, let parent handle authentication failure
 
+        # Ensure all request data values are strings for parent class
+        if hasattr(request, 'data') and request.data:
+            request.data = {k: str(v) if v is not None else '' for k, v in request.data.items()}
+        
         return super().post(request, *args, **kwargs)
     
 
