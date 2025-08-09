@@ -8,7 +8,7 @@ RUN npm ci
 COPY ./imageassistant/frontend/ ./
 ENV NODE_ENV=production
 ENV VUE_APP_STATIC_URL=https://d203745bu6qd7u.cloudfront.net/static/
-RUN npm run build:vue && ls -la dist/
+RUN npm run build:vue && echo "Build completed, listing dist folder:" && ls -la dist/ && echo "Files in dist:" && find dist/ -type f
 
 # Main Python application
 FROM python:3.10-slim-bullseye
