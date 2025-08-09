@@ -3,6 +3,7 @@ import boto3
 import json
 import sentry_sdk
 from botocore.exceptions import ClientError
+import os 
 
 DEBUG = False
 
@@ -128,3 +129,5 @@ GOOGLE_LOGIN_REDIRECT_URI = f"{GOOGLE_LOGIN_PROTOCOl}://{GOOGLE_LOGIN_DOMAIN}/{G
 GOOGLE_CLIENT_ID = SECRETS['GOOGLE_CLIENT_ID']
 DEFAULT_FROM_EMAIL = SECRETS['DEFAULT_FROM_EMAIL']
 DEFAULT_TO_EMAIL = SECRETS['DEFAULT_TO_EMAIL']
+
+os.environ['JWT_SECRET_KEY'] = SECRET_KEY
