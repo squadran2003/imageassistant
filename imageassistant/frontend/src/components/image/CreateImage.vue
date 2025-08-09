@@ -14,7 +14,7 @@
           
           <div class="bg-gray-700 rounded-lg p-4">
               <img 
-                  :src="image.url" 
+                  :src="image.alternate_url ? image.alternate_url : image.url"
                   :alt="image.alt" 
                   class="w-full rounded-lg shadow-lg" 
               />
