@@ -32,6 +32,7 @@ COPY ./ /usr/src/imageassistant/
 
 # Copy built frontend files from frontend-builder stage
 COPY --from=frontend-builder /usr/src/app/frontend/dist/ /usr/src/imageassistant/imageassistant/assets/
+COPY --from=frontend-builder /usr/src/app/frontend/dist/index.html /usr/src/imageassistant/imageassistant/templates/
 
 
 WORKDIR /usr/src/imageassistant/imageassistant/
