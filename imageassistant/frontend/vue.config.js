@@ -5,7 +5,7 @@ module.exports = defineConfig({
   transpileDependencies: true,
   outputDir: 'dist',
   publicPath: process.env.NODE_ENV === 'production' 
-    ? 'https://d203745bu6qd7u.cloudfront.net/static/' 
+    ? process.env.VUE_APP_STATIC_URL || '/static/' 
     : '/static/',
   
   chainWebpack: config => {
