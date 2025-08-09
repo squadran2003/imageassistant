@@ -96,8 +96,6 @@ class CustomTokenObtainView(TokenObtainPairView):
                     {"detail": "Account is suspended."},
                     status=status.HTTP_403_FORBIDDEN
                 )
-        except CustomUser.DoesNotExist:
-            pass  # User doesn't exist, let parent handle authentication failure
         
         return super().post(request, *args, **kwargs)
     
