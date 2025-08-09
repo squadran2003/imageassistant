@@ -382,10 +382,11 @@ def create_avatar(image_id):
         },
         files={"image": img_io.getvalue()},
         data={
-            "prompt": "Professional avatar portrait, stylized digital art, clean background, high quality, professional headshot style",
-            "strength": 0.5,  # Keep some similarity to original
-            "output_format": "png",
-            "aspect_ratio": "1:1"
+           "prompt": "",
+            "negative_prompt": "gender change, different person, opposite gender, realistic, photographic, 3D render, low quality, blurry",
+            "mode": "image-to-image",
+            "strength": 0.6,
+            "output_format": "png"
         },
     )
     

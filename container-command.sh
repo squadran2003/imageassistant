@@ -15,4 +15,6 @@ docker exec -it $container_name $command
 # ./container-command.sh imageassistant_django_1 "sh"
 #sudo certbot certonly -d imageassistant.io
 # npx @tailwindcss/cli -i ./imageassistant/assets/css/input.css -o ./imageassistant/assets/css/tailwind.css --watch 
+# for vue
+#npx @tailwindcss/cli -i ./imageassistant/assets/css/input.css -o ./imageassistant/frontend/src/styles/css/tailwind.css --watch
 

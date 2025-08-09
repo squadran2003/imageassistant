@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 from decouple import config, Csv
 import os
+from datetime import timedelta
 
 
 
@@ -41,6 +42,27 @@ MAILERSEND_SMTP_PASSWORD=config('MAILERSEND_SMTP_PASSWORD', os.environ.get('MAIL
 MAILERSEND_SMTP_HOST=config('MAILERSEND_SMTP_HOST', os.environ.get('MAILERSEND_SMTP_HOST'))
 GOOGLE_CLIENT_ID = config('GOOGLE_CLIENT_ID', os.environ.get('GOOGLE_CLIENT_ID'))
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5000",  # Your Vue.js frontend
+    "http://127.0.0.1:5000",
+]
+CORS_ALLOW_ALL_ORIGINS = True
+
+
+
+# Allowed headers
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -54,6 +76,7 @@ INSTALLED_APPS = [
     'compressor',
     "template_partials",
     'rest_framework',
+    'rest_framework_simplejwt',
     'storages',
     'corsheaders',
     'django_celery_beat',
@@ -197,8 +220,13 @@ IMAGE_PROCESSED_FOLDER_NAME = "celery_processed_images"
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
+   'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+        'rest_framework.permissions.IsAuthenticated',
     ]
 }
 
@@ -225,12 +253,12 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = MAILERSEND_SMTP_USERNAME
 EMAIL_HOST_PASSWORD = MAILERSEND_SMTP_PASSWORD
 AUTH_USER_MODEL = "users.CustomUser"
-LOGOUT_REDIRECT_URL = "/dashboard"
-EMAIL_DOMAIN = "localhost:8084"
-GOOGLE_LOGIN_PROTOCOl = "http"
+LOGOUT_REDIRECT_URL = "/"
+EMAIL_DOMAIN = "localhost:5000"
+GOOGLE_LOGIN_PROTOCOL = "http"
 GOOGLE_LOGIN_DOMAIN = "localhost:8084"
-GOOGLE_LOGIN_CALLBACK_PATH = "users/google/login/"
-GOOGLE_LOGIN_REDIRECT_URI = f"{GOOGLE_LOGIN_PROTOCOl}://{GOOGLE_LOGIN_DOMAIN}/{GOOGLE_LOGIN_CALLBACK_PATH}"
+GOOGLE_LOGIN_CALLBACK_PATH = "api/v1/google/login/"
+GOOGLE_LOGIN_REDIRECT_URI = f"{GOOGLE_LOGIN_PROTOCOL}://{GOOGLE_LOGIN_DOMAIN}/{GOOGLE_LOGIN_CALLBACK_PATH}"
 
 # how much does 10$ cost in credits
 # 1$ = 50 credits
@@ -238,3 +266,35 @@ CREDIT_SETTINGS = 50
 
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', '')
 DEFAULT_TO_EMAIL = config('DEFAULT_TO_EMAIL', '')
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': False,
+    'UPDATE_LAST_LOGIN': True,
+
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+    'VERIFYING_KEY': None,
+    'AUDIENCE': None,
+    'ISSUER': None,
+    'JWK_URL': None,
+    'LEEWAY': 0,
+
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
+    'USER_AUTHENTICATION_RULE': 'rest_framework_simplejwt.authentication.default_user_authentication_rule',
+
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'TOKEN_TYPE_CLAIM': 'token_type',
+    'TOKEN_USER_CLASS': 'rest_framework_simplejwt.models.TokenUser',
+
+    'JTI_CLAIM': 'jti',
+
+    'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
+    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
+    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
+}
