@@ -69,7 +69,7 @@ class CustomTokenObtainView(TokenObtainPairView):
             )
         
         # Additional input validation
-        email = request.data.get('email', '').strip()
+        email = (request.data.get('email') or '').strip()
         password = request.data.get('password', '')
         
         if not email or not password:
