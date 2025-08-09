@@ -4,10 +4,10 @@ FROM node:18-slim AS frontend-builder
 # Build frontend
 WORKDIR /usr/src/app/frontend
 COPY ./imageassistant/frontend/package*.json ./
-ENV NODE_ENV=production
-ENV VUE_APP_STATIC_URL=https://d203745bu6qd7u.cloudfront.net/static/
 RUN npm ci 
 COPY ./imageassistant/frontend/ ./
+ENV NODE_ENV=production
+ENV VUE_APP_STATIC_URL=https://d203745bu6qd7u.cloudfront.net/static/
 RUN npm run build
 
 # Main Python application
