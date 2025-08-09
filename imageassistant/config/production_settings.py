@@ -19,6 +19,9 @@ CSRF_TRUSTED_ORIGINS = [
     "https://consent.cookiebot.com/uc.js",
 ]
 
+CORS_ALLOWED_ORIGINS = [
+    "http://imageassistant.io"
+]
 
 
 # Production CORS settings
