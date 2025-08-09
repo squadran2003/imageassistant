@@ -4,10 +4,8 @@ const path = require('path')
 module.exports = defineConfig({
   transpileDependencies: true,
   outputDir: 'dist',
-  publicPath: process.env.NODE_ENV === 'production' 
-    ? process.env.VUE_APP_STATIC_URL || '/static/' 
-    : '/static/',
-  
+  publicPath: 'https://d203745bu6qd7u.cloudfront.net/static/static',
+
   chainWebpack: config => {
     config
       .plugin('html')
