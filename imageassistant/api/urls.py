@@ -7,11 +7,12 @@ from .views import (
     UserImagesView, ContactView,
     StripePaymentIntentView
 )
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 urlpatterns = [
     path('update/processed/image/<int:image_id>/', ImageListUpdate.as_view(), name='update-processed-image'),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    path('custom/token/obtain/', CustomTokenObtainView.as_view(), name='custom_token_obtain'),
+    path('custom/token/obtain/', TokenObtainPairView.as_view(), name='custom_token_obtain'),
     path('user/info/', UserInformationView.as_view(), name='user-information'),
     path('users/signup/', SignUpView.as_view(), name='signup'),
     path('users/change/password/', ChangePasswordView.as_view(), name='change-password'),
