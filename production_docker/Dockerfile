@@ -30,7 +30,7 @@ RUN poetry config virtualenvs.create false && poetry install --only main --no-in
 COPY ./ /usr/src/imageassistant/
 
 # Copy built frontend files from frontend-builder stage
-COPY --from=frontend-builder /usr/src/app/frontend/dist/ /usr/src/imageassistant/imageassistant/static/
 COPY --from=frontend-builder /usr/src/app/frontend/dist/ /usr/src/imageassistant/imageassistant/assets/
+
 
 WORKDIR /usr/src/imageassistant/imageassistant/
