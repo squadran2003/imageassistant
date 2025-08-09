@@ -1,0 +1,203 @@
+{% extends 'base.html' %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+{% block  title %}Create an Account:ImageAssistant.io – Free AI Image Generator & Enhancer | Powered by Stability AI{% endblock %}
+{% load partials %}
+
+{% partialdef signup-success %}
+{% if success %}
+    <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-md shadow-sm mb-6 animate-fade-in" role="alert">
+        <div class="flex items-center">
+            <svg class="h-5 w-5 mr-2 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+            </svg>
+            <div>
+                <strong class="font-bold">Account successfully created!</strong>
+                <a href="{% url 'custom_users:login' %}" class="ml-2 text-green-800 font-medium underline">
+                    Proceed to login
+                    <svg xmlns="http://www.w3.org/2000/svg" class="inline h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+{% endif %}
+{% endpartialdef %}
+
+{% partialdef signup-form %}
+    {% partial signup-success %}
+    <form id="signup-form" hx-post="{% url 'custom_users:signup' %}" hx-target="#signup-form-container" class="space-y-4" hx-swap="innerHTML" hx-boost="true" method="POST">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="mb-4">
+                <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">{{field.label}}</label>
+                <div class="mt-1 relative rounded-md shadow-sm">
+                    {{field}}
+                </div>
+                {% if field.help_text %}
+                    <p class="mt-1 text-xs text-gray-500">{{field.help_text}}</p>
+                {% endif %}
+                {% for error in field.errors %}
+                    <p class="mt-1 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md p-2">{{error}}</p>
+                {% endfor %}
+            </div>
+        {% endfor %}
+        <p class="mt-2 text-sm">
+            By creating an account, or signing up with google you agree to our 
+            <a href="{% url 'privacy-policy' %}" target="_blank" 
+               class="text-indigo-600 font-medium hover:text-indigo-800 underline decoration-2 decoration-indigo-400 transition-all px-1 py-0.5 rounded hover:bg-indigo-50">
+                Privacy Policy
+            </a>
+            and  
+            <a href="{% url 'terms-conditions' %}" target="_blank" 
+               class="text-indigo-600 font-medium hover:text-indigo-800 underline decoration-2 decoration-indigo-400 transition-all px-1 py-0.5 rounded hover:bg-indigo-50">
+                Terms and Conditions
+            </a>
+        </p>
+        <button type="submit" onclick="htmx.trigger('#signup-form', 'submit')" class="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+            </svg>
+            Create Account
+        </button>
+    </form>
+{% endpartialdef %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-b from-indigo-50 to-white py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-white rounded-xl shadow-xl overflow-hidden">
+            <div class="lg:grid lg:grid-cols-2">
+                <!-- Left Column - Benefits -->
+                <div class="bg-gradient-to-br from-indigo-600 to-purple-700 text-white p-8 lg:p-12">
+                    <div class="max-w-lg">
+                        <h1 class="text-3xl md:text-4xl font-bold mb-4">Let's get started</h1>
+                        <h3 class="text-xl font-medium text-indigo-100 mb-8">Create an account and enjoy our premium AI services.</h3>
+                        
+                        <div class="mt-8 space-y-6">
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 bg-indigo-500 bg-opacity-30 p-2 rounded-lg">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4zm5 4l4 4m0 0l4-4m-4 4v4"></path>
+                                    </svg>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="text-lg font-semibold">Create Images with AI</h4>
+                                    <p class="mt-1 text-indigo-100">Generate unique images by simply describing what you want to see.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 bg-indigo-500 bg-opacity-30 p-2 rounded-lg">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16M9 5v14"></path>
+                                    </svg>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="text-lg font-semibold">Remove Backgrounds</h4>
+                                    <p class="mt-1 text-indigo-100">Automatically remove image backgrounds with one click.</p>
+                                </div>
+                            </div>
+                            
+                            <!-- <div class="flex items-start">
+                                <div class="flex-shrink-0 bg-indigo-500 bg-opacity-30 p-2 rounded-lg">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01z"></path>
+                                    </svg>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="text-lg font-semibold">Enhance Images</h4>
+                                    <p class="mt-1 text-indigo-100">Improve clarity, color, and detail using our AI enhancement tools.</p>
+                                </div>
+                            </div> -->
+                        </div>
+                        
+                        <div class="mt-12 hidden lg:block">
+                            <p class="text-indigo-100">Already have an account?</p>
+                            <a href="{% url 'custom_users:login' %}" class="mt-2 inline-flex items-center px-5 py-2 border border-indigo-300 text-base font-medium rounded-md text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-indigo-700 transition-colors duration-200">
+                                Sign in
+                                <svg xmlns="http://www.w3.org/2000/svg" class="ml-2 h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Right Column - Signup Form -->
+                <div class="p-8 lg:p-12">
+                    <div class="max-w-md mx-auto">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6">Create your account</h2>
+                        
+                        {% if success %}
+                            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-6" role="alert">
+                                <strong class="font-bold">Account successfully created!</strong>
+                            </div>
+                        {% endif %}
+                        
+                        <div id="signup-form-container">
+                            {% partial signup-form %}
+                        </div>
+                        
+                        <div class="mt-6">
+                            <div class="relative">
+                                <div class="absolute inset-0 flex items-center">
+                                    <div class="w-full border-t border-gray-300"></div>
+                                </div>
+                                <div class="relative flex justify-center text-sm">
+                                    <span class="px-2 bg-white text-gray-500">Or continue with</span>
+                                </div>
+                            </div>
+                            
+                            <div style="display:none;">
+                                <div id="g_id_onload"
+                                    data-client_id="{{ google_client_id }}"
+                                    data-context="signin"
+                                    data-ux_mode="redirect"
+                                    data-login_uri="{{ GOOGLE_LOGIN_REDIRECT_URI }}"
+                                    data-auto_prompt="false">
+                                </div>
+                                <div class="g_id_signin"
+                                    data-type="standard"
+                                    data-size="large"
+                                    data-theme="outline"
+                                    data-text="sign_in_with"
+                                    data-shape="rectangular"
+                                    data-logo_alignment="left">
+                                </div>
+                            </div>
+                            
+                            <button id="custom-google-signin" class="w-full mt-4 py-3 px-4 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium rounded-md shadow-sm flex items-center justify-center transition duration-150">
+                                <svg class="h-5 w-5 mr-2" viewBox="0 0 24 24">
+                                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                                </svg>
+                                Continue with Google
+                            </button>
+                            
+                            <div class="mt-6 text-center lg:hidden">
+                                <p class="text-sm text-gray-600">Already have an account?</p>
+                                <a href="{% url 'custom_users:login' %}" class="mt-2 text-indigo-600 hover:text-indigo-500 font-medium">
+                                    Sign in to your account
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('custom-google-signin')?.addEventListener('click', function() {
+    console.log('clicked');
+    // This will simulate a click on the Google Sign-In button
+    document.querySelector('.g_id_signin div[role="button"]')?.click();
+});
+</script>
+<script src="https://accounts.google.com/gsi/client" async></script>
+{% endblock %}
