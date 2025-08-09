@@ -16,7 +16,10 @@ class StaticViewSitemap(Sitemap):
     changefreq = 'monthly'
 
     def items(self):
-        return ['base', 'users:login', 'users:signup']  # URL names from urls.py
+        return [
+            '/', '/users/login', '/users/signup', '/users/logout', 
+            '/faq', '/contact', '/privacy-policy', '/pricing'
+        ]
 
     def location(self, item):
         url = reverse(item)
@@ -33,74 +36,6 @@ def base(request):
         request, 'index.html',{'index_page': True}
     )
 
-
-def faq(request):
-    return render(request, 'faq.html')
-
-
-def upload_content(request):
-    token = csrf.get_token(request)
-    # html_content = UploadContent().render(
-    #     args=[token],
-    # )
-    html_content = ""
-    return HttpResponse(html_content, content_type='text/html')
-
-
-def contact(request):
-    form = ContactForm()
-    if request.method == 'POST':
-        form = ContactForm(request.POST)
-        if form.is_valid():
-            subject = f"ImageAssistant.io - message from {form.cleaned_data['email']}"
-            recipient_list = ["cormackandy@hotmail.com"]
-            from_email = "no-reply@imageassistant.io"
-            message = form.cleaned_data['message']
-            with get_connection(
-                host=settings.MAILERSEND_SMTP_HOST,
-                port=settings.MAILERSEND_SMTP_PORT,
-                username=settings.MAILERSEND_SMTP_USERNAME,
-                password=settings.MAILERSEND_SMTP_PASSWORD,
-                use_tls=True,
-                ) as connection:
-                    r = EmailMessage(
-                          subject=subject,
-                          body=message,
-                          to=recipient_list,
-                          from_email=from_email,
-                          connection=connection).send()
-
-            # reset form and add success message
-            form = ContactForm()
-            form.fields['email'].widget.attrs['class'] = 'shadow appearance-none border rounded mt-2 min-h-20 mb-2 p-2 w-full text-black focus:outline-none focus:shadow-outline'
-            form.fields['message'].widget.attrs['class'] = 'shadow appearance-none border rounded mt-2 min-h-20 mb-2 p-2 w-full text-black focus:outline-none focus:shadow-outline'
-            return render(request, 'contact.html#contact-content', {
-                'form': form,
-                'success': True,
-            })
-        else:
-            if 'message' in form.errors:
-                form.fields['message'].widget.attrs['class'] = 'shadow appearance-none border rounded mt-2 min-h-20 mb-2 p-2 w-full text-black focus:outline-none focus:shadow-outline required:border-red-500'
-            if 'email' in form.errors:
-                form.fields['email'].widget.attrs['class'] = 'shadow appearance-none border rounded mt-2 min-h-20 mb-2 p-2 w-full text-black focus:outline-none focus:shadow-outline required:border-red-500'
-            return render(request, 'contact.html#contact-content', {
-                'form': form,
-            })
-
-    return render(request, 'contact.html', {
-        'form': form,
-    })
-
-
-def stripe_success_return(request):
-    return render(request, 'stripe/return.html', {'domain': settings.DOMAIN})
-
-
-def stripe_checkout(request):
-    return render(
-        request, 'stripe/checkout.html',
-        {'strip_public_key': settings.STRIPE_PUBLISHED_KEY}
-    )
 
 
 def health_check(request):
@@ -159,17 +94,3 @@ def health_check(request):
             
     except Exception as e:
         return HttpResponse(f"Error: {str(e)}", status=500)
-    
-
-def privacy_policy(request):
-    """
-        Render the privacy policy page
-    """
-    return render(request, 'privacy_policy.html')
-
-
-def terms_and_conditions(request):
-    """
-        Render the terms of service page
-    """
-    return render(request, 'terms_and_conditions.html')

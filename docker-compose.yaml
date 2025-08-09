@@ -1,6 +1,24 @@
 version: '3.8'
 
 services:
+  frontend:
+    build:
+      context: ./imageassistant/frontend
+      dockerfile: ./Dockerfile
+    ports:
+      - 5000:5000
+    command: >
+      sh -c "npm install && npm run serve -- --port 5000 --host 0.0.0.0"
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
+      - VUE_APP_API_URL=http://localhost:8084
+    volumes:
+      - ./imageassistant/frontend/:/app/
+      - ./imageassistant/frontend/node_modules:/app/node_modules
+    networks:
+      - django-network  
   redis-imageassistant:
     image: redis:alpine
     ports:
@@ -13,7 +31,7 @@ services:
     restart: always
     build:
       context: ./
-      dockerfile: ./Dockerfile
+      dockerfile: ./Dockerfile  
       
     user: ${CURRENT_UID}
     environment:

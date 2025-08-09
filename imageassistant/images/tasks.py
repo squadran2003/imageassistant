@@ -382,7 +382,7 @@ def create_avatar(image_id):
         },
         files={"image": img_io.getvalue()},
         data={
-           "prompt": "Studio Ghibli-style illustration of a bearded man with short dark hair and masculine features, standing in a cozy modern kitchen. He wears a dark striped sweater. The kitchen includes wooden cabinets, stainless steel appliances, and warm ambient lighting. The image should have soft watercolor textures, rich shading, and expressive anime-style eyes characteristic of Ghibli films. The style evokes the feel of ‘Spirited Away’ or ‘My Neighbor Totoro’ — magical realism, gentle color palette, and storytelling warmth.",
+           "prompt": "",
             "negative_prompt": "gender change, different person, opposite gender, realistic, photographic, 3D render, low quality, blurry",
             "mode": "image-to-image",
             "strength": 0.6,

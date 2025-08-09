@@ -1,5 +1,9 @@
 FROM python:3.10-slim-bullseye
 
+RUN apt-get update && apt-get install -y curl \
+    && curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs \
+    && apt-get clean
 
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -17,7 +21,7 @@ COPY pyproject.toml poetry.lock ./
 
 
 # install open cv for debian
-RUN apt-get update && apt-get install -y libgl1-mesa-glx && apt-get clean
+RUN apt-get install -y libgl1-mesa-glx && apt-get clean
 
 
 RUN pip install poetry \

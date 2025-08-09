@@ -9,15 +9,23 @@ DEBUG = False
 
 ALLOWED_HOSTS = [
     "imageassistant.io", 
-    "ec2-18-207-173-160.compute-1.amazonaws.com",
     "localhost",
     "127.0.0.1",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     'https://imageassistant.io',
-    "http://ec2-18-207-173-160.compute-1.amazonaws.com",
     "https://consent.cookiebot.com/uc.js",
+]
+
+
+
+# Production CORS settings
+CORS_ALLOW_ALL_ORIGINS = False
+
+# Only allow your actual production domains
+CORS_ALLOWED_ORIGINS = [
+    "https://imageassistant.io",
 ]
 
 HANDLER500 = 'config.views.handler500'

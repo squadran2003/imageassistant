@@ -15,16 +15,19 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from django.conf.urls.static import static
 from django.conf import settings
 from django.views.generic import TemplateView
-from django.http import HttpResponse
 from config.views import (
-    base, faq, stripe_success_return, upload_content, StaticViewSitemap,
-    contact, health_check, privacy_policy, terms_and_conditions
+    base, StaticViewSitemap,
+    health_check,
 )
 from django.contrib.sitemaps.views import sitemap
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 
 
 sitemaps = {
@@ -33,22 +36,16 @@ sitemaps = {
 
 urlpatterns = [
     path('', base, name='base'),
-    path('dashboard/', base, name='dashboard'),
-    path('faq/', faq, name='faq'),
     path('admin/', admin.site.urls),
-    path('contact/', contact, name='contact'),
-    path('upload/content/', upload_content, name='upload_content'),
-    path('images/', include(('images.urls', 'images'), namespace='images')),
-    path('users/', include(('users.urls', 'users'), namespace='custom_users')),
-    path('stripe/return/', stripe_success_return, name='stripe_success_return'),
-    path('stripe/checkout/', stripe_success_return, name='stripe_checkout'),
+    path('api/v1/token/obtain/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/v1/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/v1/', include(('api.urls', 'api'), namespace='api')),
-    path('users/', include(('users.urls', 'users'), namespace='users')),
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
     path('robots.txt', TemplateView.as_view(template_name="robots.txt", content_type='text/plain')),
     path('health/', health_check, name='health_check'),
-    path('privacy-policy/', privacy_policy, name='privacy-policy'),
-    path('terms-conditions/', terms_and_conditions, name='terms-conditions'),
+    # Catch-all pattern for Vue.js SPA routes - must be last
+    # This will catch any URL that doesn't match above patterns  
+    re_path(r'^(?!api/|admin/?|static/|media/|sitemap\.xml|robots\.txt|health/).*$', base, name='spa_catchall'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
