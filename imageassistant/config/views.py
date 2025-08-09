@@ -11,20 +11,36 @@ import os
 
 
 class StaticViewSitemap(Sitemap):
-    """Sitemap for static pages"""
+    """Sitemap for Vue.js SPA routes"""
     priority = 0.5
     changefreq = 'monthly'
+    protocol = 'https'
 
     def items(self):
+        # Return the actual Vue.js routes that should be indexed
         return [
-            '/', '/users/login', '/users/signup', '/users/logout', 
-            '/faq', '/contact', '/privacy-policy', '/pricing'
+            '/',
+            '/users/login',
+            '/users/signup',
+            '/faq',
+            '/contact',
+            '/privacy-policy',
+            '/pricing',
+            '/terms-conditions'
         ]
 
     def location(self, item):
-        url = reverse(item)
-        url = url.replace("http://", "https://")
-        return url
+        # Since these are SPA routes, we just return the path
+        # Django's sitemap framework will add the domain automatically
+        return item
+    
+    def get_urls(self, page=1, site=None, protocol=None):
+        # Override to ensure we use the correct domain for the SPA
+        from django.contrib.sites.shortcuts import get_current_site
+        from django.contrib.sitemaps import ping_google
+        
+        urls = super().get_urls(page=page, site=site, protocol=protocol)
+        return urls
     
 def handler500(request, *args, **argv):
     response = render(request, '500.html', {})
