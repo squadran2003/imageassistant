@@ -55,9 +55,13 @@ import BackgroundRemovalExample from './BackgroundRemovalExample.vue';
 
 export default {
   name: 'IndexPage',
+  inheritAttrs: false,
   props:{
      user: {
-        isAuthenticated: false,
+        type: Object,
+        default: () => ({
+          isAuthenticated: false
+        })
       }
   },
   components: {

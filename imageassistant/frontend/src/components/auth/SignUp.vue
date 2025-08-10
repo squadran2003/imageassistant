@@ -239,7 +239,7 @@ export default {
     GOOGLE_LOGIN_REDIRECT_URI: {
       type: String,
       required: true
-    },
+    }
   },
   data() {
     return {

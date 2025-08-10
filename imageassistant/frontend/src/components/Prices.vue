@@ -126,7 +126,7 @@
       </div>
 
       <!-- Buy Credits CTA -->
-      <div class="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl shadow-lg p-8 text-center text-white">
+      <div v-if="user.isAuthenticated" class="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl shadow-lg p-8 text-center text-white">
         <div class="mb-6">
           <div class="bg-white/20 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
             <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -161,6 +161,13 @@
 
 <script>
 export default {
-  name: 'PricesPage'
+  name: 'PricesPage',
+  inheritAttrs: false,
+  props: {
+   user: {
+      type: Object,
+      default: () => ({})
+    }
+  },
 }
 </script>
