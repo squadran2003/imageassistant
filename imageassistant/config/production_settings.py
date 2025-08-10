@@ -131,8 +131,8 @@ AWS_S3_OBJECT_PARAMETERS = {
 }
 AWS_LOCATION = 'static'
 STATICFILES_LOCATION = 'static'
-STATICFILES_STORAGE = 'storages.backends.s3boto3.S3StaticStorage'
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+STATICFILES_STORAGE = 'config.storage_backends.StaticStorage'
+DEFAULT_FILE_STORAGE = 'config.storage_backends.MediaStorage'
 CLOUDFRONT_DOMAIN = SECRETS['CLOUDFRONT_DOMAIN']
 COMPRESS_URL = f"https://{CLOUDFRONT_DOMAIN}/static/"
 COMPRESS_STORAGE = 'storages.backends.s3boto3.S3StaticStorage'
