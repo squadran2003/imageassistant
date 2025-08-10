@@ -581,7 +581,7 @@ class ContactView(APIView):
     """
     Handle contact form submissions
     """
-    permission_classes = [AllowAny]
+    permission_classes = []
     
     def post(self, request):
         serializer = ContactSerializer(data=request.data)
