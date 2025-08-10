@@ -188,6 +188,7 @@
 </template>
 
 <script>
+import { API_URL } from '../config.js';
 export default {
   name: 'ContactPage',
   data() {
@@ -201,7 +202,7 @@ export default {
       },
       errors: {},
       showSuccess: false,
-      isSubmitting: false
+      isSubmitting: false,
     }
   },
   methods: {
@@ -234,7 +235,7 @@ export default {
 
       try {
         // Make API call to Django backend
-        const response = await fetch('http://localhost:8084/api/v1/contact/', {
+        const response = await fetch(`${API_URL}/api/v1/contact/`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

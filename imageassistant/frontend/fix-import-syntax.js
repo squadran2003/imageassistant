@@ -42,8 +42,6 @@ function fixImportSyntax(filePath) {
   // Fix wrong config.js path
   if (newContent.includes("from './config.js'")) {
     // Determine correct path based on file location
-    const relativePath = path.relative(path.dirname(filePath), path.join(__dirname, 'src'));
-    const configPath = path.join(relativePath, 'config.js').replace(/\\/g, '/');
     let correctImportPath;
     
     if (filePath.includes('/components/auth/') || filePath.includes('\\components\\auth\\') ||

@@ -276,9 +276,12 @@ export default {
         document.head.appendChild(script)
     },
     initializeGoogleAuth() {
+      console.log(this.apiUrl, this.GOOGLE_CLIENT_ID);
       window.google.accounts.id.initialize({
-        client_id:"602430094215-scivbsoosdd8gc1qadieleotm2kin0dp.apps.googleusercontent.com",
+        client_id: this.GOOGLE_CLIENT_ID,
         callback: this.handleGoogleCredentialResponse,
+        auto_select: false,
+        cancel_on_tap_outside: true,
       });
         // Render the button
       window.google.accounts.id.renderButton(
