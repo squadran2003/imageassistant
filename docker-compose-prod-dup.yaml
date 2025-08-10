@@ -3,7 +3,6 @@ version: '3.8'
 services:
   nginx:
     build: ./nginx
-    image: ${REGISTRY_URL:-localhost}/imageassistant_nginx:${TAG:-latest}
     ports:
       - "443:443"
       - "80:80"
@@ -26,7 +25,6 @@ services:
     build:
       context: ./
       dockerfile: ./production_docker/Dockerfile
-    image: ${REGISTRY_URL:-localhost}/imageassistant_django:${TAG:-latest}
     environment:
       - DJANGO_SETTINGS_MODULE=config.production_settings
     command: >
@@ -49,7 +47,6 @@ services:
     build:
       context: .
       dockerfile: ./production_docker/Dockerfile
-    image: ${REGISTRY_URL:-localhost}/imageassistant_celery:${TAG:-latest}
     environment:
       - DJANGO_SETTINGS_MODULE=config.production_settings
     command: >
