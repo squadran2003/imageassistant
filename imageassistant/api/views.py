@@ -255,7 +255,7 @@ class GoogleLoginView(APIView):
             )
         
 
-@method_decorator(csrf_exempt, name='dispatch')
+@csrf_exempt
 class ChangePasswordView(APIView):
     """
         Handle password change requests
@@ -282,8 +282,8 @@ class ChangePasswordView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-@method_decorator(csrf_exempt, name='dispatch')
-class PasswordRestConfirmView(APIView):
+@csrf_exempt
+class PasswordResetConfirmView(APIView):
     """
         Handle password reset confirmation
     """
@@ -583,7 +583,7 @@ class UserImagesView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-@method_decorator(csrf_exempt, name='dispatch')
+@csrf_exempt
 class ContactView(APIView):
     """
     Handle contact form submissions
