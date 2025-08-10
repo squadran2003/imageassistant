@@ -25,7 +25,7 @@
           <h3 class="text-xl font-bold text-white mb-4">Image Outline Created Successfully!</h3>
           <div class="bg-gray-700 rounded-lg p-4">
             <img 
-              :src="processedImage.url" 
+              :src="processedImage.alternate_url ? processedImage.alternate_url : processedImage.url" 
               :alt="processedImage.alt" 
               class="w-full rounded-lg shadow-lg" 
             />
@@ -341,7 +341,7 @@ export default {
     },
     
     downloadImage() {
-      const url = this.processedImage.alternate_url || this.processedImage.url;
+      const url = this.processedImage.alternate_url ? this.processedImage.alternate_url : this.processedImage.url;
       const filename = 'image-outline.png';
       
       fetch(url)
