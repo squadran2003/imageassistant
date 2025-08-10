@@ -279,8 +279,6 @@ export default {
       window.google.accounts.id.initialize({
         client_id:"602430094215-scivbsoosdd8gc1qadieleotm2kin0dp.apps.googleusercontent.com",
         callback: this.handleGoogleCredentialResponse,
-        auto_select: false,
-        cancel_on_tap_outside: true,
       });
         // Render the button
       window.google.accounts.id.renderButton(
