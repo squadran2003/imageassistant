@@ -482,3 +482,30 @@ class ProcessImageViewTests(ImageProcessingAPITests):
         self.assertIsNone(image)
         self.assertIsNotNone(error_response)
         self.assertEqual(error_response.status_code, status.HTTP_400_BAD_REQUEST)
+
+
+class CSRFProtectionTests(APITestCase):
+    """Test CSRF protection on API endpoints"""
+
+    def test_change_password_view_csrf_exemption(self):
+        """Test that ChangePasswordView allows POST without CSRF token"""
+        from django.test import Client
+        from django.urls import reverse
+        
+        # Use regular Django test client instead of DRF client to test CSRF
+        client = Client(enforce_csrf_checks=True)
+        
+        url = reverse('api:change-password')
+        data = {
+            'email': 'test@example.com'
+        }
+        
+        # This should succeed because the view has @csrf_exempt decorator
+        response = client.post(url, data, content_type='application/json')
+        
+        # The view should process the request (not return 403 Forbidden for CSRF)
+        # The actual response will depend on the email validation, but it shouldn't be a CSRF error
+        self.assertNotEqual(response.status_code, 403)  # 403 would indicate CSRF failure
+        
+        # Since the email likely doesn't exist, we expect either 200 (success) or 400 (validation error)
+        self.assertIn(response.status_code, [200, 400])
