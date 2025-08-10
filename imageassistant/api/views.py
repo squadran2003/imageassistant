@@ -18,6 +18,8 @@ from images.tasks import (
 import stripe
 import requests
 from datetime import datetime
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
@@ -143,6 +145,7 @@ class AddCreditsView(APIView):
             status=status.HTTP_200_OK
         )
 
+@method_decorator(csrf_exempt, name='dispatch')
 class SignUpView(APIView):
     permission_classes = []
 
@@ -179,6 +182,7 @@ class SignUpView(APIView):
 
 
 
+@method_decorator(csrf_exempt, name='dispatch')
 class GoogleLoginView(APIView):
     """
         Handle Google Sign-In callback
@@ -251,6 +255,7 @@ class GoogleLoginView(APIView):
             )
         
 
+@method_decorator(csrf_exempt, name='dispatch')
 class ChangePasswordView(APIView):
     """
         Handle password change requests
@@ -277,6 +282,7 @@ class ChangePasswordView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
+@method_decorator(csrf_exempt, name='dispatch')
 class PasswordRestConfirmView(APIView):
     """
         Handle password reset confirmation
@@ -577,6 +583,7 @@ class UserImagesView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+@method_decorator(csrf_exempt, name='dispatch')
 class ContactView(APIView):
     """
     Handle contact form submissions

@@ -276,7 +276,6 @@ export default {
         document.head.appendChild(script)
     },
     initializeGoogleAuth() {
-      console.log(this.apiUrl, this.GOOGLE_CLIENT_ID);
       window.google.accounts.id.initialize({
         client_id: this.GOOGLE_CLIENT_ID,
         callback: this.handleGoogleCredentialResponse,
