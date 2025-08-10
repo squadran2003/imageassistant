@@ -364,6 +364,7 @@ export default {
     async handleGoogleCredentialResponse(response) {
         // Send the ID token to your backend
         try {
+          console.log(`${this.apiUrl}/api/v1/google/login/`);
           const backendResponse = await fetch(`${this.apiUrl}/api/v1/google/login/`, {
             method: 'POST',
             headers: {
