@@ -167,7 +167,6 @@
                   </svg>
                   {{ isLoading ? 'Creating Account...' : 'Create Account' }}
                 </button>
-                <p v-if="GOOGLE_CLIENT_ID">{{GOOGLE_CLIENT_ID}}</p>
               </form>
               <div v-if="!isLoading" class="mt-4">
                 <RobotChecker :onVerified="isRobotVerified" />
