@@ -301,7 +301,7 @@ initializeGoogleAuth() {
                 theme: 'outline',
                 size: 'large',
                 text: 'continue_with',
-                width: '100%'
+                width: 240
             }
         );
         this.googleAuthInitialized = true;
