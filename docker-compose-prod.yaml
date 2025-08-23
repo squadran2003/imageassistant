@@ -53,8 +53,7 @@ services:
       - imageassistant-network
 networks:
   imageassistant-network:
-    driver: overlay
-    attachable: true
+    driver: bridge
     name: imageassistant_network
 
 volumes:
