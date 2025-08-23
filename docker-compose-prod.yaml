@@ -2,8 +2,9 @@ version: '3.8'
 
 services:
   nginx:
-    build: ./nginx
-    Dockerfile: ./nginx/Dockerfile
+    build:
+      context: ./nginx
+      dockerfile: ./nginx/Dockerfile
     ports:
       - 443:443
       - 80:80
@@ -59,5 +60,3 @@ networks:
 volumes:
   static:
   redis-data:
-
-
