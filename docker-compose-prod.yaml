@@ -55,14 +55,10 @@ services:
 networks:
   imageassistant-network:
     driver: bridge
-<<<<<<< HEAD
 
     # driver: overlay
     # attachable: true
     # name: imageassistant_network
-=======
-    name: imageassistant_network
->>>>>>> a83841b2cc84636c2c75dc8089426c0f64af4b40
 
 volumes:
   static:
