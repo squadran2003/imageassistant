@@ -380,10 +380,6 @@ initializeGoogleAuth() {
     async handleGoogleCredentialResponse(response) {
         // Send the ID token to your backend
         try {
-<<<<<<< HEAD
-          console.log(`${this.apiUrl}/api/v1/google/login/`);
-=======
->>>>>>> a83841b2cc84636c2c75dc8089426c0f64af4b40
           const backendResponse = await fetch(`${this.apiUrl}/api/v1/google/login/`, {
             method: 'POST',
             headers: {
