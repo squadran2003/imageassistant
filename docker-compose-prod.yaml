@@ -2,8 +2,9 @@ version: '3.8'
 
 services:
   nginx:
-    build: ./nginx
-    image: ${REGISTRY_URL:-localhost}/imageassistant_nginx:${TAG:-latest}
+    build:
+      context: ./nginx
+      dockerfile: ./Dockerfile
     ports:
       - 443:443
       - 80:80
@@ -25,27 +26,6 @@ services:
     build:
       context: ./
       dockerfile: ./production_docker/Dockerfile
-    image: ${REGISTRY_URL:-localhost}/imageassistant_django:${TAG:-latest}
-    deploy:
-      replicas: 2
-      update_config:
-        order: start-first    # Start new container before stopping old one
-        parallelism: 1        # How many containers to update at once
-        delay: 10s            # Wait between updates
-        failure_action: rollback  # Auto-rollback if update fails
-      restart_policy:
-        condition: any
-      resources:
-        limits:
-          memory: 512M
-        reservations:
-          memory: 256M
-    healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8084/health/')"]
-      interval: 5s
-      timeout: 3s
-      retries: 5
-      start_period: 100s
     environment:
       # set to your production settings file
       - DJANGO_SETTINGS_MODULE=config.production_settings
@@ -62,7 +42,6 @@ services:
     build:
       context: .
       dockerfile: ./production_docker/Dockerfile
-    image: ${REGISTRY_URL:-localhost}/imageassistant_celery:${TAG:-latest}
     environment:
       # set to your production settings file
       - DJANGO_SETTINGS_MODULE=config.production_settings
@@ -73,25 +52,18 @@ services:
     
     networks:
       - imageassistant-network
-    deploy:
-      replicas: 2
-      restart_policy:
-        condition: any
-      resources:
-        limits:
-          memory: 512M
-        reservations:
-          memory: 256M
 networks:
   imageassistant-network:
     driver: bridge
+<<<<<<< HEAD
 
     # driver: overlay
     # attachable: true
     # name: imageassistant_network
+=======
+    name: imageassistant_network
+>>>>>>> a83841b2cc84636c2c75dc8089426c0f64af4b40
 
 volumes:
   static:
   redis-data:
-
-

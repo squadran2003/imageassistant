@@ -267,33 +267,49 @@ export default {
   },
   methods: {
       loadGoogleScript() {
-        // Load Google Sign-In API
-        const script = document.createElement('script')
-        script.src = "https://accounts.google.com/gsi/client"
-        script.async = true
-        script.defer = true
-        script.onload = this.initializeGoogleAuth
-        document.head.appendChild(script)
-    },
-    initializeGoogleAuth() {
-      window.google.accounts.id.initialize({
-        client_id: this.GOOGLE_CLIENT_ID,
-        callback: this.handleGoogleCredentialResponse,
-        auto_select: false,
-        cancel_on_tap_outside: true,
-      });
+    console.log('Loading Google script...');
+    const script = document.createElement('script')
+    script.src = "https://accounts.google.com/gsi/client"
+    script.async = true
+    script.defer = true
+    script.onload = () => {
+        console.log('Google script loaded successfully');
+        this.initializeGoogleAuth();
+    }
+    script.onerror = (err) => {
+        console.error('Failed to load Google script:', err);
+    }
+    document.head.appendChild(script)
+},
+
+initializeGoogleAuth() {
+    console.log('Initializing Google Auth with client ID:', this.GOOGLE_CLIENT_ID);
+    console.log('Current origin:', window.location.origin);
+    
+    try {
+        window.google.accounts.id.initialize({
+            client_id: this.GOOGLE_CLIENT_ID,
+            callback: this.handleGoogleCredentialResponse,
+            auto_select: false,
+            cancel_on_tap_outside: true,
+        });
+        
         // Render the button
-      window.google.accounts.id.renderButton(
-        document.getElementById('visible-google-signin'),
-        { 
-          theme: 'outline',
-          size: 'large',
-          text: 'continue_with',
-          width: '100%'
-        }
-      );
-      this.googleAuthInitialized = true;
-    },
+        window.google.accounts.id.renderButton(
+            document.getElementById('visible-google-signin'),
+            { 
+                theme: 'outline',
+                size: 'large',
+                text: 'continue_with',
+                width: 240
+            }
+        );
+        this.googleAuthInitialized = true;
+        console.log('Google Auth initialized successfully');
+    } catch (error) {
+        console.error('Error initializing Google Auth:', error);
+    }
+},
     async register() {
       this.isLoading = true;
       this.clearErrors();
@@ -364,7 +380,10 @@ export default {
     async handleGoogleCredentialResponse(response) {
         // Send the ID token to your backend
         try {
+<<<<<<< HEAD
           console.log(`${this.apiUrl}/api/v1/google/login/`);
+=======
+>>>>>>> a83841b2cc84636c2c75dc8089426c0f64af4b40
           const backendResponse = await fetch(`${this.apiUrl}/api/v1/google/login/`, {
             method: 'POST',
             headers: {
