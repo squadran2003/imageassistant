@@ -141,7 +141,7 @@
         
         <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <router-link 
-            to="/add-credit" 
+            to="/checkout" 
             class="bg-white text-indigo-600 hover:bg-gray-100 font-bold py-4 px-8 rounded-lg transition duration-300 transform hover:scale-105 shadow-lg inline-flex items-center"
           >
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
